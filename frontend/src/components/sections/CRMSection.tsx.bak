@@ -1,0 +1,311 @@
+// LeadStack™ — Lead CRM Section
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo } from "react";
+import { Phone, Mail, Globe, Linkedin, MapPin, Star, ChevronUp, ChevronDown, Download, Filter, X } from "lucide-react";
+import { MOCK_LEADS, Lead, LeadStatus } from "@/lib/mockData";
+import { toast } from "sonner";
+
+const STATUSES: LeadStatus[] = ["New", "Called", "Hot Lead", "Meeting Booked", "Not Interested", "Unsubscribed"];
+
+const statusStyle = (status: LeadStatus) => {
+  const map: Record<LeadStatus, { bg: string; color: string; border: string }> = {
+    "New": { bg: "oklch(0.55 0.10 230 / 0.12)", color: "oklch(0.70 0.08 230)", border: "oklch(0.55 0.10 230 / 0.3)" },
+    "Called": { bg: "oklch(0.72 0.12 75 / 0.12)", color: "oklch(0.80 0.10 75)", border: "oklch(0.72 0.12 75 / 0.3)" },
+    "Hot Lead": { bg: "oklch(0.65 0.22 25 / 0.15)", color: "oklch(0.75 0.20 25)", border: "oklch(0.65 0.22 25 / 0.3)" },
+    "Meeting Booked": { bg: "oklch(0.65 0.18 145 / 0.15)", color: "oklch(0.72 0.16 145)", border: "oklch(0.65 0.18 145 / 0.3)" },
+    "Not Interested": { bg: "oklch(0.45 0.015 255 / 0.12)", color: "oklch(0.55 0.015 255)", border: "oklch(0.45 0.015 255 / 0.3)" },
+    "Unsubscribed": { bg: "oklch(0.40 0.015 255 / 0.10)", color: "oklch(0.50 0.015 255)", border: "oklch(0.40 0.015 255 / 0.2)" },
+  };
+  return map[status] || map["New"];
+};
+
+export default function CRMSection() {
+  const [leads, setLeads] = useState(MOCK_LEADS);
+  const [selected, setSelected] = useState<Lead | null>(null);
+  const [sortKey, setSortKey] = useState<keyof Lead>("score");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterScore, setFilterScore] = useState<string>("all");
+  const [search, setSearch] = useState("");
+
+  const sorted = useMemo(() => {
+    let list = [...leads];
+    if (filterStatus !== "all") list = list.filter(l => l.status === filterStatus);
+    if (filterScore !== "all") list = list.filter(l => l.scoreLabel === filterScore);
+    if (search) list = list.filter(l =>
+      l.name.toLowerCase().includes(search.toLowerCase()) ||
+      l.company.toLowerCase().includes(search.toLowerCase()) ||
+      l.city.toLowerCase().includes(search.toLowerCase())
+    );
+    list.sort((a, b) => {
+      const av = a[sortKey] as any;
+      const bv = b[sortKey] as any;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      return sortDir === "asc" ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+    });
+    return list;
+  }, [leads, sortKey, sortDir, filterStatus, filterScore, search]);
+
+  const handleSort = (key: keyof Lead) => {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("desc"); }
+  };
+
+  const SortIcon = ({ k }: { k: keyof Lead }) => {
+    if (sortKey !== k) return <ChevronUp size={10} style={{ opacity: 0.3 }} />;
+    return sortDir === "asc" ? <ChevronUp size={10} style={{ color: "oklch(0.72 0.12 75)" }} /> : <ChevronDown size={10} style={{ color: "oklch(0.72 0.12 75)" }} />;
+  };
+
+  const exportCSV = () => {
+    const headers = ["Name", "Company", "Phone", "Email", "City", "Score", "Status", "Rating"];
+    const rows = sorted.map(l => [l.name, l.company, l.phone, l.email, l.city, l.score, l.status, l.rating]);
+    const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = "leadstack_leads.csv"; a.click();
+    toast.success(`Exported ${sorted.length} leads to CSV`);
+  };
+
+  return (
+    <div className="p-6 flex gap-4 h-full" style={{ maxHeight: "calc(100vh - 56px)" }}>
+      {/* Main Table */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        {/* Toolbar */}
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-3 mb-4 flex-wrap">
+          <input value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Filter leads..."
+            className="px-3 py-2 rounded text-xs input-gold transition-all flex-1 min-w-32"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.92 0.008 65)" }} />
+
+          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+            className="px-3 py-2 rounded text-xs input-gold transition-all"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.75 0.008 65)" }}>
+            <option value="all">All Statuses</option>
+            {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+
+          <select value={filterScore} onChange={e => setFilterScore(e.target.value)}
+            className="px-3 py-2 rounded text-xs input-gold transition-all"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.75 0.008 65)" }}>
+            <option value="all">All Scores</option>
+            <option value="Hot">🔥 Hot</option>
+            <option value="Warm">🌡 Warm</option>
+            <option value="Cold">❄️ Cold</option>
+          </select>
+
+          <button onClick={exportCSV}
+            className="flex items-center gap-1.5 px-3 py-2 rounded text-xs font-medium transition-colors"
+            style={{ background: "oklch(0.72 0.12 75 / 0.12)", color: "oklch(0.72 0.12 75)", border: "1px solid oklch(0.72 0.12 75 / 0.25)" }}>
+            <Download size={12} /> Export CSV
+          </button>
+
+          <span className="text-[10px] font-mono" style={{ color: "oklch(0.55 0.015 255)" }}>
+            {sorted.length} leads
+          </span>
+        </motion.div>
+
+        {/* Table */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
+          className="flex-1 rounded-lg overflow-hidden"
+          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+          <div className="overflow-auto h-full">
+            <table className="w-full text-xs">
+              <thead style={{ background: "oklch(0.11 0.025 255)", borderBottom: "1px solid oklch(1 0 0 / 0.08)" }}>
+                <tr>
+                  {[
+                    { label: "Score", key: "score" as keyof Lead },
+                    { label: "Name", key: "name" as keyof Lead },
+                    { label: "Company", key: "company" as keyof Lead },
+                    { label: "Phone", key: "phone" as keyof Lead },
+                    { label: "Email", key: "email" as keyof Lead },
+                    { label: "City", key: "city" as keyof Lead },
+                    { label: "Rating", key: "rating" as keyof Lead },
+                    { label: "Status", key: "status" as keyof Lead },
+                  ].map(col => (
+                    <th key={col.key}
+                      onClick={() => handleSort(col.key)}
+                      className="text-left px-4 py-3 font-semibold cursor-pointer select-none whitespace-nowrap"
+                      style={{ color: "oklch(0.55 0.015 255)" }}>
+                      <div className="flex items-center gap-1">
+                        {col.label} <SortIcon k={col.key} />
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <AnimatePresence>
+                  {sorted.map((lead, i) => {
+                    const ss = statusStyle(lead.status);
+                    const isSelected = selected?.id === lead.id;
+                    return (
+                      <motion.tr key={lead.id}
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                        transition={{ delay: i * 0.02 }}
+                        onClick={() => setSelected(isSelected ? null : lead)}
+                        className="cursor-pointer transition-colors"
+                        style={{
+                          borderBottom: "1px solid oklch(1 0 0 / 0.04)",
+                          background: isSelected ? "oklch(0.72 0.12 75 / 0.06)" : "transparent",
+                        }}
+                        onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "oklch(1 0 0 / 0.025)"; }}
+                        onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "transparent"; }}
+                      >
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
+                              lead.scoreLabel === "Hot" ? "badge-hot" :
+                              lead.scoreLabel === "Warm" ? "badge-warm" : "badge-cold"
+                            }`}>
+                              {lead.scoreLabel === "Hot" ? "🔥" : lead.scoreLabel === "Warm" ? "🌡" : "❄️"} {lead.scoreLabel}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="font-semibold" style={{ color: "oklch(0.92 0.008 65)" }}>{lead.name}</div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="truncate max-w-[140px]" style={{ color: "oklch(0.70 0.008 65)" }}>{lead.company}</div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="font-mono" style={{ color: lead.phone ? "oklch(0.80 0.008 65)" : "oklch(0.40 0.015 255)" }}>
+                            {lead.phone || "—"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="truncate max-w-[160px] block" style={{ color: lead.email ? "oklch(0.55 0.10 230)" : "oklch(0.40 0.015 255)" }}>
+                            {lead.email || "—"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3" style={{ color: "oklch(0.65 0.008 65)" }}>
+                          {lead.city}, {lead.state}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-1">
+                            <Star size={10} style={{ color: "oklch(0.72 0.12 75)" }} />
+                            <span className="font-mono" style={{ color: "oklch(0.72 0.12 75)" }}>{lead.rating}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-[10px] px-2 py-1 rounded font-medium"
+                            style={{ background: ss.bg, color: ss.color, border: `1px solid ${ss.border}` }}>
+                            {lead.status}
+                          </span>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </AnimatePresence>
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Lead Detail Panel */}
+      <AnimatePresence>
+        {selected && (
+          <motion.div
+            initial={{ opacity: 0, x: 20, width: 0 }}
+            animate={{ opacity: 1, x: 0, width: 280 }}
+            exit={{ opacity: 0, x: 20, width: 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex-shrink-0 rounded-lg overflow-hidden flex flex-col"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.07)", width: 280 }}
+          >
+            {/* Header */}
+            <div className="p-4" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.06)" }}>
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
+                  style={{ background: "oklch(0.72 0.12 75 / 0.15)", color: "oklch(0.72 0.12 75)" }}>
+                  {selected.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                </div>
+                <button onClick={() => setSelected(null)}
+                  className="w-6 h-6 rounded flex items-center justify-center"
+                  style={{ color: "oklch(0.55 0.015 255)" }}>
+                  <X size={13} />
+                </button>
+              </div>
+              <div className="font-semibold text-sm" style={{ color: "oklch(0.92 0.008 65)" }}>{selected.name}</div>
+              <div className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.015 255)" }}>{selected.company}</div>
+              <div className="flex items-center gap-1.5 mt-2">
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
+                  selected.scoreLabel === "Hot" ? "badge-hot" :
+                  selected.scoreLabel === "Warm" ? "badge-warm" : "badge-cold"
+                }`}>
+                  {selected.scoreLabel === "Hot" ? "🔥" : selected.scoreLabel === "Warm" ? "🌡" : "❄️"} {selected.scoreLabel}
+                </span>
+                <span className="font-mono text-[10px]" style={{ color: "oklch(0.72 0.12 75)" }}>Score: {selected.score}</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="p-3 grid grid-cols-4 gap-2" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.06)" }}>
+              {[
+                { icon: Phone, label: "Call", color: "oklch(0.65 0.18 145)", action: () => toast.success(`Calling ${selected.name}...`) },
+                { icon: Mail, label: "Email", color: "oklch(0.55 0.10 230)", action: () => toast.success("Opening email draft...") },
+                { icon: Globe, label: "Web", color: "oklch(0.72 0.12 75)", action: () => window.open(`https://${selected.website}`, "_blank") },
+                { icon: Linkedin, label: "LinkedIn", color: "oklch(0.55 0.10 230)", action: () => toast.info("LinkedIn profile") },
+              ].map(btn => (
+                <button key={btn.label} onClick={btn.action}
+                  className="flex flex-col items-center gap-1 py-2 rounded transition-colors"
+                  style={{ background: `${btn.color}10` }}>
+                  <btn.icon size={14} style={{ color: btn.color }} />
+                  <span className="text-[9px]" style={{ color: btn.color }}>{btn.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Details */}
+            <div className="p-4 flex-1 overflow-y-auto space-y-3">
+              {[
+                { label: "Phone", value: selected.phone || "—", icon: Phone },
+                { label: "Email", value: selected.email || "—", icon: Mail },
+                { label: "Location", value: `${selected.city}, ${selected.state}`, icon: MapPin },
+                { label: "Rating", value: `${selected.rating} ★ (${selected.reviews} reviews)`, icon: Star },
+              ].map(item => (
+                <div key={item.label}>
+                  <div className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "oklch(0.45 0.015 255)" }}>{item.label}</div>
+                  <div className="text-xs" style={{ color: "oklch(0.80 0.008 65)" }}>{item.value}</div>
+                </div>
+              ))}
+
+              <div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "oklch(0.45 0.015 255)" }}>STATUS</div>
+                <select
+                  value={selected.status}
+                  onChange={e => {
+                    const newStatus = e.target.value as LeadStatus;
+                    setLeads(prev => prev.map(l => l.id === selected.id ? { ...l, status: newStatus } : l));
+                    setSelected(prev => prev ? { ...prev, status: newStatus } : null);
+                    toast.success(`Status updated to ${newStatus}`);
+                  }}
+                  className="w-full px-2 py-1.5 rounded text-xs"
+                  style={{ background: "oklch(1 0 0 / 0.04)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }}>
+                  {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "oklch(0.45 0.015 255)" }}>NOTES</div>
+                <textarea
+                  placeholder="Add notes about this lead..."
+                  rows={4}
+                  className="w-full px-2 py-1.5 rounded text-xs resize-none input-gold transition-all"
+                  style={{ background: "oklch(1 0 0 / 0.04)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }}
+                />
+              </div>
+
+              <div>
+                <div className="text-[9px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "oklch(0.45 0.015 255)" }}>NEXT ACTION</div>
+                <div className="text-xs font-medium" style={{ color: "oklch(0.72 0.12 75)" }}>{selected.nextAction}</div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

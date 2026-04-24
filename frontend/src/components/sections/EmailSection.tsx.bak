@@ -1,0 +1,239 @@
+// LeadStack™ — Email Engine Section
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { Mail, CheckCircle, Eye, MessageSquare, Wifi, WifiOff, Send, AlertTriangle } from "lucide-react";
+import { MOCK_EMAIL_EVENTS, EMAIL_SEQUENCE_DATA, HOURLY_EMAIL_DATA, STATS } from "@/lib/mockData";
+import { toast } from "sonner";
+
+const SUBJECT_LINES = [
+  { subject: "Quick question about your follow-up process", opens: 42, replies: 9, rate: 38.5 },
+  { subject: "InvestReach — automated follow-ups for RIAs", opens: 31, replies: 6, rate: 29.8 },
+  { subject: "How [Company] could capture 3-4 more clients/mo", opens: 38, replies: 11, rate: 44.2 },
+  { subject: "Last note from InvestReach", opens: 22, replies: 7, rate: 31.8 },
+];
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "oklch(0.16 0.025 255)", border: "1px solid oklch(1 0 0 / 0.12)" }}>
+      <p className="font-semibold mb-1" style={{ color: "oklch(0.92 0.008 65)" }}>{label}</p>
+      {payload.map((p: any) => (
+        <p key={p.name} style={{ color: p.color }}>{p.name}: {p.value}</p>
+      ))}
+    </div>
+  );
+};
+
+export default function EmailSection() {
+  const [events, setEvents] = useState(MOCK_EMAIL_EVENTS);
+  const [gmailConnected] = useState(true);
+  const [dailySent] = useState(38);
+  const dailyLimit = 50;
+
+  // Simulate live email feed
+  useEffect(() => {
+    const names = ["Michael Brown", "David Park", "Lisa Johnson", "Christopher Wilson"];
+    const companies = ["Brown Capital", "Park Wealth", "Johnson Retirement", "Wilson Wealth"];
+    const subjects = ["Quick question about your follow-up process", "InvestReach — automated follow-ups for RIAs"];
+    let idx = 0;
+    const t = setInterval(() => {
+      const n = names[idx % names.length];
+      const c = companies[idx % companies.length];
+      setEvents(prev => [{
+        id: Date.now(), leadName: n, company: c,
+        email: `${n.split(" ")[0].toLowerCase()}@${c.split(" ")[0].toLowerCase()}.com`,
+        subject: subjects[idx % 2], step: 1, sentAt: new Date().toLocaleTimeString(),
+        opened: false, replied: false, status: "sent" as const,
+      }, ...prev.slice(0, 9)]);
+      idx++;
+    }, 8000);
+    return () => clearInterval(t);
+  }, []);
+
+  const statusIcon = (status: string) => {
+    if (status === "replied") return <MessageSquare size={11} style={{ color: "oklch(0.72 0.12 75)" }} />;
+    if (status === "opened") return <Eye size={11} style={{ color: "oklch(0.55 0.10 230)" }} />;
+    if (status === "bounced") return <AlertTriangle size={11} style={{ color: "oklch(0.65 0.22 25)" }} />;
+    return <Send size={11} style={{ color: "oklch(0.65 0.18 145)" }} />;
+  };
+
+  const statusLabel = (status: string) => {
+    if (status === "replied") return { text: "Replied", color: "oklch(0.72 0.12 75)" };
+    if (status === "opened") return { text: "Opened", color: "oklch(0.55 0.10 230)" };
+    if (status === "bounced") return { text: "Bounced", color: "oklch(0.65 0.22 25)" };
+    return { text: "Sent", color: "oklch(0.65 0.18 145)" };
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Top Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: "Emails Sent", value: STATS.emailsSent, suffix: "", color: "oklch(0.72 0.12 75)" },
+          { label: "Open Rate", value: `${STATS.openRate}%`, color: "oklch(0.55 0.10 230)" },
+          { label: "Reply Rate", value: `${STATS.replyRate}%`, color: "oklch(0.65 0.18 145)" },
+          { label: "Today's Sends", value: `${dailySent}/${dailyLimit}`, color: "oklch(0.65 0.22 25)" },
+        ].map((s, i) => (
+          <motion.div key={s.label}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.07 }}
+            className="rounded-lg p-4"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.07)", borderTop: `2px solid ${s.color}` }}>
+            <div className="stat-number text-2xl font-bold mb-1" style={{ color: "oklch(0.92 0.008 65)" }}>{s.value}</div>
+            <div className="text-xs" style={{ color: "oklch(0.55 0.015 255)" }}>{s.label}</div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Live Email Feed */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="rounded-lg p-4"
+          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-sm font-semibold" style={{ color: "oklch(0.92 0.008 65)" }}>Live Email Feed</h3>
+              <p className="text-[10px]" style={{ color: "oklch(0.55 0.015 255)" }}>Real-time send log</p>
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px]"
+              style={{ color: gmailConnected ? "oklch(0.72 0.16 145)" : "oklch(0.75 0.20 25)" }}>
+              {gmailConnected ? <Wifi size={11} /> : <WifiOff size={11} />}
+              {gmailConnected ? "Connected" : "Disconnected"}
+            </div>
+          </div>
+
+          {/* Daily Limit Bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-[10px] mb-1.5">
+              <span style={{ color: "oklch(0.55 0.015 255)" }}>Daily Send Limit</span>
+              <span className="font-mono font-semibold" style={{ color: "oklch(0.72 0.12 75)" }}>{dailySent}/{dailyLimit}</span>
+            </div>
+            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(1 0 0 / 0.06)" }}>
+              <motion.div
+                initial={{ width: 0 }} animate={{ width: `${(dailySent / dailyLimit) * 100}%` }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="h-full rounded-full"
+                style={{ background: dailySent / dailyLimit > 0.8 ? "oklch(0.65 0.22 25)" : "oklch(0.72 0.12 75)" }} />
+            </div>
+          </div>
+
+          <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
+            <AnimatePresence mode="popLayout">
+              {events.map(ev => {
+                const sl = statusLabel(ev.status);
+                return (
+                  <motion.div key={ev.id}
+                    initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    layout
+                    className="p-2.5 rounded-lg"
+                    style={{ background: "oklch(1 0 0 / 0.02)", border: "1px solid oklch(1 0 0 / 0.05)" }}>
+                    <div className="flex items-center gap-2 mb-1">
+                      {statusIcon(ev.status)}
+                      <span className="text-xs font-medium truncate flex-1" style={{ color: "oklch(0.85 0.008 65)" }}>
+                        {ev.leadName}
+                      </span>
+                      <span className="text-[9px] flex-shrink-0" style={{ color: sl.color }}>{sl.text}</span>
+                    </div>
+                    <div className="text-[10px] truncate" style={{ color: "oklch(0.45 0.015 255)" }}>{ev.subject}</div>
+                    <div className="text-[9px] mt-0.5" style={{ color: "oklch(0.40 0.015 255)" }}>
+                      Step {ev.step} · {typeof ev.sentAt === "string" && ev.sentAt.includes(":") ? ev.sentAt : new Date(ev.sentAt).toLocaleTimeString()}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Charts */}
+        <div className="lg:col-span-2 space-y-4">
+          {/* Hourly Send Chart */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+            className="rounded-lg p-4"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+            <h3 className="text-sm font-semibold mb-1" style={{ color: "oklch(0.92 0.008 65)" }}>Hourly Send Volume</h3>
+            <p className="text-[10px] mb-3" style={{ color: "oklch(0.55 0.015 255)" }}>Emails sent per hour today</p>
+            <ResponsiveContainer width="100%" height={100}>
+              <AreaChart data={HOURLY_EMAIL_DATA} margin={{ top: 5, right: 5, bottom: 0, left: -25 }}>
+                <defs>
+                  <linearGradient id="emailHourGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="oklch(0.72 0.12 75)" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="oklch(0.72 0.12 75)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.04)" />
+                <XAxis dataKey="hour" tick={{ fontSize: 9, fill: "oklch(0.45 0.015 255)" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: "oklch(0.45 0.015 255)" }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="sent" name="Sent" stroke="oklch(0.72 0.12 75)" strokeWidth={2} fill="url(#emailHourGrad)" dot={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* Sequence Performance */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+            className="rounded-lg p-4"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+            <h3 className="text-sm font-semibold mb-1" style={{ color: "oklch(0.92 0.008 65)" }}>Sequence Performance</h3>
+            <p className="text-[10px] mb-3" style={{ color: "oklch(0.55 0.015 255)" }}>Open & reply rates per email step</p>
+            <div className="space-y-3">
+              {EMAIL_SEQUENCE_DATA.map((seq, i) => (
+                <div key={seq.name} className="flex items-center gap-3">
+                  <div className="w-14 text-[10px] font-medium flex-shrink-0" style={{ color: "oklch(0.75 0.008 65)" }}>{seq.name}</div>
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "oklch(1 0 0 / 0.06)" }}>
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${seq.openRate}%` }}
+                          transition={{ duration: 0.8, delay: 0.6 + i * 0.1 }}
+                          className="h-full rounded-full" style={{ background: "oklch(0.55 0.10 230)" }} />
+                      </div>
+                      <span className="font-mono text-[10px] w-10 text-right" style={{ color: "oklch(0.55 0.10 230)" }}>{seq.openRate}%</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "oklch(1 0 0 / 0.06)" }}>
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${seq.replyRate * 5}%` }}
+                          transition={{ duration: 0.8, delay: 0.7 + i * 0.1 }}
+                          className="h-full rounded-full" style={{ background: "oklch(0.65 0.18 145)" }} />
+                      </div>
+                      <span className="font-mono text-[10px] w-10 text-right" style={{ color: "oklch(0.65 0.18 145)" }}>{seq.replyRate}%</span>
+                    </div>
+                  </div>
+                  <div className="text-[10px] w-12 text-right flex-shrink-0" style={{ color: "oklch(0.45 0.015 255)" }}>{seq.sent} sent</div>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-4 mt-3 text-[10px]">
+              <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full" style={{ background: "oklch(0.55 0.10 230)" }} /><span style={{ color: "oklch(0.55 0.015 255)" }}>Open rate</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full" style={{ background: "oklch(0.65 0.18 145)" }} /><span style={{ color: "oklch(0.55 0.015 255)" }}>Reply rate</span></div>
+            </div>
+          </motion.div>
+
+          {/* Best Subject Lines */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+            className="rounded-lg p-4"
+            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+            <h3 className="text-sm font-semibold mb-3" style={{ color: "oklch(0.92 0.008 65)" }}>Best Subject Lines</h3>
+            <div className="space-y-2">
+              {SUBJECT_LINES.sort((a, b) => b.rate - a.rate).map((s, i) => (
+                <div key={s.subject} className="flex items-center gap-3 p-2 rounded"
+                  style={{ background: i === 0 ? "oklch(0.72 0.12 75 / 0.05)" : "transparent" }}>
+                  {i === 0 && <span className="text-[10px]">🏆</span>}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[11px] font-medium truncate" style={{ color: "oklch(0.85 0.008 65)" }}>{s.subject}</div>
+                    <div className="text-[9px]" style={{ color: "oklch(0.45 0.015 255)" }}>{s.opens} opens · {s.replies} replies</div>
+                  </div>
+                  <div className="font-mono text-xs font-bold flex-shrink-0"
+                    style={{ color: s.rate > 35 ? "oklch(0.72 0.12 75)" : "oklch(0.65 0.18 145)" }}>
+                    {s.rate}%
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+}
