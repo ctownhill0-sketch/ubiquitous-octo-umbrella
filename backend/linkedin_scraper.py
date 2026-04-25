@@ -101,6 +101,10 @@ def scrape_linkedin_leads(
 
         if not logged_in:
             # Return a special signal so the frontend can show the login modal
+            try: page.close()
+            except Exception: pass
+            try: context.close()
+            except Exception: pass
             browser.close()
             return [{"error": "linkedin_not_logged_in"}]
 

@@ -82,7 +82,8 @@ def process_unsubscribe_by_email(email: str) -> dict:
         UPDATE leads SET status = 'Unsubscribed', notes = notes || ' [Unsubscribed via reply ' || ? || ']'
         WHERE email = ?
     """, (datetime.now().strftime("%Y-%m-%d"), email))
-    affected = conn.execute("SELECT changes()").fetchone()[0]
+    _row = conn.execute("SELECT changes()").fetchone()
+    affected = _row[0] if _row else 0
     conn.execute("""
         INSERT OR IGNORE INTO unsubscribe_log (lead_id, email, token, unsubscribed_at)
         VALUES (0, ?, 'reply', ?)

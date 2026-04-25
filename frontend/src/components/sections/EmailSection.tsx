@@ -157,9 +157,14 @@ export default function EmailSection() {
         toast.success("Campaign started — emails sending in background");
         fetchCampaigns();
         setActiveTab("campaigns");
+        // Reset the composer for the next campaign.
+        setSubject("");
+        setBody("");
+        setSubjectB("");
+        setAbEnabled(false);
       } else {
         const err = await res.json().catch(() => ({}));
-        toast.info(err.error || "Could not start campaign — check Settings");
+        toast.error(err.error || "Could not start campaign — check Settings");
       }
     } catch {
       toast.info("Backend offline — start the backend first");

@@ -157,20 +157,24 @@ Respond in this exact JSON format:
             )
             with req_lib.urlopen(request, timeout=20) as resp:
                 data = json.loads(resp.read())
-                text = data["content"][0]["text"].strip()
-                # Extract JSON from response
-                match = re.search(r'\{.*\}', text, re.DOTALL)
-                if match:
-                    result = json.loads(match.group())
-                    return {
-                        "personalised_line": result.get("personalised_line", ""),
-                        "recommended_angle": result.get("recommended_angle", ""),
-                        "research_notes": result.get("research_notes", []),
-                        "company_signals": signals[:3],
-                        "success": True,
-                    }
+                # Anthropic responses can return empty content lists or
+                # surface API errors in the body — guard both cases so we
+                # fall through to the deterministic fallback below.
+                content = data.get("content") or []
+                text = (content[0].get("text", "") if content else "").strip()
+                if text:
+                    match = re.search(r'\{.*\}', text, re.DOTALL)
+                    if match:
+                        result = json.loads(match.group())
+                        return {
+                            "personalised_line": result.get("personalised_line", ""),
+                            "recommended_angle": result.get("recommended_angle", ""),
+                            "research_notes": result.get("research_notes", []),
+                            "company_signals": signals[:3],
+                            "success": True,
+                        }
         except Exception as e:
-            pass
+            print(f"[Researcher] API error for {company}: {e}")
 
         # Fallback: generate a decent line from available data
         fallback_line = self._fallback_line(company, city, category, rating, reviews)

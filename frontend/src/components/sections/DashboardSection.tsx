@@ -18,7 +18,7 @@ import { getStats, getDailyReport } from "@/lib/api";
 function useCounter(target: number, duration = 1200) {
   const [value, setValue] = useState(0);
   useEffect(() => {
-    if (target === 0) { setValue(0); return; }
+    if (!Number.isFinite(target) || target === 0) { setValue(target || 0); return; }
     let start = 0;
     const step = target / (duration / 16);
     const timer = setInterval(() => {
@@ -60,16 +60,16 @@ const ACTIVITY = [
 ];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
-  if (!active || !payload?.length) return null;
+  if (!active || !Array.isArray(payload) || payload.length === 0) return null;
   return (
     <div className="rounded-xl px-3.5 py-2.5 text-xs"
       style={{ background: "oklch(0.18 0.028 255)", border: "1px solid oklch(1 0 0 / 0.14)", boxShadow: "0 8px 32px oklch(0 0 0 / 0.4)", color: "oklch(0.80 0.008 65)" }}>
       <div className="font-semibold mb-1.5 text-[11px]" style={{ color: "oklch(0.92 0.008 65)" }}>{label}</div>
-      {payload.map((p: any) => (
-        <div key={p.name} className="flex items-center gap-2 py-0.5">
-          <span className="w-2 h-2 rounded-sm inline-block" style={{ background: p.color }} />
-          <span style={{ color: "oklch(0.55 0.015 255)" }}>{p.name}</span>
-          <span className="font-mono font-bold ml-auto pl-3">{p.value}</span>
+      {payload.map((p: any, i: number) => (
+        <div key={p?.name ?? i} className="flex items-center gap-2 py-0.5">
+          <span className="w-2 h-2 rounded-sm inline-block" style={{ background: p?.color }} />
+          <span style={{ color: "oklch(0.55 0.015 255)" }}>{p?.name}</span>
+          <span className="font-mono font-bold ml-auto pl-3">{p?.value}</span>
         </div>
       ))}
     </div>

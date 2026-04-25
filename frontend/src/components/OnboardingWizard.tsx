@@ -88,9 +88,33 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
   };
 
   const saveAndFinish = async () => {
+    // Sanity-check the credentials the user typed before we mark setup complete.
+    // We accept the values if the user explicitly tested and got an "ok" status,
+    // OR if the values look syntactically reasonable (in case the backend was
+    // offline during testing — they can re-test in Settings later).
+    const apiKeyLooksValid = apiKey.trim().startsWith("sk-ant-");
+    const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail.trim());
+    const passwordLooksValid = appPassword.replace(/\s/g, "").length >= 12;
+
+    if (!apiKey.trim() || (aiStatus === "error" && !apiKeyLooksValid)) {
+      toast.error("Add your Anthropic API key in step 2 (starts with sk-ant-)");
+      setStep(1);
+      return;
+    }
+    if (!senderEmail.trim() || !emailLooksValid) {
+      toast.error("Enter a valid Gmail address in step 3");
+      setStep(2);
+      return;
+    }
+    if (!appPassword.trim() || !passwordLooksValid) {
+      toast.error("Enter a valid Gmail App Password (16 characters)");
+      setStep(2);
+      return;
+    }
+
     setSaving(true);
     try {
-      await fetch(`${BASE}/settings`, {
+      const res = await fetch(`${BASE}/settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,7 +125,15 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
           onboarding_complete: true,
         }),
       });
-    } catch { /* save locally */ }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || "Could not save settings — try again");
+        setSaving(false);
+        return;
+      }
+    } catch {
+      toast.info("Saved locally — settings will sync when the backend starts");
+    }
     localStorage.setItem("leadstack_onboarding_complete", "true");
     setSaving(false);
     onComplete();

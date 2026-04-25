@@ -69,7 +69,41 @@ WARMUP_REPLIES = [
 
 # ─── DB helpers ───────────────────────────────────────────────────────────────
 
+def ensure_warmup_tables():
+    """Create warmup_accounts and warmup_log tables if missing."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS warmup_accounts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            app_password TEXT DEFAULT '',
+            active INTEGER DEFAULT 1,
+            emails_sent_today INTEGER DEFAULT 0,
+            emails_received_today INTEGER DEFAULT 0,
+            emails_replied_today INTEGER DEFAULT 0,
+            total_sent INTEGER DEFAULT 0,
+            reputation_score INTEGER DEFAULT 50,
+            added_at TEXT,
+            last_active TEXT
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS warmup_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            from_email TEXT,
+            to_email TEXT,
+            subject TEXT,
+            status TEXT,
+            error TEXT DEFAULT '',
+            created_at TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+
 def get_warmup_accounts() -> list[dict]:
+    ensure_warmup_tables()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("SELECT * FROM warmup_accounts WHERE active = 1").fetchall()
@@ -337,6 +371,7 @@ def stop_warmup_scheduler():
     return {"stopped": True}
 
 def get_warmup_status() -> dict:
+    ensure_warmup_tables()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     accounts = conn.execute("SELECT * FROM warmup_accounts").fetchall()

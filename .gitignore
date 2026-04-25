@@ -18,6 +18,8 @@ venv/
 # Local databases & secrets
 backend/leads.db
 backend/money_machine.db
+backend/warmup.db
+backend/deals.db
 backend/credentials.json
 backend/token.json
 backend/*.db-journal

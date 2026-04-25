@@ -36,6 +36,31 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 db = Database()
 
+
+def _safe_int(value, default: int = 0, min_val: int = 0, max_val: int = 10000) -> int:
+    """Parse a query-string int safely, clamping to a sane range. Returns
+    `default` for None/missing or unparseable values, so route handlers can
+    accept ?limit=abc without crashing with a 500."""
+    if value is None or value == "":
+        return default
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        return default
+    return max(min_val, min(n, max_val))
+
+# Ensure auxiliary tables exist (idempotent).
+try:
+    from unsubscribe_handler import ensure_unsubscribe_tables
+    ensure_unsubscribe_tables()
+except Exception as e:
+    print(f"[init] unsubscribe_tables: {e}")
+try:
+    from warmup_real import ensure_warmup_tables
+    ensure_warmup_tables()
+except Exception as e:
+    print(f"[init] warmup_tables: {e}")
+
 # ── Lazy singletons ────────────────────────────────────────────────────────────
 _scraper = _gmail = _email_writer = None
 _gmail_lock = threading.Lock()
@@ -140,22 +165,27 @@ def get_stats():
         hot = sum(1 for l in leads if l.get("status", "").lower() in ("hot lead", "interested"))
         meetings = sum(1 for l in leads if l.get("status", "").lower() == "meeting booked")
         today = datetime.now().strftime("%Y-%m-%d")
+        def _count(conn, sql, params=()):
+            row = conn.execute(sql, params).fetchone()
+            return row[0] if row and row[0] is not None else 0
+
         with db._connect() as conn:
-            emails_sent = conn.execute(
-                "SELECT COUNT(*) FROM email_campaigns WHERE status='sent'"
-            ).fetchone()[0]
-            emails_today = conn.execute(
+            emails_sent = _count(conn,
+                "SELECT COUNT(*) FROM email_campaigns WHERE status='sent'")
+            emails_today = _count(conn,
                 "SELECT COUNT(*) FROM email_campaigns WHERE status='sent' AND sent_at LIKE ?",
-                (today + "%",)
-            ).fetchone()[0]
-            leads_today = conn.execute(
+                (today + "%",))
+            leads_today = _count(conn,
                 "SELECT COUNT(*) FROM leads WHERE created_at LIKE ?",
-                (today + "%",)
-            ).fetchone()[0]
-            replies = conn.execute(
-                "SELECT COUNT(*) FROM email_campaigns WHERE status='replied'"
-            ).fetchone()[0]
-        open_rate = round(replies / emails_sent * 100, 1) if emails_sent > 0 else 0
+                (today + "%",))
+            replies = _count(conn,
+                "SELECT COUNT(*) FROM email_campaigns WHERE status='replied'")
+            opened = _count(conn,
+                "SELECT COUNT(*) FROM email_campaigns WHERE status='opened'")
+        # An "opened" event is a superset of replied (a reply implies the
+        # message was opened). If we don't have separate open tracking yet,
+        # fall back to replies so the dashboard isn't a flat zero.
+        open_rate = round((opened or replies) / emails_sent * 100, 1) if emails_sent > 0 else 0
         reply_rate = round(replies / emails_sent * 100, 1) if emails_sent > 0 else 0
         return jsonify({
             "totalLeads": total, "leadsToday": leads_today,
@@ -177,8 +207,8 @@ def get_leads():
     try:
         search = request.args.get("search", "")
         status = request.args.get("status", "")
-        limit = int(request.args.get("limit", 50))
-        offset = int(request.args.get("offset", 0))
+        limit = _safe_int(request.args.get("limit"), default=50, max_val=2000)
+        offset = _safe_int(request.args.get("offset"), default=0, max_val=1_000_000)
         filters = {}
         if status:
             filters["status"] = status
@@ -214,15 +244,25 @@ def create_lead():
     """Create a single lead manually."""
     try:
         data = request.json or {}
+        name = (data.get("name") or "").strip()
+        email = (data.get("email") or "").strip()
+        if not name and not email:
+            return jsonify({"error": "name or email required"}), 400
+        # Normalise the trimmed values back so the DB row isn't padded with whitespace.
+        data["name"] = name
+        data["email"] = email
         lead_id = db.upsert_lead(data)
         return jsonify({"id": lead_id, "ok": True})
     except Exception as e:
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/leads/<int:lead_id>", methods=["PATCH"])
 def update_lead(lead_id):
     try:
+        if not db.get_lead_by_id(lead_id):
+            return jsonify({"error": "Lead not found"}), 404
         data = request.json or {}
         allowed = ("notes", "status", "name", "email", "phone", "website", "city", "category", "company", "state", "deal_value", "close_probability")
         db_data = {k: v for k, v in data.items() if k in allowed}
@@ -236,6 +276,7 @@ def update_lead(lead_id):
                 conn.commit()
         return jsonify(db.get_lead_by_id(lead_id) or {"id": lead_id})
     except Exception as e:
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 
@@ -243,9 +284,13 @@ def update_lead(lead_id):
 def delete_lead(lead_id):
     try:
         with db._connect() as conn:
-            conn.execute("DELETE FROM leads WHERE id=?", (lead_id,))
+            cur = conn.execute("DELETE FROM leads WHERE id=?", (lead_id,))
             conn.commit()
-        return jsonify({"ok": True})
+            deleted = cur.rowcount
+        # 404 if there was nothing to delete so the frontend can react.
+        if not deleted:
+            return jsonify({"ok": False, "error": "Lead not found"}), 404
+        return jsonify({"ok": True, "deleted": deleted})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -596,7 +641,8 @@ def send_emails():
                     if body_override:
                         body_text = _spin(body_override)
                         # Fill template variables
-                        first = (lead.get('name') or '').split()[0] if lead.get('name') else 'there'
+                        _name_parts = (lead.get('name') or '').split()
+                        first = _name_parts[0] if _name_parts else 'there'
                         body_text = body_text.replace('{{first_name}}', first)
                         body_text = body_text.replace('{{company}}', lead.get('name', ''))
                         body_text = body_text.replace('{{website}}', lead.get('website', ''))
@@ -826,7 +872,8 @@ def generate_reply():
         thread_body = body.get("body", "")
         intent = body.get("intent", "unknown")
         lead_name = body.get("lead_name", "")
-        first_name = lead_name.split()[0] if lead_name else "there"
+        _ln_parts = (lead_name or "").split()
+        first_name = _ln_parts[0] if _ln_parts else "there"
         writer = get_email_writer()
         if not writer:
             return jsonify({"error": "Anthropic API key not configured in Settings"}), 400
@@ -1069,7 +1116,13 @@ def gmail_auth():
         if g:
             ok = g.authenticate(client_id=client_id, client_secret=client_secret)
             return jsonify({"ok": ok, "email": getattr(g, "sender_email", "")})
-        return jsonify({"ok": False, "error": "GmailEngine failed to init"}), 500
+        # GmailEngine couldn't initialise — almost always missing google deps
+        # (`pip install -r requirements.txt`). Surface that as a structured
+        # 400 so the frontend can guide the user, instead of a raw 500.
+        return jsonify({
+            "ok": False,
+            "error": "Gmail not available — install backend dependencies (pip install -r backend/requirements.txt) and restart the app.",
+        }), 400
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 
@@ -1205,8 +1258,11 @@ def warmup_reputation():
 
 @app.route("/api/warmup/log")
 def warmup_log():
-    limit = int(request.args.get("limit", 50))
-    return jsonify(get_warmup().get_warmup_log(limit))
+    try:
+        limit = _safe_int(request.args.get("limit"), default=50, max_val=500)
+        return jsonify(get_warmup().get_warmup_log(limit))
+    except Exception as e:
+        return jsonify({"error": str(e), "log": []}), 500
 
 
 @app.route("/api/warmup/rotation")
@@ -1556,15 +1612,6 @@ def serve_react(path):
     return jsonify({'error': 'Frontend not built. Run: cd frontend && npm run build'}), 503
 
 
-# ── Entry point ────────────────────────────────────────────────────────────────
-if __name__ == "__main__":
-    port = int(os.environ.get("LEADSTACK_PORT", 7432))
-    print(f"\n{'='*55}")
-    print(f"  LeadStack™ Backend v16.0 — All systems go")
-    print(f"  http://127.0.0.1:{port}")
-    print(f"{'='*55}\n")
-    app.run(host="127.0.0.1", port=port, debug=False, threaded=True)
-
 # ── LinkedIn Scraper Routes ───────────────────────────────────────────────────
 @app.route("/api/linkedin/session")
 def linkedin_session():
@@ -1741,3 +1788,12 @@ def warmup_run_cycle():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+# ── Entry point ────────────────────────────────────────────────────────────────
+if __name__ == "__main__":
+    port = int(os.environ.get("LEADSTACK_PORT", 7432))
+    print(f"\n{'='*55}")
+    print(f"  LeadStack™ Backend v16.0 — All systems go")
+    print(f"  http://127.0.0.1:{port}")
+    print(f"{'='*55}\n")
+    app.run(host="127.0.0.1", port=port, debug=False, threaded=True)

@@ -117,6 +117,13 @@ class Database:
                     conn.execute(sql)
                 except Exception:
                     pass  # Column already exists
+            # Older inserts stored "" for missing google_maps_url; that
+            # collides with the UNIQUE index every time. Coerce stale empties
+            # to NULL so future manual/CSV inserts can coexist.
+            try:
+                conn.execute("UPDATE leads SET google_maps_url=NULL WHERE google_maps_url=''")
+            except Exception:
+                pass
             conn.commit()
 
     # ── Settings ──────────────────────────────────────────────────────────────
@@ -154,18 +161,43 @@ class Database:
                 "created_at","updated_at"]
         values = [lead.get(c, "") for c in cols]
         placeholders = ",".join(["?"] * len(cols))
-        update_str = ",".join(
-            f"{c}=excluded.{c}" for c in cols
-            if c not in ("id","created_at","status","notes")
-        )
-        sql = f"""
-            INSERT INTO leads ({','.join(cols)}) VALUES ({placeholders})
-            ON CONFLICT(google_maps_url) DO UPDATE SET {update_str}
-        """
         with self._connect() as conn:
-            cur = conn.execute(sql, values)
+            # If no google_maps_url is supplied (e.g. manual lead, CSV import,
+            # LinkedIn lead) we must NOT use ON CONFLICT — every empty string
+            # collides on the UNIQUE index and the upsert silently overwrites
+            # the previous manual lead while returning lastrowid=0.
+            gmaps = (lead.get("google_maps_url") or "").strip()
+            if gmaps:
+                update_str = ",".join(
+                    f"{c}=excluded.{c}" for c in cols
+                    if c not in ("id","created_at","status","notes")
+                )
+                sql = f"""
+                    INSERT INTO leads ({','.join(cols)}) VALUES ({placeholders})
+                    ON CONFLICT(google_maps_url) DO UPDATE SET {update_str}
+                """
+                cur = conn.execute(sql, values)
+                conn.commit()
+                if cur.lastrowid:
+                    return cur.lastrowid
+                # Conflict path: look up the existing row's id so callers can
+                # still reference the lead they just upserted.
+                row = conn.execute(
+                    "SELECT id FROM leads WHERE google_maps_url=?", (gmaps,)
+                ).fetchone()
+                return row["id"] if row else 0
+            # No conflict key — straight insert. We send NULL (not "") for
+            # google_maps_url because SQLite UNIQUE allows multiple NULLs but
+            # NOT multiple empty strings, and stale "" rows from older inserts
+            # would otherwise still cause collisions.
+            null_values = [
+                None if c == "google_maps_url" and not v else v
+                for c, v in zip(cols, values)
+            ]
+            sql = f"INSERT INTO leads ({','.join(cols)}) VALUES ({placeholders})"
+            cur = conn.execute(sql, null_values)
             conn.commit()
-            return cur.lastrowid
+            return cur.lastrowid or 0
 
     def _score_lead(self, lead: dict) -> int:
         score = 0

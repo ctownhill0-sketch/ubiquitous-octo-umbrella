@@ -82,9 +82,15 @@ class GmailEngine:
                     flow = InstalledAppFlow.from_client_secrets_file(CREDS_FILE, SCOPES)
                     creds = flow.run_local_server(port=0)
 
-                # Save token
-                with open(TOKEN_FILE, "w") as f:
+                # Save token atomically — write to a temp file in the same
+                # directory and rename. A crash mid-write would otherwise
+                # leave a half-written token.json that breaks future logins.
+                tmp = TOKEN_FILE + ".tmp"
+                with open(tmp, "w") as f:
                     f.write(creds.to_json())
+                    f.flush()
+                    os.fsync(f.fileno())
+                os.replace(tmp, TOKEN_FILE)
 
             self.service = build("gmail", "v1", credentials=creds)
 

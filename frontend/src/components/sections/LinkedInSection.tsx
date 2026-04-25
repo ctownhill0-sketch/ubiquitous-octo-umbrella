@@ -1,7 +1,7 @@
 // LeadStack™ LinkedIn Scraper Section
 // Premium UI for LinkedIn lead scraping with session management
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Linkedin, Search, Play, Square, Users, Building2,
   MapPin, ExternalLink, CheckCircle2, AlertCircle,
@@ -36,8 +36,19 @@ export default function LinkedInSection() {
   const [savedCount, setSavedCount] = useState(0);
   const [loggingIn, setLoggingIn] = useState(false);
 
+  // Track polling/timeout handles so we can cancel them on unmount.
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
+
   useEffect(() => {
+    mountedRef.current = true;
     checkSession();
+    return () => {
+      mountedRef.current = false;
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+      if (pollTimeoutRef.current) clearTimeout(pollTimeoutRef.current);
+    };
   }, []);
 
   const checkSession = async () => {
@@ -45,10 +56,17 @@ export default function LinkedInSection() {
     try {
       const res = await fetch(`${BASE}/linkedin/session`);
       const data = await res.json();
+      if (!mountedRef.current) return;
       setSessionStatus(data.logged_in ? "logged_in" : "not_logged_in");
     } catch {
+      if (!mountedRef.current) return;
       setSessionStatus("not_logged_in");
     }
+  };
+
+  const stopLoginPoll = () => {
+    if (pollIntervalRef.current) { clearInterval(pollIntervalRef.current); pollIntervalRef.current = null; }
+    if (pollTimeoutRef.current) { clearTimeout(pollTimeoutRef.current); pollTimeoutRef.current = null; }
   };
 
   const openLoginBrowser = async () => {
@@ -58,21 +76,31 @@ export default function LinkedInSection() {
       const data = await res.json();
       if (data.error) {
         toast.error(data.message || "Could not open browser");
+        setLoggingIn(false);
       } else {
         toast.info("Browser opened — log in to LinkedIn, then come back here");
-        // Poll for session every 5 seconds
-        const interval = setInterval(async () => {
-          const check = await fetch(`${BASE}/linkedin/session`);
-          const status = await check.json();
-          if (status.logged_in) {
-            clearInterval(interval);
-            setSessionStatus("logged_in");
-            setLoggingIn(false);
-            toast.success("LinkedIn connected ✓");
+        // Poll for session every 5 seconds, give up after 3 minutes.
+        pollIntervalRef.current = setInterval(async () => {
+          try {
+            const check = await fetch(`${BASE}/linkedin/session`);
+            const status = await check.json();
+            if (status.logged_in && mountedRef.current) {
+              stopLoginPoll();
+              setSessionStatus("logged_in");
+              setLoggingIn(false);
+              toast.success("LinkedIn connected");
+            }
+          } catch {
+            // Network blip; keep polling until timeout.
           }
         }, 5000);
-        // Stop polling after 3 minutes
-        setTimeout(() => { clearInterval(interval); setLoggingIn(false); }, 180000);
+        pollTimeoutRef.current = setTimeout(() => {
+          stopLoginPoll();
+          if (mountedRef.current) {
+            setLoggingIn(false);
+            toast.info("Login window timed out — try again if you didn't finish.");
+          }
+        }, 180000);
       }
     } catch {
       toast.error("Backend not running — start the backend first");

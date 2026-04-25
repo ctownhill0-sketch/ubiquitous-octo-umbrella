@@ -158,9 +158,12 @@ Return the personalised email body only:"""
                 max_tokens=400,
                 messages=[{"role": "user", "content": prompt}]
             )
-            return message.content[0].text.strip()
-        except Exception:
+            if message.content and getattr(message.content[0], "text", None):
+                return message.content[0].text.strip()
+            return base_email
+        except Exception as e:
             # Fallback to template if AI fails
+            print(f"[EmailWriter] enhance error: {e}")
             return base_email
 
     def analyse_reply_sentiment(self, reply_text: str) -> str:
@@ -185,6 +188,8 @@ Return ONLY one word: positive, negative, unsubscribe, or neutral"""
                 max_tokens=10,
                 messages=[{"role": "user", "content": prompt}]
             )
+            if not message.content or not getattr(message.content[0], "text", None):
+                return "neutral"
             result = message.content[0].text.strip().lower()
             if result in ("positive", "negative", "unsubscribe", "neutral"):
                 return result

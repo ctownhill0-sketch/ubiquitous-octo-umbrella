@@ -150,7 +150,7 @@ Keep it punchy. Use actual names and numbers from the data. Sound like a trusted
         ]
 
         if interested_replies:
-            names = ", ".join(r.get("from", "?").split()[0] for r in interested_replies[:2])
+            names = ", ".join((r.get("from", "?").split() or ["?"])[0] for r in interested_replies[:2])
             lines.append(f"  1. Reply to {names} — they're interested, don't let them go cold.")
         else:
             lines.append("  1. Send today's batch of cold emails — keep the pipeline moving.")

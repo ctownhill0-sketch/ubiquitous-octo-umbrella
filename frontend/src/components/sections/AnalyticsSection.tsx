@@ -41,15 +41,15 @@ const FALLBACK_DAILY = [
 ];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
-  if (!active || !payload?.length) return null;
+  if (!active || !Array.isArray(payload) || payload.length === 0) return null;
   return (
     <div className="rounded-xl px-3 py-2.5 text-xs shadow-2xl"
       style={{ background: "oklch(0.16 0.025 255)", border: "1px solid oklch(1 0 0 / 0.12)" }}>
       <p className="font-bold mb-1.5" style={{ color: "oklch(0.75 0.008 65)" }}>{label}</p>
-      {payload.map((p: any) => (
-        <p key={p.dataKey} className="font-mono flex items-center gap-1.5 mb-0.5" style={{ color: p.color }}>
-          <span className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0" style={{ background: p.color }} />
-          {p.name}: <span className="font-bold ml-1">{p.value}</span>
+      {payload.map((p: any, i: number) => (
+        <p key={p?.dataKey ?? i} className="font-mono flex items-center gap-1.5 mb-0.5" style={{ color: p?.color }}>
+          <span className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0" style={{ background: p?.color }} />
+          {p?.name}: <span className="font-bold ml-1">{p?.value}</span>
         </p>
       ))}
     </div>

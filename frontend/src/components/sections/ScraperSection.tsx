@@ -67,12 +67,17 @@ export default function ScraperSection() {
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("Initialising...");
   const fileRef = useRef<HTMLInputElement>(null);
+  const cancelScrapeRef = useRef(false);
+  const mountedRef = useRef(true);
 
   // Load all leads from DB on mount
   useEffect(() => {
-    fetch("http://localhost:7432/api/leads?limit=500")
+    mountedRef.current = true;
+    const controller = new AbortController();
+    fetch("http://localhost:7432/api/leads?limit=500", { signal: controller.signal })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
+        if (!mountedRef.current) return;
         if (data?.leads?.length > 0) {
           setLeads(data.leads.map((l: any, i: number) => ({
             id: String(l.id || i + 1), name: l.name || "Unknown", company: l.name || "Unknown",
@@ -82,6 +87,11 @@ export default function ScraperSection() {
         }
       })
       .catch(() => {});
+    return () => {
+      mountedRef.current = false;
+      cancelScrapeRef.current = true;
+      controller.abort();
+    };
   }, []);
 
   const toggleSelect = (id: string) => {
@@ -97,6 +107,14 @@ export default function ScraperSection() {
   };
 
   const startScrape = async () => {
+    const activeKeyword = activeTab === "google" ? keyword : linkedinQuery;
+    const activeLocation = activeTab === "google" ? location : linkedinLocation;
+    if (!activeKeyword.trim()) {
+      toast.error("Enter a search keyword first");
+      return;
+    }
+    const maxR = Math.max(1, parseInt(maxResults) || 50);
+    cancelScrapeRef.current = false;
     setIsRunning(true);
     setProgress(0);
     setProgressLabel("Connecting to Google Maps...");
@@ -106,27 +124,32 @@ export default function ScraperSection() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          keyword: activeTab === "google" ? keyword : linkedinQuery,
-          cities: [(activeTab === "google" ? location : linkedinLocation)],
-          maxPerCity: parseInt(maxResults),
+          keyword: activeKeyword,
+          cities: [activeLocation],
+          maxPerCity: maxR,
         }),
       });
-      if (!startRes.ok) throw new Error("start failed");
+      if (!startRes.ok) {
+        const err = await startRes.json().catch(() => ({}));
+        throw new Error(err.error || `Start failed (${startRes.status})`);
+      }
       toast.info("Scraping started...");
       let done = false, attempts = 0;
       const maxAttempts = 800; // 800 × 1.5s = 20 minutes max
-      while (!done && attempts < maxAttempts) {
+      while (!done && attempts < maxAttempts && !cancelScrapeRef.current) {
         await new Promise(r => setTimeout(r, 1500));
+        if (cancelScrapeRef.current || !mountedRef.current) break;
         attempts++;
         try {
           const statusRes = await fetch("http://localhost:7432/api/scrape/status");
           if (statusRes.ok) {
             const status = await statusRes.json();
             const found = status.leadsFound || 0;
-            const maxR = parseInt(maxResults) || 100;
             const p = found > 0 ? Math.min(90, Math.round((found / maxR) * 90)) : Math.min(25, attempts * 0.4);
-            setProgress(p);
-            setProgressLabel(found > 0 ? `Collecting leads... ${found} found so far` : "Searching Google Maps...");
+            if (mountedRef.current) {
+              setProgress(p);
+              setProgressLabel(found > 0 ? `Collecting leads... ${found} found so far` : "Searching Google Maps...");
+            }
             if (status.status === "completed" || status.status === "failed") done = true;
           }
         } catch { break; }
@@ -141,11 +164,12 @@ export default function ScraperSection() {
                 email: l.email || "", phone: l.phone || "", website: l.website || "",
                 location: l.address || "", source: "google" as const, status: "new" as const,
               }));
-              if (liveLeads.length > 0) setLeads(liveLeads);
+              if (mountedRef.current && liveLeads.length > 0) setLeads(liveLeads);
             }
           } catch { /* ignore */ }
         }
       }
+      if (cancelScrapeRef.current || !mountedRef.current) return;
       setProgress(100);
       setProgressLabel("Loading results...");
       const leadsRes = await fetch("http://localhost:7432/api/leads?limit=500");
@@ -156,17 +180,25 @@ export default function ScraperSection() {
           email: l.email || "", phone: l.phone || "", website: l.website || "",
           location: l.address || "", source: "google" as const, status: "new" as const,
         }));
-        setLeads(newLeads.length > 0 ? newLeads : DEMO_LEADS);
-        toast.success(`Scrape complete — ${newLeads.length} leads found`);
+        if (mountedRef.current) {
+          setLeads(newLeads.length > 0 ? newLeads : DEMO_LEADS);
+          toast.success(`Scrape complete — ${newLeads.length} leads found`);
+        }
       } else {
-        setLeads(DEMO_LEADS);
-        toast.success("Scrape complete — showing demo leads");
+        if (mountedRef.current) {
+          setLeads(DEMO_LEADS);
+          toast.success("Scrape complete — showing demo leads");
+        }
       }
-    } catch {
-      setLeads(DEMO_LEADS);
-      toast.info("Backend offline — showing demo leads");
+    } catch (e) {
+      if (mountedRef.current) {
+        setLeads(DEMO_LEADS);
+        toast.error(e instanceof Error ? `Scrape failed: ${e.message}` : "Backend offline — showing demo leads");
+      }
     } finally {
-      setTimeout(() => { setIsRunning(false); setProgress(0); }, 600);
+      setTimeout(() => {
+        if (mountedRef.current) { setIsRunning(false); setProgress(0); }
+      }, 600);
     }
   };
 

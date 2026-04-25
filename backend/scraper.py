@@ -378,80 +378,93 @@ class GoogleMapsScraper:
             vp = random.choice(VIEWPORTS)
 
             browser = p.chromium.launch(headless=True)
-            context = browser.new_context(
-                viewport=vp,
-                user_agent=ua,
-                locale="en-US",
-                timezone_id="America/New_York",
-            )
+            context = None
+            page = None
+            try:
+                context = browser.new_context(
+                    viewport=vp,
+                    user_agent=ua,
+                    locale="en-US",
+                    timezone_id="America/New_York",
+                )
 
-            # Pre-set Google consent cookies to bypass the GDPR consent page
-            context.add_cookies([
-                {"name": "CONSENT",
-                 "value": "YES+cb.20210720-07-p0.en+FX+410",
-                 "domain": ".google.com", "path": "/"},
-                {"name": "SOCS",
-                 "value": "CAESEwgDEgk0ODE3Nzk3MjkaAmVuIAEaBgiA_LyaBg",
-                 "domain": ".google.com", "path": "/"},
-            ])
+                # Pre-set Google consent cookies to bypass the GDPR consent page
+                context.add_cookies([
+                    {"name": "CONSENT",
+                     "value": "YES+cb.20210720-07-p0.en+FX+410",
+                     "domain": ".google.com", "path": "/"},
+                    {"name": "SOCS",
+                     "value": "CAESEwgDEgk0ODE3Nzk3MjkaAmVuIAEaBgiA_LyaBg",
+                     "domain": ".google.com", "path": "/"},
+                ])
 
-            page = context.new_page()
+                page = context.new_page()
 
-            # Block images/fonts to speed up loading
-            page.route("**/*.{png,jpg,jpeg,gif,webp,svg,woff,woff2,ttf}", lambda r: r.abort())
+                # Block images/fonts to speed up loading
+                page.route("**/*.{png,jpg,jpeg,gif,webp,svg,woff,woff2,ttf}", lambda r: r.abort())
 
-            self._emit(0, max_results, f"Searching Google Maps: {query}")
-            search_url = (
-                "https://www.google.com/maps/search/"
-                + requests.utils.quote(query)
-            )
-            page.goto(search_url, wait_until="networkidle", timeout=30000)
-            self._random_sleep(2, 3)
-
-            # Fallback: handle consent page if cookies didn't work
-            if "consent.google.com" in page.url:
-                self._handle_consent(page)
+                self._emit(0, max_results, f"Searching Google Maps: {query}")
+                search_url = (
+                    "https://www.google.com/maps/search/"
+                    + requests.utils.quote(query)
+                )
+                page.goto(search_url, wait_until="networkidle", timeout=30000)
                 self._random_sleep(2, 3)
 
-            self._emit(0, max_results, "Loading listings (scrolling)...")
-            self._scroll_results(page, max_results)
+                # Fallback: handle consent page if cookies didn't work
+                if "consent.google.com" in page.url:
+                    self._handle_consent(page)
+                    self._random_sleep(2, 3)
 
-            links = self._collect_links(page, max_results)
-            total = len(links)
-            self._emit(0, total, f"Found {total} listings. Extracting details...")
+                self._emit(0, max_results, "Loading listings (scrolling)...")
+                self._scroll_results(page, max_results)
 
-            for idx, link in enumerate(links):
-                if self.stop_flag:
-                    self._emit(idx, total, "Stopped by user.")
-                    break
-                try:
-                    self._emit(idx, total, f"Scraping {idx+1}/{total}: opening listing...")
-                    data = self._extract_listing(page, link)
-                    if not data:
+                links = self._collect_links(page, max_results)
+                total = len(links)
+                self._emit(0, total, f"Found {total} listings. Extracting details...")
+
+                for idx, link in enumerate(links):
+                    if self.stop_flag:
+                        self._emit(idx, total, "Stopped by user.")
+                        break
+                    try:
+                        self._emit(idx, total, f"Scraping {idx+1}/{total}: opening listing...")
+                        data = self._extract_listing(page, link)
+                        if not data:
+                            continue
+
+                        data["search_keyword"] = search_keyword or keyword
+                        data["search_city"]    = search_city or city
+
+                        # Deep-scrape website for email + social
+                        if data.get("website"):
+                            self._emit(idx, total,
+                                       f"Scraping {idx+1}/{total}: checking website for email...")
+                            web_data = scrape_website(data["website"])
+                            data.update(web_data)
+
+                        data["lead_score"] = compute_lead_score(data)
+                        results.append(data)
+
+                        if self.lead_callback:
+                            self.lead_callback(data)
+
+                        self._random_sleep(0.8, 1.8)
+                    except Exception as e:
+                        print(f"[WARN] Listing {idx+1} error: {e}")
                         continue
-
-                    data["search_keyword"] = search_keyword or keyword
-                    data["search_city"]    = search_city or city
-
-                    # Deep-scrape website for email + social
-                    if data.get("website"):
-                        self._emit(idx, total,
-                                   f"Scraping {idx+1}/{total}: checking website for email...")
-                        web_data = scrape_website(data["website"])
-                        data.update(web_data)
-
-                    data["lead_score"] = compute_lead_score(data)
-                    results.append(data)
-
-                    if self.lead_callback:
-                        self.lead_callback(data)
-
-                    self._random_sleep(0.8, 1.8)
-                except Exception as e:
-                    print(f"[WARN] Listing {idx+1} error: {e}")
-                    continue
-
-            browser.close()
+            finally:
+                # Always close in reverse order, even on exception, to avoid
+                # leaking Chromium processes between scrapes.
+                try:
+                    if page: page.close()
+                except Exception: pass
+                try:
+                    if context: context.close()
+                except Exception: pass
+                try:
+                    browser.close()
+                except Exception: pass
 
         self._emit(len(results), len(results),
                    f"Done! {len(results)} leads collected.")

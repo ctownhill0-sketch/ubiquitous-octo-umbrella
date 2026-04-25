@@ -125,14 +125,23 @@ export default function CRMSection() {
     }));
   };
 
-  const saveNote = () => {
+  const saveNote = async () => {
     if (!selectedLead || !noteText.trim()) return;
+    const previousNotes = selectedLead.notes;
     const updated = { ...selectedLead, notes: noteText };
+    // Optimistic update.
     setLeads(prev => prev.map(l => l.id === selectedLead.id ? updated : l));
     setSelectedLead(updated);
-    patchLead(selectedLead.id, { notes: noteText });
     setNoteText("");
-    toast.success("Note saved");
+    try {
+      await patchLead(selectedLead.id, { notes: noteText });
+      toast.success("Note saved");
+    } catch (e) {
+      // Revert on failure so the UI matches what's on the server.
+      setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, notes: previousNotes } : l));
+      setSelectedLead(prev => prev ? { ...prev, notes: previousNotes } : prev);
+      toast.error(e instanceof Error ? `Could not save note: ${e.message}` : "Could not save note");
+    }
   };
 
   // ── Bulk actions ──────────────────────────────────────────────────────────────
@@ -189,18 +198,22 @@ export default function CRMSection() {
     setBulkLoading(true);
     try {
       const ids = Array.from(selected);
-      await fetch(`${BASE}/leads/bulk-update`, {
+      const res = await fetch(`${BASE}/leads/bulk-update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids, action: "delete" }),
       });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Server returned ${res.status}`);
+      }
       setLeads(prev => prev.filter(l => !selected.has(l.id)));
       toast.success(`${ids.length} leads deleted`);
       clearSelection();
-    } catch {
-      setLeads(prev => prev.filter(l => !selected.has(l.id)));
-      toast.success(`${selected.size} leads deleted (offline)`);
-      clearSelection();
+    } catch (e) {
+      // Don't delete locally if the server didn't actually delete — leads would
+      // reappear on the next refresh and confuse the user.
+      toast.error(e instanceof Error ? `Delete failed: ${e.message}` : "Delete failed");
     } finally {
       setBulkLoading(false);
     }
