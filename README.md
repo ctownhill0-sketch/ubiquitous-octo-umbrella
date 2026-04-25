@@ -67,13 +67,41 @@ start_backend.bat   # Windows
 
 ## Building for Distribution
 
-```bash
-# Build React frontend first
-npm run build-react
+### macOS DMG
 
-# Package as macOS app
-npm run dist
+A `.dmg` can only be produced on a macOS host (electron-builder relies on
+`hdiutil` and the CoreFoundation framework, which exist only on macOS). There
+are two supported paths:
+
+**1. Build locally on a Mac**
+
+```bash
+./build_dmg.sh
+# DMG lands in ./dist/
 ```
+
+**2. Build via GitHub Actions on a hosted macOS runner**
+
+Push a tag of the form `vX.Y.Z` (or run the workflow manually from the Actions
+tab); `.github/workflows/build-dmg.yml` builds both arm64 and x64 DMGs, uploads
+them as workflow artifacts, and attaches them to a GitHub Release on tagged
+builds.
+
+```bash
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+### Selling the app
+
+The DMGs produced by the steps above are **unsigned**, so Gatekeeper will warn
+end users that the app is "from an unidentified developer." For paid
+distribution you should:
+
+1. Enroll in the [Apple Developer Program](https://developer.apple.com/programs/) ($99/yr).
+2. Add `CSC_LINK` (Developer ID `.p12`), `CSC_KEY_PASSWORD`, `APPLE_ID`,
+   `APPLE_APP_SPECIFIC_PASSWORD`, and `APPLE_TEAM_ID` as repo secrets, and
+   remove the `CSC_IDENTITY_AUTO_DISCOVERY: "false"` line from the workflow.
+3. electron-builder will then sign and notarize automatically.
 
 ## Sections
 
