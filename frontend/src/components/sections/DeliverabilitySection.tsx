@@ -41,36 +41,36 @@ const API = "http://localhost:7432";
 
 function GradeCircle({ grade, score }: { grade: string; score: number }) {
   const colors: Record<string, string> = {
-    A: "oklch(0.65 0.18 145)",
-    B: "oklch(0.65 0.12 230)",
-    C: "oklch(0.72 0.12 75)",
-    D: "oklch(0.65 0.2 25)",
-    F: "oklch(0.55 0.22 25)",
+    A: "#4ade80",
+    B: "#93c5fd",
+    C: "#f59e0b",
+    D: "#f87171",
+    F: "#f87171",
   };
-  const color = colors[grade] || "oklch(0.45 0.015 255)";
+  const color = colors[grade] || "#72716c";
   return (
     <div className="flex flex-col items-center">
       <div className="w-20 h-20 rounded-full flex items-center justify-center mb-2"
         style={{ background: `${color}15`, border: `3px solid ${color}40`, boxShadow: `0 0 24px ${color}20` }}>
         <span className="text-[32px] font-black" style={{ color }}>{grade}</span>
       </div>
-      <span className="text-[11px] font-semibold" style={{ color: "oklch(0.55 0.015 255)" }}>{score}/100</span>
+      <span className="text-[11px] font-semibold" style={{ color: "#a1a09c" }}>{score}/100</span>
     </div>
   );
 }
 
 function CheckRow({ found, status, detail }: { found: boolean; status: string; detail: string }) {
   return (
-    <div className="flex items-start gap-3 py-2.5" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.05)" }}>
+    <div className="flex items-start gap-3 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
       {found
-        ? <CheckCircle2 size={14} className="flex-shrink-0 mt-0.5" style={{ color: "oklch(0.65 0.18 145)" }} />
-        : <XCircle size={14} className="flex-shrink-0 mt-0.5" style={{ color: "oklch(0.65 0.2 25)" }} />
+        ? <CheckCircle2 size={14} className="flex-shrink-0 mt-0.5" style={{ color: "#4ade80" }} />
+        : <XCircle size={14} className="flex-shrink-0 mt-0.5" style={{ color: "#f87171" }} />
       }
       <div>
-        <div className="text-[11px] font-semibold" style={{ color: found ? "oklch(0.75 0.008 65)" : "oklch(0.65 0.2 25)" }}>
+        <div className="text-[11px] font-semibold" style={{ color: found ? "#a1a09c" : "#f87171" }}>
           {status}
         </div>
-        <div className="text-[10px] mt-0.5" style={{ color: "oklch(0.42 0.015 255)" }}>{detail}</div>
+        <div className="text-[10px] mt-0.5" style={{ color: "#72716c" }}>{detail}</div>
       </div>
     </div>
   );
@@ -156,15 +156,15 @@ export default function DeliverabilitySection() {
   return (
     <div className="flex h-full overflow-hidden">
       {/* Left sidebar */}
-      <div className="flex flex-col overflow-hidden" style={{ width: 240, borderRight: "1px solid oklch(1 0 0 / 0.07)", background: "oklch(0.09 0.018 255)" }}>
-        <div className="px-4 py-4 flex-shrink-0" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+      <div className="flex flex-col overflow-hidden" style={{ width: 240, borderRight: "1px solid #1c1c1f", background: "#09090b" }}>
+        <div className="px-4 py-4 flex-shrink-0" style={{ borderBottom: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "oklch(0.65 0.18 145 / 0.15)" }}>
-              <Shield size={14} style={{ color: "oklch(0.65 0.18 145)" }} />
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(74,222,128,0.15)" }}>
+              <Shield size={14} style={{ color: "#4ade80" }} />
             </div>
-            <span className="text-[13px] font-bold" style={{ color: "oklch(0.88 0.008 65)" }}>Deliverability</span>
+            <span className="text-[13px] font-bold" style={{ color: "#e7e5e4" }}>Deliverability</span>
           </div>
-          <p className="text-[10px] leading-relaxed" style={{ color: "oklch(0.42 0.015 255)" }}>
+          <p className="text-[10px] leading-relaxed" style={{ color: "#72716c" }}>
             Check spam score and domain health before sending
           </p>
         </div>
@@ -179,8 +179,8 @@ export default function DeliverabilitySection() {
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl mb-1 text-left transition-all"
                 style={activeTab === tab.id
-                  ? { background: "oklch(0.65 0.18 145 / 0.12)", color: "oklch(0.72 0.20 145)" }
-                  : { color: "oklch(0.48 0.015 255)" }}>
+                  ? { background: "rgba(74,222,128,0.12)", color: "#4ade80" }
+                  : { color: "#72716c" }}>
                 <Icon size={13} />
                 <span className="text-[11px] font-semibold">{tab.label}</span>
               </button>
@@ -189,10 +189,10 @@ export default function DeliverabilitySection() {
         </div>
 
         {result && (
-          <div className="p-3 flex-shrink-0" style={{ borderTop: "1px solid oklch(1 0 0 / 0.07)" }}>
-            <div className="rounded-2xl p-3 text-center" style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+          <div className="p-3 flex-shrink-0" style={{ borderTop: "1px solid #1c1c1f" }}>
+            <div className="rounded-2xl p-3 text-center" style={{ background: "#0d0d10", border: "1px solid #1c1c1f" }}>
               <GradeCircle grade={result.overall_grade} score={result.overall_score} />
-              <div className="text-[10px] mt-2" style={{ color: result.safe_to_send ? "oklch(0.65 0.18 145)" : "oklch(0.65 0.2 25)" }}>
+              <div className="text-[10px] mt-2" style={{ color: result.safe_to_send ? "#4ade80" : "#f87171" }}>
                 {result.safe_to_send ? "✓ Safe to send" : "✗ Fix issues first"}
               </div>
             </div>
@@ -206,26 +206,26 @@ export default function DeliverabilitySection() {
           {activeTab === "check" && (
             <motion.div key="check" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               {/* Input form */}
-              <div className="rounded-2xl p-5 mb-5" style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-                <div className="text-[12px] font-bold mb-3" style={{ color: "oklch(0.85 0.008 65)" }}>Analyse Your Email</div>
+              <div className="rounded-2xl p-5 mb-5" style={{ background: "#0d0d10", border: "1px solid #1c1c1f" }}>
+                <div className="text-[12px] font-bold mb-3" style={{ color: "#e7e5e4" }}>Analyse Your Email</div>
                 <div className="space-y-3">
                   <input value={subject} onChange={e => setSubject(e.target.value)}
                     placeholder="Email subject line..."
                     className="w-full px-4 py-3 rounded-xl text-[12px] outline-none"
-                    style={{ background: "oklch(0.10 0.020 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.80 0.008 65)" }} />
+                    style={{ background: "#121214", border: "1px solid #222226", color: "#d4d4d2" }} />
                   <textarea value={body} onChange={e => setBody(e.target.value)} rows={5}
                     placeholder="Email body text... (paste your cold email here)"
                     className="w-full px-4 py-3 rounded-xl text-[12px] outline-none resize-none"
-                    style={{ background: "oklch(0.10 0.020 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.80 0.008 65)" }} />
+                    style={{ background: "#121214", border: "1px solid #222226", color: "#d4d4d2" }} />
                   <input value={domain} onChange={e => setDomain(e.target.value)}
                     placeholder="Sender domain (optional) — e.g. yourdomain.com"
                     className="w-full px-4 py-3 rounded-xl text-[12px] outline-none"
-                    style={{ background: "oklch(0.10 0.020 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.80 0.008 65)" }} />
+                    style={{ background: "#121214", border: "1px solid #222226", color: "#d4d4d2" }} />
                 </div>
                 <div className="flex justify-end mt-4">
                   <button onClick={runCheck} disabled={checking}
                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[12px] font-bold hover:opacity-90 transition-opacity disabled:opacity-50"
-                    style={{ background: "linear-gradient(135deg, oklch(0.65 0.18 145), oklch(0.55 0.12 145))", color: "oklch(0.98 0 0)", boxShadow: "0 4px 14px oklch(0.65 0.18 145 / 0.25)" }}>
+                    style={{ background: "linear-gradient(135deg, #4ade80, #4ade80)", color: "#fafafa", boxShadow: "0 4px 14px rgba(74,222,128,0.25)" }}>
                     {checking ? <RefreshCw size={11} className="animate-spin" /> : <Shield size={11} />}
                     Run Deliverability Check
                   </button>
@@ -236,25 +236,25 @@ export default function DeliverabilitySection() {
               {result && (
                 <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
                   {/* Overall score */}
-                  <div className="rounded-2xl p-5 mb-4" style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                  <div className="rounded-2xl p-5 mb-4" style={{ background: "#0d0d10", border: "1px solid #1c1c1f" }}>
                     <div className="flex items-center gap-5">
                       <GradeCircle grade={result.overall_grade} score={result.overall_score} />
                       <div className="flex-1">
-                        <div className="text-[14px] font-bold mb-1" style={{ color: "oklch(0.88 0.008 65)" }}>
+                        <div className="text-[14px] font-bold mb-1" style={{ color: "#e7e5e4" }}>
                           {result.summary}
                         </div>
                         <div className="flex items-center gap-2 mt-2">
                           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-                            style={{ background: result.safe_to_send ? "oklch(0.65 0.18 145 / 0.10)" : "oklch(0.65 0.2 25 / 0.10)", border: `1px solid ${result.safe_to_send ? "oklch(0.65 0.18 145 / 0.25)" : "oklch(0.65 0.2 25 / 0.25)"}` }}>
+                            style={{ background: result.safe_to_send ? "rgba(74,222,128,0.10)" : "rgba(248,113,113,0.1)", border: `1px solid ${result.safe_to_send ? "rgba(74,222,128,0.25)" : "rgba(248,113,113,0.25)"}` }}>
                             {result.safe_to_send
-                              ? <CheckCircle2 size={10} style={{ color: "oklch(0.65 0.18 145)" }} />
-                              : <XCircle size={10} style={{ color: "oklch(0.65 0.2 25)" }} />
+                              ? <CheckCircle2 size={10} style={{ color: "#4ade80" }} />
+                              : <XCircle size={10} style={{ color: "#f87171" }} />
                             }
-                            <span className="text-[10px] font-bold" style={{ color: result.safe_to_send ? "oklch(0.65 0.18 145)" : "oklch(0.65 0.2 25)" }}>
+                            <span className="text-[10px] font-bold" style={{ color: result.safe_to_send ? "#4ade80" : "#f87171" }}>
                               {result.safe_to_send ? "Safe to send" : "Do not send yet"}
                             </span>
                           </div>
-                          <span className="text-[10px]" style={{ color: "oklch(0.42 0.015 255)" }}>
+                          <span className="text-[10px]" style={{ color: "#72716c" }}>
                             {result.content.word_count} words · {result.content.link_count} links
                           </span>
                         </div>
@@ -264,35 +264,35 @@ export default function DeliverabilitySection() {
 
                   <div className="grid grid-cols-2 gap-4">
                     {/* Issues */}
-                    <div className="rounded-2xl p-4" style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-                      <div className="text-[11px] font-bold mb-3" style={{ color: "oklch(0.85 0.008 65)" }}>
-                        Issues {result.content.issues.length > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px]" style={{ background: "oklch(0.65 0.2 25 / 0.15)", color: "oklch(0.65 0.2 25)" }}>{result.content.issues.length}</span>}
+                    <div className="rounded-2xl p-4" style={{ background: "#0d0d10", border: "1px solid #1c1c1f" }}>
+                      <div className="text-[11px] font-bold mb-3" style={{ color: "#e7e5e4" }}>
+                        Issues {result.content.issues.length > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px]" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>{result.content.issues.length}</span>}
                       </div>
                       {result.content.issues.length === 0 ? (
-                        <div className="flex items-center gap-2 text-[11px]" style={{ color: "oklch(0.65 0.18 145)" }}>
+                        <div className="flex items-center gap-2 text-[11px]" style={{ color: "#4ade80" }}>
                           <CheckCircle2 size={12} /> No issues found
                         </div>
                       ) : result.content.issues.map((issue, i) => (
                         <div key={i} className="flex items-start gap-2 mb-2">
-                          <XCircle size={11} className="flex-shrink-0 mt-0.5" style={{ color: "oklch(0.65 0.2 25)" }} />
-                          <span className="text-[10px]" style={{ color: "oklch(0.62 0.015 255)" }}>{issue}</span>
+                          <XCircle size={11} className="flex-shrink-0 mt-0.5" style={{ color: "#f87171" }} />
+                          <span className="text-[10px]" style={{ color: "#a1a09c" }}>{issue}</span>
                         </div>
                       ))}
                     </div>
 
                     {/* Warnings */}
-                    <div className="rounded-2xl p-4" style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-                      <div className="text-[11px] font-bold mb-3" style={{ color: "oklch(0.85 0.008 65)" }}>
-                        Warnings {result.content.warnings.length > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px]" style={{ background: "oklch(0.72 0.12 75 / 0.15)", color: "oklch(0.72 0.12 75)" }}>{result.content.warnings.length}</span>}
+                    <div className="rounded-2xl p-4" style={{ background: "#0d0d10", border: "1px solid #1c1c1f" }}>
+                      <div className="text-[11px] font-bold mb-3" style={{ color: "#e7e5e4" }}>
+                        Warnings {result.content.warnings.length > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px]" style={{ background: "rgba(245,158,11,0.15)", color: "#f59e0b" }}>{result.content.warnings.length}</span>}
                       </div>
                       {result.content.warnings.length === 0 ? (
-                        <div className="flex items-center gap-2 text-[11px]" style={{ color: "oklch(0.65 0.18 145)" }}>
+                        <div className="flex items-center gap-2 text-[11px]" style={{ color: "#4ade80" }}>
                           <CheckCircle2 size={12} /> No warnings
                         </div>
                       ) : result.content.warnings.map((w, i) => (
                         <div key={i} className="flex items-start gap-2 mb-2">
-                          <AlertCircle size={11} className="flex-shrink-0 mt-0.5" style={{ color: "oklch(0.72 0.12 75)" }} />
-                          <span className="text-[10px]" style={{ color: "oklch(0.62 0.015 255)" }}>{w}</span>
+                          <AlertCircle size={11} className="flex-shrink-0 mt-0.5" style={{ color: "#f59e0b" }} />
+                          <span className="text-[10px]" style={{ color: "#a1a09c" }}>{w}</span>
                         </div>
                       ))}
                     </div>
@@ -300,13 +300,13 @@ export default function DeliverabilitySection() {
 
                   {/* Domain check */}
                   {result.domain && (
-                    <div className="rounded-2xl p-4 mt-4" style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                    <div className="rounded-2xl p-4 mt-4" style={{ background: "#0d0d10", border: "1px solid #1c1c1f" }}>
                       <div className="flex items-center justify-between mb-3">
-                        <div className="text-[11px] font-bold" style={{ color: "oklch(0.85 0.008 65)" }}>
+                        <div className="text-[11px] font-bold" style={{ color: "#e7e5e4" }}>
                           Domain Health — {result.domain.domain}
                         </div>
                         <div className="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: "oklch(0.55 0.10 230 / 0.12)", color: "oklch(0.65 0.12 230)" }}>
+                          style={{ background: "rgba(96,165,250,0.12)", color: "#93c5fd" }}>
                           {result.domain.health_score}/100
                         </div>
                       </div>
@@ -328,15 +328,15 @@ export default function DeliverabilitySection() {
                   const Icon = tip.icon;
                   return (
                     <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                      className="rounded-2xl p-4" style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                      className="rounded-2xl p-4" style={{ background: "#0d0d10", border: "1px solid #1c1c1f" }}>
                       <div className="flex items-center gap-2.5 mb-2">
                         <div className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
-                          style={{ background: "oklch(0.65 0.18 145 / 0.10)" }}>
-                          <Icon size={13} style={{ color: "oklch(0.65 0.18 145)" }} />
+                          style={{ background: "rgba(74,222,128,0.10)" }}>
+                          <Icon size={13} style={{ color: "#4ade80" }} />
                         </div>
-                        <span className="text-[11px] font-bold" style={{ color: "oklch(0.82 0.008 65)" }}>{tip.title}</span>
+                        <span className="text-[11px] font-bold" style={{ color: "#d4d4d2" }}>{tip.title}</span>
                       </div>
-                      <p className="text-[10px] leading-relaxed" style={{ color: "oklch(0.50 0.015 255)" }}>{tip.detail}</p>
+                      <p className="text-[10px] leading-relaxed" style={{ color: "#a1a09c" }}>{tip.detail}</p>
                     </motion.div>
                   );
                 })}

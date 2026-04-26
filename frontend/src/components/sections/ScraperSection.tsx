@@ -32,24 +32,24 @@ const DEMO_LEADS: Lead[] = [
 ];
 
 const sourceColor = (s: Lead["source"]) => {
-  if (s === "google")   return "oklch(0.55 0.10 230)";
-  if (s === "linkedin") return "oklch(0.60 0.14 240)";
-  return "oklch(0.55 0.015 255)";
+  if (s === "google")   return "#60a5fa";
+  if (s === "linkedin") return "#a5b4fc";
+  return "#a1a09c";
 };
 const sourceLabel = (s: Lead["source"]) => s === "google" ? "Google" : s === "linkedin" ? "LinkedIn" : "CSV";
 const statusColor = (s: Lead["status"]) => {
-  if (s === "added")   return "oklch(0.65 0.18 145)";
-  if (s === "skipped") return "oklch(0.45 0.015 255)";
-  return "oklch(0.72 0.12 75)";
+  if (s === "added")   return "#4ade80";
+  if (s === "skipped") return "#72716c";
+  return "#f59e0b";
 };
 
 function InputField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <div>
-      <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.42 0.015 255)" }}>{label}</label>
+      <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "#72716c" }}>{label}</label>
       <input value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
         className="w-full px-3 py-2.5 rounded-xl text-[12.5px] outline-none transition-all"
-        style={{ background: "oklch(0.15 0.024 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.88 0.008 65)" }} />
+        style={{ background: "#18181b", border: "1px solid #222226", color: "#e7e5e4" }} />
     </div>
   );
 }
@@ -248,29 +248,29 @@ export default function ScraperSection() {
     <div className="flex h-full">
       {/* Left config panel */}
       <div className="flex-shrink-0 flex flex-col overflow-y-auto"
-        style={{ width: 276, borderRight: "1px solid oklch(1 0 0 / 0.07)", background: "oklch(0.095 0.022 255)" }}>
+        style={{ width: 276, borderRight: "1px solid #1c1c1f", background: "#09090b" }}>
 
         {/* Panel header */}
-        <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+        <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2 mb-1">
-            <SlidersHorizontal size={13} style={{ color: "oklch(0.72 0.12 75)" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "oklch(0.90 0.008 65)" }}>Scraper Config</span>
+            <SlidersHorizontal size={13} style={{ color: "#f59e0b" }} />
+            <span className="text-[13px] font-semibold" style={{ color: "#f4f3ef" }}>Scraper Config</span>
           </div>
-          <p className="text-[11px]" style={{ color: "oklch(0.42 0.015 255)" }}>Configure your lead discovery source</p>
+          <p className="text-[11px]" style={{ color: "#72716c" }}>Configure your lead discovery source</p>
         </div>
 
         <div className="p-5 space-y-5 flex-1">
           {/* Source tabs */}
           <div>
-            <div className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2.5" style={{ color: "oklch(0.38 0.015 255)" }}>Source</div>
-            <div className="flex rounded-xl p-1 gap-1" style={{ background: "oklch(0.14 0.022 255)" }}>
+            <div className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2.5" style={{ color: "#52524e" }}>Source</div>
+            <div className="flex rounded-xl p-1 gap-1" style={{ background: "#1c1c1f" }}>
               {[{ id: "google", label: "Google" }, { id: "linkedin", label: "LinkedIn" }, { id: "csv", label: "CSV" }].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
                   className="flex-1 py-2 rounded-lg text-[11px] font-semibold transition-all"
                   style={activeTab === tab.id ? {
-                    background: "oklch(0.72 0.12 75 / 0.18)", color: "oklch(0.88 0.14 75)",
-                    boxShadow: "0 0 0 1px oklch(0.72 0.12 75 / 0.28)",
-                  } : { color: "oklch(0.42 0.015 255)" }}>
+                    background: "rgba(245,158,11,0.18)", color: "#fde68a",
+                    boxShadow: "0 0 0 1px rgba(245,158,11,0.28)",
+                  } : { color: "#72716c" }}>
                   {tab.label}
                 </button>
               ))}
@@ -297,11 +297,11 @@ export default function ScraperSection() {
           {activeTab === "csv" && (
             <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
               <div className="rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-all hover:border-white/15"
-                style={{ borderColor: "oklch(1 0 0 / 0.10)", background: "oklch(0.13 0.022 255)" }}
+                style={{ borderColor: "rgba(255,255,255,0.10)", background: "#1c1c1f" }}
                 onClick={() => fileRef.current?.click()}>
-                <Upload size={22} className="mx-auto mb-3" style={{ color: "oklch(0.45 0.015 255)" }} />
-                <div className="text-[12px] font-medium mb-1" style={{ color: "oklch(0.65 0.008 65)" }}>Drop CSV or click to browse</div>
-                <div className="text-[10px]" style={{ color: "oklch(0.38 0.015 255)" }}>name, company, email, phone, website</div>
+                <Upload size={22} className="mx-auto mb-3" style={{ color: "#72716c" }} />
+                <div className="text-[12px] font-medium mb-1" style={{ color: "#d4d4d2" }}>Drop CSV or click to browse</div>
+                <div className="text-[10px]" style={{ color: "#52524e" }}>name, company, email, phone, website</div>
               </div>
               <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleCSVUpload} />
             </motion.div>
@@ -310,15 +310,15 @@ export default function ScraperSection() {
           {/* Max results */}
           {activeTab !== "csv" && (
             <div>
-              <label className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2.5 block" style={{ color: "oklch(0.38 0.015 255)" }}>Max Results</label>
+              <label className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2.5 block" style={{ color: "#52524e" }}>Max Results</label>
               <div className="grid grid-cols-4 gap-1.5">
                 {["25", "50", "100", "200"].map(v => (
                   <button key={v} onClick={() => setMaxResults(v)}
                     className="py-2 rounded-xl text-[11px] font-semibold transition-all"
                     style={maxResults === v ? {
-                      background: "oklch(0.55 0.10 230 / 0.18)", color: "oklch(0.70 0.12 230)",
-                      boxShadow: "0 0 0 1px oklch(0.55 0.10 230 / 0.30)",
-                    } : { background: "oklch(0.14 0.022 255)", color: "oklch(0.42 0.015 255)" }}>
+                      background: "rgba(96,165,250,0.18)", color: "#60a5fa",
+                      boxShadow: "0 0 0 1px rgba(96,165,250,0.30)",
+                    } : { background: "#1c1c1f", color: "#72716c" }}>
                     {v}
                   </button>
                 ))}
@@ -331,12 +331,12 @@ export default function ScraperSection() {
             <button onClick={isRunning ? undefined : startScrape}
               className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl text-[13px] font-bold transition-all hover:opacity-90 active:scale-[0.98]"
               style={isRunning ? {
-                background: "oklch(0.65 0.22 25 / 0.12)", color: "oklch(0.72 0.20 25)",
-                border: "1px solid oklch(0.65 0.22 25 / 0.25)",
+                background: "rgba(248,113,113,0.12)", color: "#f87171",
+                border: "1px solid rgba(248,113,113,0.25)",
               } : {
-                background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))",
-                color: "oklch(0.10 0.025 255)",
-                boxShadow: "0 4px 16px oklch(0.72 0.12 75 / 0.30)",
+                background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                color: "#09090b",
+                boxShadow: "0 4px 16px rgba(245,158,11,0.30)",
               }}>
               {isRunning ? <><Square size={13} /> Stop Scraping</> : <><Zap size={13} /> Start Scraping</>}
             </button>
@@ -347,16 +347,16 @@ export default function ScraperSection() {
             {isRunning && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
                 className="space-y-2 overflow-hidden">
-                <div className="flex justify-between text-[10.5px]" style={{ color: "oklch(0.50 0.015 255)" }}>
+                <div className="flex justify-between text-[10.5px]" style={{ color: "#a1a09c" }}>
                   <span className="flex items-center gap-1.5">
-                    <Loader2 size={10} className="animate-spin" style={{ color: "oklch(0.72 0.12 75)" }} />
+                    <Loader2 size={10} className="animate-spin" style={{ color: "#f59e0b" }} />
                     {progressLabel}
                   </span>
-                  <span className="font-mono font-semibold" style={{ color: "oklch(0.72 0.12 75)" }}>{Math.round(progress)}%</span>
+                  <span className="font-mono font-semibold" style={{ color: "#f59e0b" }}>{Math.round(progress)}%</span>
                 </div>
-                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(0.16 0.022 255)" }}>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "#1c1c1f" }}>
                   <motion.div className="h-full rounded-full"
-                    style={{ background: "linear-gradient(90deg, oklch(0.72 0.12 75), oklch(0.65 0.18 145))" }}
+                    style={{ background: "linear-gradient(90deg, #f59e0b, #4ade80)" }}
                     animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
                 </div>
               </motion.div>
@@ -364,14 +364,14 @@ export default function ScraperSection() {
           </AnimatePresence>
 
           {/* Stats */}
-          <div className="rounded-2xl p-4 space-y-3" style={{ background: "oklch(0.14 0.022 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+          <div className="rounded-2xl p-4 space-y-3" style={{ background: "#1c1c1f", border: "1px solid #1c1c1f" }}>
             {[
-              { label: "Total Found",   value: leads.length,                                  color: "oklch(0.55 0.10 230)" },
-              { label: "New",           value: leads.filter(l => l.status === "new").length,   color: "oklch(0.72 0.12 75)" },
-              { label: "Added to CRM",  value: leads.filter(l => l.status === "added").length, color: "oklch(0.65 0.18 145)" },
+              { label: "Total Found",   value: leads.length,                                  color: "#60a5fa" },
+              { label: "New",           value: leads.filter(l => l.status === "new").length,   color: "#f59e0b" },
+              { label: "Added to CRM",  value: leads.filter(l => l.status === "added").length, color: "#4ade80" },
             ].map(s => (
               <div key={s.label} className="flex items-center justify-between">
-                <span className="text-[11px]" style={{ color: "oklch(0.48 0.015 255)" }}>{s.label}</span>
+                <span className="text-[11px]" style={{ color: "#72716c" }}>{s.label}</span>
                 <span className="text-[14px] font-bold font-mono" style={{ color: s.color }}>{s.value}</span>
               </div>
             ))}
@@ -383,30 +383,30 @@ export default function ScraperSection() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Toolbar */}
         <div className="flex items-center justify-between px-5 py-3 flex-shrink-0"
-          style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)", background: "oklch(0.10 0.020 255)" }}>
+          style={{ borderBottom: "1px solid #1c1c1f", background: "#121214" }}>
           <div className="flex items-center gap-3">
             <input type="checkbox" checked={selected.size === leads.length && leads.length > 0}
               onChange={selectAll} className="w-3.5 h-3.5 accent-amber-500 cursor-pointer" />
-            <span className="text-[12px] font-medium" style={{ color: "oklch(0.50 0.015 255)" }}>
+            <span className="text-[12px] font-medium" style={{ color: "#a1a09c" }}>
               {selected.size > 0
-                ? <span style={{ color: "oklch(0.72 0.12 75)" }}>{selected.size} selected</span>
+                ? <span style={{ color: "#f59e0b" }}>{selected.size} selected</span>
                 : <>{leads.length} leads found</>}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={addToCRM}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-all hover:opacity-80"
-              style={{ background: "oklch(0.65 0.18 145 / 0.12)", border: "1px solid oklch(0.65 0.18 145 / 0.25)", color: "oklch(0.72 0.16 145)" }}>
+              style={{ background: "rgba(74,222,128,0.12)", border: "1px solid rgba(74,222,128,0.25)", color: "#86efac" }}>
               <Plus size={11} /> Add to CRM
             </button>
             <button onClick={exportCSV}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-medium transition-all hover:opacity-80"
-              style={{ background: "oklch(0.16 0.022 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.55 0.015 255)" }}>
+              style={{ background: "#1c1c1f", border: "1px solid #222226", color: "#a1a09c" }}>
               <Download size={11} /> Export CSV
             </button>
             <button onClick={() => { setLeads([]); setSelected(new Set()); }}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-medium transition-all hover:opacity-80"
-              style={{ background: "oklch(0.16 0.022 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.55 0.015 255)" }}>
+              style={{ background: "#1c1c1f", border: "1px solid #222226", color: "#a1a09c" }}>
               <Trash2 size={11} /> Clear
             </button>
           </div>
@@ -417,21 +417,21 @@ export default function ScraperSection() {
           {leads.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                style={{ background: "oklch(0.55 0.10 230 / 0.08)", border: "1px solid oklch(0.55 0.10 230 / 0.15)" }}>
-                <Search size={28} style={{ color: "oklch(0.55 0.10 230 / 0.5)" }} />
+                style={{ background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)" }}>
+                <Search size={28} style={{ color: "rgba(96,165,250,0.5)" }} />
               </div>
               <div>
-                <div className="text-[14px] font-semibold text-center" style={{ color: "oklch(0.55 0.015 255)" }}>No leads yet</div>
-                <div className="text-[12px] mt-1 text-center" style={{ color: "oklch(0.38 0.015 255)" }}>Configure your search and click Start Scraping</div>
+                <div className="text-[14px] font-semibold text-center" style={{ color: "#a1a09c" }}>No leads yet</div>
+                <div className="text-[12px] mt-1 text-center" style={{ color: "#52524e" }}>Configure your search and click Start Scraping</div>
               </div>
             </div>
           ) : (
             <table className="w-full text-[11.5px]">
-              <thead className="sticky top-0 z-10" style={{ background: "oklch(0.11 0.020 255)", borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+              <thead className="sticky top-0 z-10" style={{ background: "#121214", borderBottom: "1px solid #1c1c1f" }}>
                 <tr>
                   <th className="w-10 px-4 py-3" />
                   {["NAME", "COMPANY", "EMAIL", "PHONE", "LOCATION", "SOURCE", "STATUS"].map(h => (
-                    <th key={h} className="px-4 py-3 text-left font-bold tracking-[0.12em] text-[9.5px]" style={{ color: "oklch(0.38 0.015 255)" }}>{h}</th>
+                    <th key={h} className="px-4 py-3 text-left font-bold tracking-[0.12em] text-[9.5px]" style={{ color: "#52524e" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -440,7 +440,7 @@ export default function ScraperSection() {
                   <motion.tr key={lead.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.02 }}
                     className="cursor-pointer group"
-                    style={{ borderBottom: "1px solid oklch(1 0 0 / 0.04)" }}
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}
                     onClick={() => toggleSelect(lead.id)}>
                     <td className="px-4 py-3">
                       <input type="checkbox" checked={selected.has(lead.id)} onChange={() => toggleSelect(lead.id)}
@@ -449,21 +449,21 @@ export default function ScraperSection() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                          style={{ background: "oklch(0.72 0.12 75 / 0.12)", color: "oklch(0.82 0.14 75)" }}>
+                          style={{ background: "rgba(245,158,11,0.12)", color: "#fbbf24" }}>
                           {lead.name[0]}
                         </div>
-                        <span className="font-semibold" style={{ color: "oklch(0.85 0.008 65)" }}>{lead.name}</span>
+                        <span className="font-semibold" style={{ color: "#e7e5e4" }}>{lead.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3" style={{ color: "oklch(0.62 0.008 65)" }}>{lead.company}</td>
-                    <td className="px-4 py-3 font-mono text-[11px]" style={{ color: "oklch(0.60 0.10 230)" }}>{lead.email}</td>
+                    <td className="px-4 py-3" style={{ color: "#a1a09c" }}>{lead.company}</td>
+                    <td className="px-4 py-3 font-mono text-[11px]" style={{ color: "#60a5fa" }}>{lead.email}</td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1" style={{ color: "oklch(0.50 0.015 255)" }}>
+                      <div className="flex items-center gap-1" style={{ color: "#a1a09c" }}>
                         <Phone size={9} className="flex-shrink-0" />{lead.phone}
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1" style={{ color: "oklch(0.50 0.015 255)" }}>
+                      <div className="flex items-center gap-1" style={{ color: "#a1a09c" }}>
                         <MapPin size={9} className="flex-shrink-0" />{lead.location}
                       </div>
                     </td>
@@ -475,7 +475,7 @@ export default function ScraperSection() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
-                        {lead.status === "added" && <CheckCircle2 size={10} style={{ color: "oklch(0.65 0.18 145)" }} />}
+                        {lead.status === "added" && <CheckCircle2 size={10} style={{ color: "#4ade80" }} />}
                         <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide"
                           style={{ background: `${statusColor(lead.status)}15`, color: statusColor(lead.status), border: `1px solid ${statusColor(lead.status)}28` }}>
                           {lead.status}

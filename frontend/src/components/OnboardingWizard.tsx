@@ -146,12 +146,12 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ background: "oklch(0.06 0.018 255)" }}>
+      style={{ background: "#09090b" }}>
 
       {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, oklch(0.72 0.12 75), transparent 70%)" }} />
+          style={{ background: "radial-gradient(circle, #f59e0b, transparent 70%)" }} />
       </div>
 
       <motion.div
@@ -170,22 +170,22 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300"
                     style={done
-                      ? { background: "oklch(0.65 0.18 145)", border: "none" }
+                      ? { background: "#4ade80", border: "none" }
                       : active
-                        ? { background: "oklch(0.72 0.12 75 / 0.20)", border: "1px solid oklch(0.72 0.12 75 / 0.50)" }
-                        : { background: "oklch(1 0 0 / 0.04)", border: "1px solid oklch(1 0 0 / 0.10)" }}>
+                        ? { background: "rgba(245,158,11,0.20)", border: "1px solid rgba(245,158,11,0.50)" }
+                        : { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.10)" }}>
                     {done
                       ? <CheckCircle2 size={13} style={{ color: "white" }} />
-                      : <Icon size={12} style={{ color: active ? "oklch(0.82 0.14 75)" : "oklch(0.35 0.015 255)" }} />}
+                      : <Icon size={12} style={{ color: active ? "#fbbf24" : "#52524e" }} />}
                   </div>
                   <span className="text-[10px] font-semibold hidden sm:block"
-                    style={{ color: active ? "oklch(0.82 0.14 75)" : done ? "oklch(0.65 0.18 145)" : "oklch(0.35 0.015 255)" }}>
+                    style={{ color: active ? "#fbbf24" : done ? "#4ade80" : "#52524e" }}>
                     {s.label}
                   </span>
                 </div>
                 {i < STEPS.length - 1 && (
                   <div className="flex-1 h-px mx-1"
-                    style={{ background: done ? "oklch(0.65 0.18 145 / 0.4)" : "oklch(1 0 0 / 0.08)" }} />
+                    style={{ background: done ? "rgba(74,222,128,0.4)" : "#1c1c1f" }} />
                 )}
               </div>
             );
@@ -194,7 +194,7 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
 
         {/* Card */}
         <div className="rounded-3xl overflow-hidden"
-          style={{ background: "oklch(0.11 0.022 255)", border: "1px solid oklch(1 0 0 / 0.10)", boxShadow: "0 40px 120px oklch(0 0 0 / 0.6)" }}>
+          style={{ background: "#0d0d10", border: "1px solid rgba(255,255,255,0.10)", boxShadow: "0 40px 120px rgba(0,0,0,0.6)" }}>
 
           <AnimatePresence mode="wait">
             {/* ── Step 0: Welcome ──────────────────────────────────────────── */}
@@ -203,17 +203,17 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 className="p-10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                    style={{ background: "oklch(0.72 0.12 75 / 0.15)", border: "1px solid oklch(0.72 0.12 75 / 0.25)" }}>
-                    <Sparkles size={22} style={{ color: "oklch(0.82 0.14 75)" }} />
+                    style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.25)" }}>
+                    <Sparkles size={22} style={{ color: "#fbbf24" }} />
                   </div>
                   <div>
-                    <div className="text-[22px] font-black" style={{ color: "oklch(0.93 0.008 65)" }}>Welcome to LeadStack™</div>
-                    <div className="text-[12px]" style={{ color: "oklch(0.48 0.015 255)" }}>Your personal outbound revenue engine</div>
+                    <div className="text-[22px] font-black" style={{ color: "#f4f3ef" }}>Welcome to LeadStack™</div>
+                    <div className="text-[12px]" style={{ color: "#72716c" }}>Your personal outbound revenue engine</div>
                   </div>
                 </div>
 
-                <p className="text-[13px] leading-relaxed mb-8" style={{ color: "oklch(0.62 0.015 255)" }}>
-                  Let's get you set up in 2 minutes. You'll need your <strong style={{ color: "oklch(0.82 0.14 75)" }}>Anthropic API key</strong> for AI features and a <strong style={{ color: "oklch(0.82 0.14 75)" }}>Gmail App Password</strong> for sending emails.
+                <p className="text-[13px] leading-relaxed mb-8" style={{ color: "#a1a09c" }}>
+                  Let's get you set up in 2 minutes. You'll need your <strong style={{ color: "#fbbf24" }}>Anthropic API key</strong> for AI features and a <strong style={{ color: "#fbbf24" }}>Gmail App Password</strong> for sending emails.
                 </p>
 
                 <div className="grid grid-cols-3 gap-3 mb-8">
@@ -225,22 +225,22 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                     const Icon = item.icon;
                     return (
                       <div key={item.label} className="rounded-2xl p-4 text-center"
-                        style={{ background: "oklch(0.14 0.024 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
-                        <Icon size={18} className="mx-auto mb-2" style={{ color: "oklch(0.72 0.12 75)" }} />
-                        <div className="text-[11px] font-bold" style={{ color: "oklch(0.85 0.008 65)" }}>{item.label}</div>
-                        <div className="text-[9px] mt-0.5" style={{ color: "oklch(0.45 0.015 255)" }}>{item.sub}</div>
+                        style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
+                        <Icon size={18} className="mx-auto mb-2" style={{ color: "#f59e0b" }} />
+                        <div className="text-[11px] font-bold" style={{ color: "#e7e5e4" }}>{item.label}</div>
+                        <div className="text-[9px] mt-0.5" style={{ color: "#72716c" }}>{item.sub}</div>
                       </div>
                     );
                   })}
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <button onClick={skip} className="text-[11px]" style={{ color: "oklch(0.38 0.015 255)" }}>
+                  <button onClick={skip} className="text-[11px]" style={{ color: "#52524e" }}>
                     Skip setup
                   </button>
                   <button onClick={() => setStep(1)}
                     className="flex items-center gap-2 px-6 py-3 rounded-xl text-[13px] font-bold transition-all hover:opacity-90"
-                    style={{ background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))", color: "oklch(0.10 0.025 255)", boxShadow: "0 4px 20px oklch(0.72 0.12 75 / 0.30)" }}>
+                    style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b", boxShadow: "0 4px 20px rgba(245,158,11,0.30)" }}>
                     Get Started <ArrowRight size={14} />
                   </button>
                 </div>
@@ -253,24 +253,24 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 className="p-10">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: "oklch(0.55 0.10 230 / 0.15)", border: "1px solid oklch(0.55 0.10 230 / 0.25)" }}>
-                    <Key size={18} style={{ color: "oklch(0.65 0.12 230)" }} />
+                    style={{ background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.25)" }}>
+                    <Key size={18} style={{ color: "#93c5fd" }} />
                   </div>
-                  <div className="text-[18px] font-black" style={{ color: "oklch(0.93 0.008 65)" }}>Connect AI Engine</div>
+                  <div className="text-[18px] font-black" style={{ color: "#f4f3ef" }}>Connect AI Engine</div>
                 </div>
-                <p className="text-[12px] mb-6" style={{ color: "oklch(0.48 0.015 255)" }}>
+                <p className="text-[12px] mb-6" style={{ color: "#72716c" }}>
                   LeadStack uses Claude (Anthropic) to write emails, generate replies, and research prospects.
                 </p>
 
                 <div className="rounded-2xl p-4 mb-5"
-                  style={{ background: "oklch(0.55 0.10 230 / 0.06)", border: "1px solid oklch(0.55 0.10 230 / 0.15)" }}>
+                  style={{ background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)" }}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Shield size={12} style={{ color: "oklch(0.65 0.12 230)" }} />
-                    <span className="text-[10px] font-semibold" style={{ color: "oklch(0.65 0.12 230)" }}>How to get your key</span>
+                    <Shield size={12} style={{ color: "#93c5fd" }} />
+                    <span className="text-[10px] font-semibold" style={{ color: "#93c5fd" }}>How to get your key</span>
                   </div>
-                  <ol className="text-[11px] space-y-1" style={{ color: "oklch(0.55 0.015 255)" }}>
+                  <ol className="text-[11px] space-y-1" style={{ color: "#a1a09c" }}>
                     <li>1. Go to <a href="https://console.anthropic.com" target="_blank" rel="noreferrer"
-                      className="underline" style={{ color: "oklch(0.65 0.12 230)" }}>console.anthropic.com</a></li>
+                      className="underline" style={{ color: "#93c5fd" }}>console.anthropic.com</a></li>
                     <li>2. Sign up / log in</li>
                     <li>3. Go to API Keys → Create Key</li>
                     <li>4. Copy the key (starts with <code className="font-mono text-[10px]">sk-ant-</code>)</li>
@@ -278,7 +278,7 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 </div>
 
                 <div className="mb-5">
-                  <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.42 0.015 255)" }}>
+                  <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "#72716c" }}>
                     Anthropic API Key
                   </label>
                   <div className="relative">
@@ -288,31 +288,31 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                       onChange={e => setApiKey(e.target.value)}
                       placeholder="sk-ant-api03-..."
                       className="w-full px-4 py-3 rounded-xl text-[13px] outline-none font-mono pr-20"
-                      style={{ background: "oklch(0.14 0.024 255)", border: `1px solid ${aiStatus === "ok" ? "oklch(0.65 0.18 145 / 0.4)" : aiStatus === "error" ? "oklch(0.65 0.2 25 / 0.4)" : "oklch(1 0 0 / 0.09)"}`, color: "oklch(0.88 0.008 65)" }}
+                      style={{ background: "#121214", border: `1px solid ${aiStatus === "ok" ? "rgba(74,222,128,0.4)" : aiStatus === "error" ? "rgba(248,113,113,0.4)" : "#222226"}`, color: "#e7e5e4" }}
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-                      {aiStatus === "ok" && <CheckCircle2 size={14} style={{ color: "oklch(0.65 0.18 145)" }} />}
+                      {aiStatus === "ok" && <CheckCircle2 size={14} style={{ color: "#4ade80" }} />}
                       <button onClick={() => setShowKey(!showKey)} className="opacity-50 hover:opacity-100">
-                        {showKey ? <EyeOff size={14} style={{ color: "oklch(0.55 0.015 255)" }} /> : <Eye size={14} style={{ color: "oklch(0.55 0.015 255)" }} />}
+                        {showKey ? <EyeOff size={14} style={{ color: "#a1a09c" }} /> : <Eye size={14} style={{ color: "#a1a09c" }} />}
                       </button>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <button onClick={() => setStep(0)} className="text-[11px]" style={{ color: "oklch(0.38 0.015 255)" }}>
+                  <button onClick={() => setStep(0)} className="text-[11px]" style={{ color: "#52524e" }}>
                     ← Back
                   </button>
                   <div className="flex items-center gap-2">
                     <button onClick={testAIKey} disabled={!apiKey.trim() || testingAI}
                       className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all hover:opacity-80 disabled:opacity-40"
-                      style={{ background: "oklch(0.55 0.10 230 / 0.12)", border: "1px solid oklch(0.55 0.10 230 / 0.25)", color: "oklch(0.65 0.12 230)" }}>
+                      style={{ background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.25)", color: "#93c5fd" }}>
                       {testingAI ? <Loader2 size={10} className="animate-spin" /> : <Zap size={10} />}
                       Test Key
                     </button>
                     <button onClick={() => setStep(2)} disabled={!apiKey.trim()}
                       className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[12px] font-bold transition-all hover:opacity-90 disabled:opacity-40"
-                      style={{ background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))", color: "oklch(0.10 0.025 255)" }}>
+                      style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b" }}>
                       Continue <ArrowRight size={12} />
                     </button>
                   </div>
@@ -326,24 +326,24 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 className="p-10">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: "oklch(0.65 0.2 25 / 0.12)", border: "1px solid oklch(0.65 0.2 25 / 0.22)" }}>
-                    <Mail size={18} style={{ color: "oklch(0.72 0.18 25)" }} />
+                    style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.22)" }}>
+                    <Mail size={18} style={{ color: "#fca5a5" }} />
                   </div>
-                  <div className="text-[18px] font-black" style={{ color: "oklch(0.93 0.008 65)" }}>Connect Gmail</div>
+                  <div className="text-[18px] font-black" style={{ color: "#f4f3ef" }}>Connect Gmail</div>
                 </div>
-                <p className="text-[12px] mb-5" style={{ color: "oklch(0.48 0.015 255)" }}>
+                <p className="text-[12px] mb-5" style={{ color: "#72716c" }}>
                   LeadStack sends emails through your Gmail account. Use an App Password — it's more secure than your main password.
                 </p>
 
                 <div className="rounded-2xl p-4 mb-5"
-                  style={{ background: "oklch(0.65 0.2 25 / 0.05)", border: "1px solid oklch(0.65 0.2 25 / 0.15)" }}>
+                  style={{ background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.15)" }}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Shield size={12} style={{ color: "oklch(0.72 0.18 25)" }} />
-                    <span className="text-[10px] font-semibold" style={{ color: "oklch(0.72 0.18 25)" }}>How to create an App Password</span>
+                    <Shield size={12} style={{ color: "#fca5a5" }} />
+                    <span className="text-[10px] font-semibold" style={{ color: "#fca5a5" }}>How to create an App Password</span>
                   </div>
-                  <ol className="text-[11px] space-y-1" style={{ color: "oklch(0.55 0.015 255)" }}>
+                  <ol className="text-[11px] space-y-1" style={{ color: "#a1a09c" }}>
                     <li>1. Go to <a href="https://myaccount.google.com/security" target="_blank" rel="noreferrer"
-                      className="underline" style={{ color: "oklch(0.72 0.18 25)" }}>myaccount.google.com/security</a></li>
+                      className="underline" style={{ color: "#fca5a5" }}>myaccount.google.com/security</a></li>
                     <li>2. Enable 2-Step Verification (required)</li>
                     <li>3. Search "App passwords" → Create new</li>
                     <li>4. Select "Mail" → Copy the 16-character password</li>
@@ -352,21 +352,21 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
 
                 <div className="space-y-4 mb-5">
                   <div>
-                    <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.42 0.015 255)" }}>Your Name</label>
+                    <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "#72716c" }}>Your Name</label>
                     <input value={senderName} onChange={e => setSenderName(e.target.value)}
                       placeholder="John Smith"
                       className="w-full px-4 py-3 rounded-xl text-[13px] outline-none"
-                      style={{ background: "oklch(0.14 0.024 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.88 0.008 65)" }} />
+                      style={{ background: "#121214", border: "1px solid #222226", color: "#e7e5e4" }} />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.42 0.015 255)" }}>Gmail Address</label>
+                    <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "#72716c" }}>Gmail Address</label>
                     <input type="email" value={senderEmail} onChange={e => setSenderEmail(e.target.value)}
                       placeholder="you@gmail.com"
                       className="w-full px-4 py-3 rounded-xl text-[13px] outline-none"
-                      style={{ background: "oklch(0.14 0.024 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.88 0.008 65)" }} />
+                      style={{ background: "#121214", border: "1px solid #222226", color: "#e7e5e4" }} />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.42 0.015 255)" }}>App Password</label>
+                    <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "#72716c" }}>App Password</label>
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
@@ -374,12 +374,12 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                         onChange={e => setAppPassword(e.target.value)}
                         placeholder="xxxx xxxx xxxx xxxx"
                         className="w-full px-4 py-3 rounded-xl text-[13px] outline-none font-mono pr-20"
-                        style={{ background: "oklch(0.14 0.024 255)", border: `1px solid ${gmailStatus === "ok" ? "oklch(0.65 0.18 145 / 0.4)" : gmailStatus === "error" ? "oklch(0.65 0.2 25 / 0.4)" : "oklch(1 0 0 / 0.09)"}`, color: "oklch(0.88 0.008 65)" }}
+                        style={{ background: "#121214", border: `1px solid ${gmailStatus === "ok" ? "rgba(74,222,128,0.4)" : gmailStatus === "error" ? "rgba(248,113,113,0.4)" : "#222226"}`, color: "#e7e5e4" }}
                       />
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-                        {gmailStatus === "ok" && <CheckCircle2 size={14} style={{ color: "oklch(0.65 0.18 145)" }} />}
+                        {gmailStatus === "ok" && <CheckCircle2 size={14} style={{ color: "#4ade80" }} />}
                         <button onClick={() => setShowPassword(!showPassword)} className="opacity-50 hover:opacity-100">
-                          {showPassword ? <EyeOff size={14} style={{ color: "oklch(0.55 0.015 255)" }} /> : <Eye size={14} style={{ color: "oklch(0.55 0.015 255)" }} />}
+                          {showPassword ? <EyeOff size={14} style={{ color: "#a1a09c" }} /> : <Eye size={14} style={{ color: "#a1a09c" }} />}
                         </button>
                       </div>
                     </div>
@@ -387,17 +387,17 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <button onClick={() => setStep(1)} className="text-[11px]" style={{ color: "oklch(0.38 0.015 255)" }}>← Back</button>
+                  <button onClick={() => setStep(1)} className="text-[11px]" style={{ color: "#52524e" }}>← Back</button>
                   <div className="flex items-center gap-2">
                     <button onClick={testGmail} disabled={!senderEmail.trim() || !appPassword.trim() || testingGmail}
                       className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all hover:opacity-80 disabled:opacity-40"
-                      style={{ background: "oklch(0.65 0.2 25 / 0.10)", border: "1px solid oklch(0.65 0.2 25 / 0.22)", color: "oklch(0.72 0.18 25)" }}>
+                      style={{ background: "rgba(248,113,113,0.1)", border: "1px solid rgba(248,113,113,0.22)", color: "#fca5a5" }}>
                       {testingGmail ? <Loader2 size={10} className="animate-spin" /> : <Zap size={10} />}
                       Test Gmail
                     </button>
                     <button onClick={() => setStep(3)}
                       className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[12px] font-bold transition-all hover:opacity-90"
-                      style={{ background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))", color: "oklch(0.10 0.025 255)" }}>
+                      style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b" }}>
                       Continue <ArrowRight size={12} />
                     </button>
                   </div>
@@ -412,35 +412,35 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 <motion.div
                   initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
                   className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
-                  style={{ background: "oklch(0.65 0.18 145 / 0.15)", border: "2px solid oklch(0.65 0.18 145 / 0.40)" }}>
-                  <CheckCircle2 size={28} style={{ color: "oklch(0.65 0.18 145)" }} />
+                  style={{ background: "rgba(74,222,128,0.15)", border: "2px solid rgba(74,222,128,0.40)" }}>
+                  <CheckCircle2 size={28} style={{ color: "#4ade80" }} />
                 </motion.div>
 
-                <div className="text-[22px] font-black mb-2" style={{ color: "oklch(0.93 0.008 65)" }}>You're all set!</div>
-                <p className="text-[13px] mb-8" style={{ color: "oklch(0.55 0.015 255)" }}>
+                <div className="text-[22px] font-black mb-2" style={{ color: "#f4f3ef" }}>You're all set!</div>
+                <p className="text-[13px] mb-8" style={{ color: "#a1a09c" }}>
                   LeadStack is ready to go. Here's what to do first:
                 </p>
 
                 <div className="space-y-3 mb-8 text-left">
                   {[
-                    { num: "1", text: "Go to Lead Scraper → search for your target niche in any city", color: "oklch(0.65 0.12 230)" },
-                    { num: "2", text: "Go to Email Engine → load a template and launch your first campaign", color: "oklch(0.72 0.12 75)" },
-                    { num: "3", text: "Check Reply Monitor daily — AI classifies every reply automatically", color: "oklch(0.65 0.18 145)" },
+                    { num: "1", text: "Go to Lead Scraper → search for your target niche in any city", color: "#93c5fd" },
+                    { num: "2", text: "Go to Email Engine → load a template and launch your first campaign", color: "#f59e0b" },
+                    { num: "3", text: "Check Reply Monitor daily — AI classifies every reply automatically", color: "#4ade80" },
                   ].map(item => (
                     <div key={item.num} className="flex items-start gap-3 p-3 rounded-xl"
-                      style={{ background: "oklch(0.14 0.024 255)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+                      style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
                       <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-black mt-0.5"
                         style={{ background: `${item.color}18`, color: item.color, border: `1px solid ${item.color}30` }}>
                         {item.num}
                       </div>
-                      <span className="text-[12px]" style={{ color: "oklch(0.68 0.015 255)" }}>{item.text}</span>
+                      <span className="text-[12px]" style={{ color: "#a1a09c" }}>{item.text}</span>
                     </div>
                   ))}
                 </div>
 
                 <button onClick={saveAndFinish} disabled={saving}
                   className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-[14px] font-black transition-all hover:opacity-90"
-                  style={{ background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))", color: "oklch(0.10 0.025 255)", boxShadow: "0 6px 24px oklch(0.72 0.12 75 / 0.35)" }}>
+                  style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b", boxShadow: "0 6px 24px rgba(245,158,11,0.35)" }}>
                   {saving ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
                   Launch LeadStack™
                 </button>

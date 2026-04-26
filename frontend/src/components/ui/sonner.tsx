@@ -7,9 +7,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       style={
         {
-          "--normal-bg": "oklch(0.16 0.025 255)",
-          "--normal-border": "oklch(1 0 0 / 0.08)",
-          "--normal-text": "oklch(0.92 0.008 65)",
+          "--normal-bg": "#18181b",
+          "--normal-border": "#1c1c1f",
+          "--normal-text": "#f4f3ef",
         } as React.CSSProperties
       }
       {...props}

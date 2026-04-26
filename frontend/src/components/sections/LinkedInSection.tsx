@@ -177,54 +177,54 @@ export default function LinkedInSection() {
   };
 
   return (
-    <div className="flex h-full" style={{ background: "oklch(0.08 0.018 255)" }}>
+    <div className="flex h-full" style={{ background: "#09090b" }}>
 
       {/* ── Left Panel ──────────────────────────────────────────────────────── */}
-      <div className="w-72 flex-shrink-0 flex flex-col border-r" style={{ borderColor: "oklch(1 0 0 / 0.07)", background: "oklch(0.09 0.020 255)" }}>
+      <div className="w-72 flex-shrink-0 flex flex-col border-r" style={{ borderColor: "#1c1c1f", background: "#09090b" }}>
 
         {/* Header */}
-        <div className="p-5 border-b" style={{ borderColor: "oklch(1 0 0 / 0.07)" }}>
+        <div className="p-5 border-b" style={{ borderColor: "#1c1c1f" }}>
           <div className="flex items-center gap-2.5 mb-1">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: "oklch(0.48 0.18 240 / 0.18)", border: "1px solid oklch(0.48 0.18 240 / 0.30)" }}>
-              <Linkedin size={14} style={{ color: "oklch(0.60 0.18 240)" }} />
+              style={{ background: "rgba(96,165,250,0.18)", border: "1px solid rgba(96,165,250,0.3)" }}>
+              <Linkedin size={14} style={{ color: "#60a5fa" }} />
             </div>
-            <span className="text-[14px] font-black" style={{ color: "oklch(0.90 0.008 65)" }}>LinkedIn Scraper</span>
+            <span className="text-[14px] font-black" style={{ color: "#f4f3ef" }}>LinkedIn Scraper</span>
           </div>
-          <p className="text-[10px]" style={{ color: "oklch(0.42 0.015 255)" }}>
+          <p className="text-[10px]" style={{ color: "#72716c" }}>
             Scrape decision-makers by title, company & location
           </p>
         </div>
 
         {/* Session status */}
-        <div className="p-4 border-b" style={{ borderColor: "oklch(1 0 0 / 0.07)" }}>
+        <div className="p-4 border-b" style={{ borderColor: "#1c1c1f" }}>
           {sessionStatus === "checking" ? (
-            <div className="flex items-center gap-2 text-[11px]" style={{ color: "oklch(0.48 0.015 255)" }}>
+            <div className="flex items-center gap-2 text-[11px]" style={{ color: "#72716c" }}>
               <Loader2 size={12} className="animate-spin" /> Checking session...
             </div>
           ) : sessionStatus === "logged_in" ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full" style={{ background: "oklch(0.65 0.18 145)" }} />
-                <span className="text-[11px] font-semibold" style={{ color: "oklch(0.65 0.18 145)" }}>LinkedIn Connected</span>
+                <div className="w-2 h-2 rounded-full" style={{ background: "#4ade80" }} />
+                <span className="text-[11px] font-semibold" style={{ color: "#4ade80" }}>LinkedIn Connected</span>
               </div>
               <button onClick={checkSession} className="opacity-50 hover:opacity-100">
-                <RefreshCw size={11} style={{ color: "oklch(0.48 0.015 255)" }} />
+                <RefreshCw size={11} style={{ color: "#72716c" }} />
               </button>
             </div>
           ) : (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full" style={{ background: "oklch(0.65 0.2 25)" }} />
-                <span className="text-[11px]" style={{ color: "oklch(0.65 0.2 25)" }}>Not connected</span>
+                <div className="w-2 h-2 rounded-full" style={{ background: "#f87171" }} />
+                <span className="text-[11px]" style={{ color: "#f87171" }}>Not connected</span>
               </div>
               <button onClick={openLoginBrowser} disabled={loggingIn}
                 className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-bold transition-all hover:opacity-90 disabled:opacity-50"
-                style={{ background: "oklch(0.48 0.18 240 / 0.15)", border: "1px solid oklch(0.48 0.18 240 / 0.30)", color: "oklch(0.60 0.18 240)" }}>
+                style={{ background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", color: "#60a5fa" }}>
                 {loggingIn ? <Loader2 size={10} className="animate-spin" /> : <Linkedin size={10} />}
                 {loggingIn ? "Opening browser..." : "Connect LinkedIn"}
               </button>
-              <p className="text-[9px]" style={{ color: "oklch(0.35 0.015 255)" }}>
+              <p className="text-[9px]" style={{ color: "#52524e" }}>
                 Opens a browser window — log in once, sessions persist
               </p>
             </div>
@@ -234,38 +234,38 @@ export default function LinkedInSection() {
         {/* Search form */}
         <div className="p-4 flex-1 space-y-4 overflow-y-auto">
           <div>
-            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.40 0.015 255)" }}>
+            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "#52524e" }}>
               Job Title / Keyword *
             </label>
             <input value={keyword} onChange={e => setKeyword(e.target.value)}
               placeholder="e.g. Financial Advisor"
               className="w-full px-3 py-2.5 rounded-lg text-[12px] outline-none"
-              style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.88 0.008 65)" }} />
+              style={{ background: "#0d0d10", border: "1px solid #222226", color: "#e7e5e4" }} />
           </div>
 
           <div>
-            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.40 0.015 255)" }}>
+            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "#52524e" }}>
               Location
             </label>
             <input value={location} onChange={e => setLocation(e.target.value)}
               placeholder="e.g. London, UK"
               className="w-full px-3 py-2.5 rounded-lg text-[12px] outline-none"
-              style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.88 0.008 65)" }} />
+              style={{ background: "#0d0d10", border: "1px solid #222226", color: "#e7e5e4" }} />
           </div>
 
           <div>
-            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.40 0.015 255)" }}>
+            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "#52524e" }}>
               Max Results
             </label>
             <select value={maxResults} onChange={e => setMaxResults(Number(e.target.value))}
               className="w-full px-3 py-2.5 rounded-lg text-[12px] outline-none"
-              style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.88 0.008 65)" }}>
+              style={{ background: "#0d0d10", border: "1px solid #222226", color: "#e7e5e4" }}>
               {[10, 25, 50, 100].map(n => <option key={n} value={n}>{n} leads</option>)}
             </select>
           </div>
 
           <div>
-            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.40 0.015 255)" }}>
+            <label className="text-[9px] font-bold uppercase tracking-wider mb-1.5 block" style={{ color: "#52524e" }}>
               Connection Degree
             </label>
             <div className="grid grid-cols-2 gap-1.5">
@@ -278,8 +278,8 @@ export default function LinkedInSection() {
                 <button key={opt.value} onClick={() => setConnectionFilter(opt.value)}
                   className="py-1.5 rounded-lg text-[10px] font-semibold transition-all"
                   style={connectionFilter === opt.value
-                    ? { background: "oklch(0.48 0.18 240 / 0.20)", border: "1px solid oklch(0.48 0.18 240 / 0.40)", color: "oklch(0.60 0.18 240)" }
-                    : { background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.42 0.015 255)" }}>
+                    ? { background: "rgba(96,165,250,0.2)", border: "1px solid rgba(96,165,250,0.4)", color: "#60a5fa" }
+                    : { background: "#0d0d10", border: "1px solid #1c1c1f", color: "#72716c" }}>
                   {opt.label}
                 </button>
               ))}
@@ -288,20 +288,20 @@ export default function LinkedInSection() {
 
           <button onClick={startScrape} disabled={scraping || sessionStatus !== "logged_in" || !keyword.trim()}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-[12px] font-black transition-all hover:opacity-90 disabled:opacity-40"
-            style={{ background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))", color: "oklch(0.10 0.025 255)", boxShadow: "0 4px 16px oklch(0.72 0.12 75 / 0.25)" }}>
+            style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b", boxShadow: "0 4px 16px rgba(245,158,11,0.25)" }}>
             {scraping ? <Loader2 size={13} className="animate-spin" /> : <Search size={13} />}
             {scraping ? "Scraping..." : "Start Scrape"}
           </button>
 
           {scraping && (
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-[9px]" style={{ color: "oklch(0.48 0.015 255)" }}>
+              <div className="flex items-center justify-between text-[9px]" style={{ color: "#72716c" }}>
                 <span>{progressName || "Searching..."}</span>
                 <span>{progress}/{maxResults}</span>
               </div>
-              <div className="h-1 rounded-full overflow-hidden" style={{ background: "oklch(1 0 0 / 0.06)" }}>
+              <div className="h-1 rounded-full overflow-hidden" style={{ background: "#1c1c1f" }}>
                 <div className="h-full rounded-full transition-all duration-300"
-                  style={{ width: `${(progress / maxResults) * 100}%`, background: "oklch(0.72 0.12 75)" }} />
+                  style={{ width: `${(progress / maxResults) * 100}%`, background: "#f59e0b" }} />
               </div>
             </div>
           )}
@@ -312,14 +312,14 @@ export default function LinkedInSection() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Toolbar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "oklch(1 0 0 / 0.07)" }}>
+        <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "#1c1c1f" }}>
           <div className="flex items-center gap-3">
-            <span className="text-[13px] font-bold" style={{ color: "oklch(0.90 0.008 65)" }}>
+            <span className="text-[13px] font-bold" style={{ color: "#f4f3ef" }}>
               {leads.length > 0 ? `${leads.length} leads found` : "Results"}
             </span>
             {leads.length > 0 && (
               <span className="px-2 py-0.5 rounded-full text-[9px] font-bold"
-                style={{ background: "oklch(0.72 0.12 75 / 0.12)", color: "oklch(0.82 0.14 75)", border: "1px solid oklch(0.72 0.12 75 / 0.20)" }}>
+                style={{ background: "rgba(245,158,11,0.12)", color: "#fbbf24", border: "1px solid rgba(245,158,11,0.20)" }}>
                 LinkedIn
               </span>
             )}
@@ -328,12 +328,12 @@ export default function LinkedInSection() {
             <div className="flex items-center gap-2">
               <button onClick={exportCSV}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all hover:opacity-80"
-                style={{ background: "oklch(0.14 0.024 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.62 0.015 255)" }}>
+                style={{ background: "#121214", border: "1px solid #222226", color: "#a1a09c" }}>
                 <Download size={11} /> Export CSV
               </button>
               <button onClick={saveToDatabase} disabled={savingToDb}
                 className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-[11px] font-bold transition-all hover:opacity-90 disabled:opacity-50"
-                style={{ background: "oklch(0.65 0.18 145 / 0.15)", border: "1px solid oklch(0.65 0.18 145 / 0.30)", color: "oklch(0.65 0.18 145)" }}>
+                style={{ background: "rgba(74,222,128,0.15)", border: "1px solid rgba(74,222,128,0.30)", color: "#4ade80" }}>
                 {savingToDb ? <Loader2 size={10} className="animate-spin" /> : <Plus size={10} />}
                 Save to CRM
               </button>
@@ -346,13 +346,13 @@ export default function LinkedInSection() {
           {leads.length === 0 && !scraping ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-                style={{ background: "oklch(0.48 0.18 240 / 0.08)", border: "1px solid oklch(0.48 0.18 240 / 0.15)" }}>
-                <Linkedin size={28} style={{ color: "oklch(0.48 0.18 240 / 0.40)" }} />
+                style={{ background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)" }}>
+                <Linkedin size={28} style={{ color: "rgba(96,165,250,0.4)" }} />
               </div>
-              <div className="text-[14px] font-bold mb-1" style={{ color: "oklch(0.55 0.015 255)" }}>
+              <div className="text-[14px] font-bold mb-1" style={{ color: "#a1a09c" }}>
                 {sessionStatus === "not_logged_in" ? "Connect LinkedIn to start" : "Search for leads"}
               </div>
-              <div className="text-[11px] max-w-xs" style={{ color: "oklch(0.38 0.015 255)" }}>
+              <div className="text-[11px] max-w-xs" style={{ color: "#52524e" }}>
                 {sessionStatus === "not_logged_in"
                   ? "Click 'Connect LinkedIn' to open a browser and log in once. Sessions persist automatically."
                   : "Enter a job title and location, then click Start Scrape to find decision-makers."}
@@ -362,30 +362,30 @@ export default function LinkedInSection() {
             <div className="grid grid-cols-1 gap-3">
               {leads.map((lead, i) => (
                 <div key={i} className="flex items-center gap-4 p-4 rounded-2xl transition-all hover:translate-y-[-1px]"
-                  style={{ background: "oklch(0.11 0.022 255)", border: "1px solid oklch(1 0 0 / 0.07)", boxShadow: "0 2px 8px oklch(0 0 0 / 0.15)" }}>
+                  style={{ background: "#0d0d10", border: "1px solid #1c1c1f", boxShadow: "0 2px 8px rgba(9,9,11,0.15)" }}>
 
                   {/* Avatar */}
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-[13px] font-black"
-                    style={{ background: "oklch(0.48 0.18 240 / 0.15)", color: "oklch(0.60 0.18 240)", border: "1px solid oklch(0.48 0.18 240 / 0.20)" }}>
+                    style={{ background: "rgba(96,165,250,0.15)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
                     {lead.name.charAt(0).toUpperCase()}
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-[13px] font-bold truncate" style={{ color: "oklch(0.90 0.008 65)" }}>{lead.name}</span>
+                      <span className="text-[13px] font-bold truncate" style={{ color: "#f4f3ef" }}>{lead.name}</span>
                       {lead.connection_degree && (
                         <span className="px-1.5 py-0.5 rounded text-[8px] font-bold flex-shrink-0"
-                          style={{ background: "oklch(0.48 0.18 240 / 0.12)", color: "oklch(0.60 0.18 240)", border: "1px solid oklch(0.48 0.18 240 / 0.20)" }}>
+                          style={{ background: "rgba(96,165,250,0.12)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
                           {lead.connection_degree}
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] truncate mb-0.5" style={{ color: "oklch(0.62 0.015 255)" }}>
+                    <div className="text-[11px] truncate mb-0.5" style={{ color: "#a1a09c" }}>
                       {lead.title}{lead.company ? ` · ${lead.company}` : ""}
                     </div>
                     {lead.location && (
-                      <div className="flex items-center gap-1 text-[10px]" style={{ color: "oklch(0.42 0.015 255)" }}>
+                      <div className="flex items-center gap-1 text-[10px]" style={{ color: "#72716c" }}>
                         <MapPin size={9} /> {lead.location}
                       </div>
                     )}
@@ -395,8 +395,8 @@ export default function LinkedInSection() {
                   {lead.profile_url && (
                     <a href={lead.profile_url} target="_blank" rel="noreferrer"
                       className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
-                      style={{ background: "oklch(0.14 0.024 255)", border: "1px solid oklch(1 0 0 / 0.09)" }}>
-                      <ExternalLink size={11} style={{ color: "oklch(0.48 0.015 255)" }} />
+                      style={{ background: "#121214", border: "1px solid #222226" }}>
+                      <ExternalLink size={11} style={{ color: "#72716c" }} />
                     </a>
                   )}
                 </div>

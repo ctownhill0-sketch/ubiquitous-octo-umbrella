@@ -71,10 +71,10 @@ function fillVariables(text: string, data: Record<string, string>): string {
 
 function StatusBadge({ status }: { status: Campaign["status"] }) {
   const config = {
-    running:   { bg: "oklch(0.65 0.18 145 / 0.12)", color: "oklch(0.72 0.16 145)", border: "oklch(0.65 0.18 145 / 0.25)", label: "Running",   dot: "oklch(0.65 0.18 145)" },
-    completed: { bg: "oklch(0.55 0.10 230 / 0.12)", color: "oklch(0.65 0.12 230)", border: "oklch(0.55 0.10 230 / 0.25)", label: "Completed", dot: "oklch(0.55 0.10 230)" },
-    paused:    { bg: "oklch(0.72 0.12 75 / 0.12)",  color: "oklch(0.72 0.12 75)",  border: "oklch(0.72 0.12 75 / 0.25)",  label: "Paused",    dot: "oklch(0.72 0.12 75)" },
-    draft:     { bg: "oklch(0.45 0.015 255 / 0.12)",color: "oklch(0.55 0.015 255)",border: "oklch(0.45 0.015 255 / 0.25)",label: "Draft",     dot: "oklch(0.45 0.015 255)" },
+    running:   { bg: "rgba(74,222,128,0.12)", color: "#86efac", border: "rgba(74,222,128,0.25)", label: "Running",   dot: "#4ade80" },
+    completed: { bg: "rgba(96,165,250,0.12)", color: "#93c5fd", border: "rgba(96,165,250,0.25)", label: "Completed", dot: "#60a5fa" },
+    paused:    { bg: "rgba(245,158,11,0.12)",  color: "#f59e0b",  border: "rgba(245,158,11,0.25)",  label: "Paused",    dot: "#f59e0b" },
+    draft:     { bg: "rgba(114,113,108,0.12)",color: "#a1a09c",border: "rgba(114,113,108,0.25)",label: "Draft",     dot: "#72716c" },
   }[status];
   return (
     <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold"
@@ -202,13 +202,13 @@ export default function EmailSection() {
     <div className="flex h-full">
       {/* Left nav */}
       <div className="flex-shrink-0 flex flex-col overflow-y-auto"
-        style={{ width: 220, borderRight: "1px solid oklch(1 0 0 / 0.07)", background: "oklch(0.095 0.022 255)" }}>
-        <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+        style={{ width: 220, borderRight: "1px solid #1c1c1f", background: "#09090b" }}>
+        <div className="px-5 pt-5 pb-4" style={{ borderBottom: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2 mb-0.5">
-            <Mail size={13} style={{ color: "oklch(0.72 0.12 75)" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "oklch(0.90 0.008 65)" }}>Email Engine</span>
+            <Mail size={13} style={{ color: "#f59e0b" }} />
+            <span className="text-[13px] font-semibold" style={{ color: "#f4f3ef" }}>Email Engine</span>
           </div>
-          <p className="text-[11px]" style={{ color: "oklch(0.42 0.015 255)" }}>Campaigns &amp; outreach</p>
+          <p className="text-[11px]" style={{ color: "#72716c" }}>Campaigns &amp; outreach</p>
         </div>
         <div className="p-3 space-y-0.5">
         {[
@@ -221,36 +221,36 @@ export default function EmailSection() {
             <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[12.5px] font-medium transition-all"
               style={activeTab === tab.id ? {
-                background: "oklch(0.72 0.12 75 / 0.12)",
-                color: "oklch(0.90 0.008 65)",
-                boxShadow: "0 0 0 1px oklch(0.72 0.12 75 / 0.20)",
-              } : { color: "oklch(0.45 0.015 255)" }}>
-              <Icon size={14} style={activeTab === tab.id ? { color: "oklch(0.82 0.14 75)" } : {}} />
+                background: "rgba(245,158,11,0.12)",
+                color: "#f4f3ef",
+                boxShadow: "0 0 0 1px rgba(245,158,11,0.20)",
+              } : { color: "#72716c" }}>
+              <Icon size={14} style={activeTab === tab.id ? { color: "#fbbf24" } : {}} />
               {tab.label}
             </button>
           );
         })}
         </div>
 
-        <div className="mx-5 mt-2 pt-4" style={{ borderTop: "1px solid oklch(1 0 0 / 0.07)" }}>
-          <div className="text-[10px] font-bold tracking-[0.15em] uppercase mb-3" style={{ color: "oklch(0.38 0.015 255)" }}>Today</div>
+        <div className="mx-5 mt-2 pt-4" style={{ borderTop: "1px solid #1c1c1f" }}>
+          <div className="text-[10px] font-bold tracking-[0.15em] uppercase mb-3" style={{ color: "#52524e" }}>Today</div>
           {[
-            { label: "Sent", value: "47", color: "oklch(0.72 0.12 75)" },
-            { label: "Opened", value: "18", color: "oklch(0.65 0.18 145)" },
-            { label: "Replied", value: "4", color: "oklch(0.55 0.10 230)" },
+            { label: "Sent", value: "47", color: "#f59e0b" },
+            { label: "Opened", value: "18", color: "#4ade80" },
+            { label: "Replied", value: "4", color: "#60a5fa" },
           ].map(s => (
             <div key={s.label} className="flex items-center justify-between mb-2">
-              <span className="text-[11px]" style={{ color: "oklch(0.48 0.015 255)" }}>{s.label}</span>
+              <span className="text-[11px]" style={{ color: "#72716c" }}>{s.label}</span>
               <span className="text-[15px] font-bold font-mono" style={{ color: s.color }}>{s.value}</span>
             </div>
           ))}
         </div>
 
         {/* Spintax legend */}
-        <div className="mx-5 mt-2 pt-4" style={{ borderTop: "1px solid oklch(1 0 0 / 0.07)" }}>
-          <div className="text-[9px] font-bold tracking-[0.15em] uppercase mb-2" style={{ color: "oklch(0.38 0.015 255)" }}>Spintax</div>
-          <div className="text-[10px] leading-relaxed" style={{ color: "oklch(0.42 0.015 255)" }}>
-            Use <code className="font-mono px-1 py-0.5 rounded text-[9px]" style={{ background: "oklch(1 0 0 / 0.07)", color: "oklch(0.65 0.12 230)" }}>{'{'}Hi|Hello|Hey{'}'}</code> to randomize words per send.
+        <div className="mx-5 mt-2 pt-4" style={{ borderTop: "1px solid #1c1c1f" }}>
+          <div className="text-[9px] font-bold tracking-[0.15em] uppercase mb-2" style={{ color: "#52524e" }}>Spintax</div>
+          <div className="text-[10px] leading-relaxed" style={{ color: "#72716c" }}>
+            Use <code className="font-mono px-1 py-0.5 rounded text-[9px]" style={{ background: "#1c1c1f", color: "#93c5fd" }}>{'{'}Hi|Hello|Hey{'}'}</code> to randomize words per send.
           </div>        </div>
       </div>
 
@@ -262,12 +262,12 @@ export default function EmailSection() {
               className="flex-1 overflow-y-auto p-5">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-[14px] font-bold" style={{ color: "oklch(0.90 0.008 65)" }}>Campaigns</h2>
-                  <p className="text-[11px] mt-0.5" style={{ color: "oklch(0.45 0.015 255)" }}>Manage your outreach campaigns</p>
+                  <h2 className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>Campaigns</h2>
+                  <p className="text-[11px] mt-0.5" style={{ color: "#72716c" }}>Manage your outreach campaigns</p>
                 </div>
                 <button onClick={() => setActiveTab("compose")}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all hover:opacity-90"
-                  style={{ background: "oklch(0.72 0.12 75)", color: "oklch(0.10 0.025 255)" }}>
+                  style={{ background: "#f59e0b", color: "#09090b" }}>
                   <Plus size={11} /> New Campaign
                 </button>
               </div>
@@ -276,33 +276,33 @@ export default function EmailSection() {
                   <motion.div key={campaign.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     className="rounded-2xl p-5 cursor-pointer transition-all hover:border-white/10"
-                    style={{ background: "oklch(0.13 0.024 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                    style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <div className="text-[13px] font-semibold" style={{ color: "oklch(0.85 0.008 65)" }}>{campaign.name}</div>
-                        <div className="text-[10px] mt-0.5" style={{ color: "oklch(0.42 0.015 255)" }}>Created {campaign.createdAt}</div>
+                        <div className="text-[13px] font-semibold" style={{ color: "#e7e5e4" }}>{campaign.name}</div>
+                        <div className="text-[10px] mt-0.5" style={{ color: "#72716c" }}>Created {campaign.createdAt}</div>
                       </div>
                       <StatusBadge status={campaign.status} />
                     </div>
                     <div className="mb-3">
-                      <div className="flex justify-between text-[10px] mb-1" style={{ color: "oklch(0.45 0.015 255)" }}>
+                      <div className="flex justify-between text-[10px] mb-1" style={{ color: "#72716c" }}>
                         <span>{campaign.sent} / {campaign.total} sent</span>
                         <span>{Math.round((campaign.sent / Math.max(campaign.total, 1)) * 100)}%</span>
                       </div>
-                      <div className="h-1 rounded-full overflow-hidden" style={{ background: "oklch(0.16 0.022 255)" }}>
+                      <div className="h-1 rounded-full overflow-hidden" style={{ background: "#1c1c1f" }}>
                         <div className="h-full rounded-full transition-all"
-                          style={{ width: `${(campaign.sent / Math.max(campaign.total, 1)) * 100}%`, background: "oklch(0.72 0.12 75)" }} />
+                          style={{ width: `${(campaign.sent / Math.max(campaign.total, 1)) * 100}%`, background: "#f59e0b" }} />
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { label: "Open Rate", value: `${campaign.openRate}%`, color: "oklch(0.65 0.18 145)" },
-                        { label: "Reply Rate", value: `${campaign.replyRate}%`, color: "oklch(0.55 0.10 230)" },
-                        { label: "Remaining", value: campaign.total - campaign.sent, color: "oklch(0.72 0.12 75)" },
+                        { label: "Open Rate", value: `${campaign.openRate}%`, color: "#4ade80" },
+                        { label: "Reply Rate", value: `${campaign.replyRate}%`, color: "#60a5fa" },
+                        { label: "Remaining", value: campaign.total - campaign.sent, color: "#f59e0b" },
                       ].map(m => (
-                        <div key={m.label} className="rounded-md p-2 text-center" style={{ background: "oklch(0.14 0.022 255)" }}>
+                        <div key={m.label} className="rounded-md p-2 text-center" style={{ background: "#1c1c1f" }}>
                           <div className="text-[13px] font-bold font-mono" style={{ color: m.color }}>{m.value}</div>
-                          <div className="text-[9px] mt-0.5" style={{ color: "oklch(0.40 0.015 255)" }}>{m.label}</div>
+                          <div className="text-[9px] mt-0.5" style={{ color: "#52524e" }}>{m.label}</div>
                         </div>
                       ))}
                     </div>
@@ -317,23 +317,23 @@ export default function EmailSection() {
               className="flex-1 flex flex-col overflow-hidden">
               {/* Toolbar */}
               <div className="flex items-center justify-between px-5 py-3 flex-shrink-0"
-                style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
-                <div className="text-[13px] font-semibold" style={{ color: "oklch(0.85 0.008 65)" }}>Compose Email</div>
+                style={{ borderBottom: "1px solid #1c1c1f" }}>
+                <div className="text-[13px] font-semibold" style={{ color: "#e7e5e4" }}>Compose Email</div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => { setShowPreview(true); setPreviewVariant(v => v + 1); }}
                     className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all hover:opacity-80"
-                    style={{ background: "oklch(0.16 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.55 0.015 255)" }}>
+                    style={{ background: "#1c1c1f", border: "1px solid #1c1c1f", color: "#a1a09c" }}>
                     <Eye size={10} /> Preview
                   </button>
                   <button onClick={enhanceWithAI} disabled={aiLoading}
                     className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-semibold transition-all hover:opacity-80"
-                    style={{ background: "oklch(0.55 0.10 230 / 0.15)", border: "1px solid oklch(0.55 0.10 230 / 0.3)", color: "oklch(0.65 0.12 230)" }}>
+                    style={{ background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", color: "#93c5fd" }}>
                     {aiLoading ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />}
                     AI Enhance
                   </button>
                   <button onClick={sendCampaign} disabled={sendingCampaign}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[10px] font-semibold transition-all hover:opacity-90"
-                    style={{ background: "oklch(0.72 0.12 75)", color: "oklch(0.10 0.025 255)" }}>
+                    style={{ background: "#f59e0b", color: "#09090b" }}>
                     {sendingCampaign ? <Loader2 size={10} className="animate-spin" /> : <Send size={10} />}
                     Launch Campaign
                   </button>
@@ -344,20 +344,20 @@ export default function EmailSection() {
                 {/* Subject + A/B */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "oklch(0.42 0.015 255)" }}>
+                    <label className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#72716c" }}>
                       Subject Line {abEnabled ? "— Variant A" : ""}
                     </label>
                     <button onClick={() => setAbEnabled(!abEnabled)}
                       className="flex items-center gap-1 text-[9px] px-2 py-0.5 rounded font-medium transition-all"
                       style={abEnabled
-                        ? { background: "oklch(0.65 0.22 25 / 0.12)", color: "oklch(0.65 0.22 25)", border: "1px solid oklch(0.65 0.22 25 / 0.25)" }
-                        : { background: "oklch(1 0 0 / 0.04)", color: "oklch(0.45 0.015 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                        ? { background: "rgba(248,113,113,0.12)", color: "#f87171", border: "1px solid rgba(248,113,113,0.25)" }
+                        : { background: "rgba(255,255,255,0.03)", color: "#72716c", border: "1px solid #1c1c1f" }}>
                       <FlaskConical size={8} /> A/B Test
                     </button>
                   </div>
                   <input value={subject} onChange={e => setSubject(e.target.value)}
                     className="w-full px-3 py-2.5 rounded-lg text-[13px] outline-none font-medium"
-                    style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.90 0.008 65)" }}
+                    style={{ background: "#0d0d10", border: "1px solid #1c1c1f", color: "#f4f3ef" }}
                     placeholder="Subject line — use {option A|option B} for spintax..." />
                 </div>
 
@@ -365,12 +365,12 @@ export default function EmailSection() {
                 <AnimatePresence>
                   {abEnabled && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
-                      <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.65 0.22 25)" }}>
+                      <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "#f87171" }}>
                         Subject Line — Variant B <span className="font-normal opacity-60">(sent to 50% of leads)</span>
                       </label>
                       <input value={subjectB} onChange={e => setSubjectB(e.target.value)}
                         className="w-full px-3 py-2.5 rounded-lg text-[13px] outline-none font-medium"
-                        style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(0.65 0.22 25 / 0.25)", color: "oklch(0.90 0.008 65)" }}
+                        style={{ background: "#0d0d10", border: "1px solid rgba(248,113,113,0.25)", color: "#f4f3ef" }}
                         placeholder="Alternative subject line..." />
                     </motion.div>
                   )}
@@ -378,44 +378,44 @@ export default function EmailSection() {
 
                 {/* Body */}
                 <div>
-                  <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "oklch(0.42 0.015 255)" }}>
+                  <label className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 block" style={{ color: "#72716c" }}>
                     Email Body
                   </label>
                   <textarea value={body} onChange={e => setBody(e.target.value)} rows={12}
                     className="w-full px-3 py-3 rounded-lg text-[12px] leading-relaxed outline-none resize-none font-mono"
-                    style={{ background: "oklch(0.12 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.78 0.008 65)" }} />
+                    style={{ background: "#0d0d10", border: "1px solid #1c1c1f", color: "#d4d4d2" }} />
                 </div>
 
                 {/* Variables */}
-                <div className="rounded-2xl p-4" style={{ background: "oklch(0.55 0.10 230 / 0.06)", border: "1px solid oklch(0.55 0.10 230 / 0.18)" }}>
-                  <div className="text-[10px] font-semibold mb-2" style={{ color: "oklch(0.55 0.10 230)" }}>Variables & Spintax</div>
+                <div className="rounded-2xl p-4" style={{ background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.18)" }}>
+                  <div className="text-[10px] font-semibold mb-2" style={{ color: "#60a5fa" }}>Variables & Spintax</div>
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {["{{first_name}}", "{{company}}", "{{sender_name}}", "{{website}}"].map(v => (
                       <code key={v} onClick={() => setBody(b => b + v)}
                         className="text-[9px] px-1.5 py-0.5 rounded font-mono cursor-pointer hover:opacity-70 transition-opacity"
-                        style={{ background: "oklch(0.55 0.10 230 / 0.12)", color: "oklch(0.65 0.12 230)" }}>
+                        style={{ background: "rgba(96,165,250,0.12)", color: "#93c5fd" }}>
                         {v}
                       </code>
                     ))}
                   </div>
-                  <div className="text-[9px]" style={{ color: "oklch(0.42 0.015 255)" }}>
-                    Spintax: <code className="font-mono" style={{ color: "oklch(0.65 0.22 25)" }}>{"{Hi|Hello|Hey}"}</code> → randomly picks one option per email sent
+                  <div className="text-[9px]" style={{ color: "#72716c" }}>
+                    Spintax: <code className="font-mono" style={{ color: "#f87171" }}>{"{Hi|Hello|Hey}"}</code> → randomly picks one option per email sent
                   </div>
                 </div>
 
                 {/* Send Schedule */}
-                <div className="rounded-2xl p-5" style={{ background: "oklch(0.13 0.024 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                <div className="rounded-2xl p-5" style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <Clock size={12} style={{ color: "oklch(0.72 0.12 75)" }} />
-                      <span className="text-[12px] font-semibold" style={{ color: "oklch(0.85 0.008 65)" }}>Send Schedule</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: "oklch(0.72 0.12 75 / 0.10)", color: "oklch(0.72 0.12 75)" }}>
+                      <Clock size={12} style={{ color: "#f59e0b" }} />
+                      <span className="text-[12px] font-semibold" style={{ color: "#e7e5e4" }}>Send Schedule</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: "rgba(245,158,11,0.10)", color: "#f59e0b" }}>
                         Protects deliverability
                       </span>
                     </div>
                     <button onClick={() => setScheduleEnabled(!scheduleEnabled)}
                       className="relative w-8 h-4 rounded-full transition-colors flex-shrink-0"
-                      style={{ background: scheduleEnabled ? "oklch(0.65 0.18 145)" : "oklch(0.22 0.022 255)" }}>
+                      style={{ background: scheduleEnabled ? "#4ade80" : "#222226" }}>
                       <div className="absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all"
                         style={{ left: scheduleEnabled ? "calc(100% - 14px)" : "2px" }} />
                     </button>
@@ -427,7 +427,7 @@ export default function EmailSection() {
                         className="space-y-3">
                         {/* Days */}
                         <div>
-                          <div className="text-[9px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "oklch(0.42 0.015 255)" }}>Send Days</div>
+                          <div className="text-[9px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: "#72716c" }}>Send Days</div>
                           <div className="flex gap-1.5">
                             {DAY_LABELS.map((day, i) => (
                               <button key={i} onClick={() => setSendDays(prev =>
@@ -435,8 +435,8 @@ export default function EmailSection() {
                               )}
                                 className="w-7 h-7 rounded text-[9px] font-semibold transition-all"
                                 style={sendDays.includes(i)
-                                  ? { background: "oklch(0.72 0.12 75)", color: "oklch(0.10 0.025 255)" }
-                                  : { background: "oklch(0.16 0.022 255)", color: "oklch(0.45 0.015 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                                  ? { background: "#f59e0b", color: "#09090b" }
+                                  : { background: "#1c1c1f", color: "#72716c", border: "1px solid #1c1c1f" }}>
                                 {day}
                               </button>
                             ))}
@@ -446,30 +446,30 @@ export default function EmailSection() {
                         {/* Hours + Daily cap */}
                         <div className="grid grid-cols-3 gap-3">
                           <div>
-                            <div className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "oklch(0.42 0.015 255)" }}>Start Hour</div>
+                            <div className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "#72716c" }}>Start Hour</div>
                             <select value={sendStartHour} onChange={e => setSendStartHour(+e.target.value)}
                               className="w-full px-2 py-1.5 rounded text-[11px] outline-none"
-                              style={{ background: "oklch(0.16 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.78 0.008 65)" }}>
+                              style={{ background: "#1c1c1f", border: "1px solid #1c1c1f", color: "#d4d4d2" }}>
                               {Array.from({ length: 24 }, (_, i) => (
                                 <option key={i} value={i}>{i === 0 ? "12am" : i < 12 ? `${i}am` : i === 12 ? "12pm" : `${i - 12}pm`}</option>
                               ))}
                             </select>
                           </div>
                           <div>
-                            <div className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "oklch(0.42 0.015 255)" }}>End Hour</div>
+                            <div className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "#72716c" }}>End Hour</div>
                             <select value={sendEndHour} onChange={e => setSendEndHour(+e.target.value)}
                               className="w-full px-2 py-1.5 rounded text-[11px] outline-none"
-                              style={{ background: "oklch(0.16 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.78 0.008 65)" }}>
+                              style={{ background: "#1c1c1f", border: "1px solid #1c1c1f", color: "#d4d4d2" }}>
                               {Array.from({ length: 24 }, (_, i) => (
                                 <option key={i} value={i}>{i === 0 ? "12am" : i < 12 ? `${i}am` : i === 12 ? "12pm" : `${i - 12}pm`}</option>
                               ))}
                             </select>
                           </div>
                           <div>
-                            <div className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "oklch(0.42 0.015 255)" }}>Daily Cap</div>
+                            <div className="text-[9px] font-semibold uppercase tracking-wider mb-1" style={{ color: "#72716c" }}>Daily Cap</div>
                             <input type="number" value={dailyCap} onChange={e => setDailyCap(+e.target.value)} min={1} max={200}
                               className="w-full px-2 py-1.5 rounded text-[11px] outline-none"
-                              style={{ background: "oklch(0.16 0.022 255)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.78 0.008 65)" }} />
+                              style={{ background: "#1c1c1f", border: "1px solid #1c1c1f", color: "#d4d4d2" }} />
                           </div>
                         </div>
                       </motion.div>
@@ -484,29 +484,29 @@ export default function EmailSection() {
             <motion.div key="templates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="flex-1 overflow-y-auto p-5">
               <div className="mb-4">
-                <h2 className="text-[14px] font-bold" style={{ color: "oklch(0.90 0.008 65)" }}>Email Templates</h2>
-                <p className="text-[11px] mt-0.5" style={{ color: "oklch(0.45 0.015 255)" }}>High-converting cold email templates with built-in spintax</p>
+                <h2 className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>Email Templates</h2>
+                <p className="text-[11px] mt-0.5" style={{ color: "#72716c" }}>High-converting cold email templates with built-in spintax</p>
               </div>
               <div className="space-y-3">
                 {TEMPLATE_EMAILS.map((tmpl, i) => (
                   <motion.div key={tmpl.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     className="rounded-2xl p-5 cursor-pointer transition-all hover:border-white/10"
-                    style={{ background: "oklch(0.13 0.024 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}
+                    style={{ background: "#121214", border: "1px solid #1c1c1f" }}
                     onClick={() => { setSubject(tmpl.subject); setBody(tmpl.body); setActiveTab("compose"); toast.success("Template loaded"); }}>
                     <div className="flex items-center justify-between mb-2">
-                      <div className="text-[12px] font-semibold" style={{ color: "oklch(0.85 0.008 65)" }}>{tmpl.subject}</div>
+                      <div className="text-[12px] font-semibold" style={{ color: "#e7e5e4" }}>{tmpl.subject}</div>
                       <span className="text-[10px] px-2 py-1 rounded"
-                        style={{ background: "oklch(0.72 0.12 75 / 0.12)", color: "oklch(0.72 0.12 75)" }}>
+                        style={{ background: "rgba(245,158,11,0.12)", color: "#f59e0b" }}>
                         Use Template
                       </span>
                     </div>
-                    <div className="text-[11px] leading-relaxed" style={{ color: "oklch(0.50 0.015 255)" }}>
+                    <div className="text-[11px] leading-relaxed" style={{ color: "#a1a09c" }}>
                       {tmpl.body.substring(0, 180)}...
                     </div>
                     <div className="mt-2 flex items-center gap-1.5">
-                      <Shuffle size={9} style={{ color: "oklch(0.65 0.22 25)" }} />
-                      <span className="text-[9px]" style={{ color: "oklch(0.65 0.22 25)" }}>Includes spintax for deliverability</span>
+                      <Shuffle size={9} style={{ color: "#f87171" }} />
+                      <span className="text-[9px]" style={{ color: "#f87171" }}>Includes spintax for deliverability</span>
                     </div>
                   </motion.div>
                 ))}
@@ -524,7 +524,7 @@ export default function EmailSection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-8"
-            style={{ background: "oklch(0 0 0 / 0.7)" }}
+            style={{ background: "rgba(9,9,11,0.7)" }}
             onClick={() => setShowPreview(false)}
           >
             <motion.div
@@ -533,27 +533,27 @@ export default function EmailSection() {
               exit={{ scale: 0.95, y: 16 }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
               className="w-full max-w-xl rounded-2xl overflow-hidden"
-              style={{ background: "oklch(0.13 0.024 255)", border: "1px solid oklch(1 0 0 / 0.12)", boxShadow: "0 40px 80px oklch(0 0 0 / 0.65), 0 0 0 1px oklch(1 0 0 / 0.06)" }}
+              style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 40px 80px rgba(9,9,11,0.65), 0 0 0 1px #1c1c1f" }}
               onClick={e => e.stopPropagation()}
             >
               {/* Modal header */}
-              <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+              <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #1c1c1f" }}>
                 <div className="flex items-center gap-2">
-                  <Eye size={14} style={{ color: "oklch(0.72 0.12 75)" }} />
-                  <span className="text-[13px] font-semibold" style={{ color: "oklch(0.90 0.008 65)" }}>Email Preview</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: "oklch(0.65 0.22 25 / 0.12)", color: "oklch(0.65 0.22 25)" }}>
+                  <Eye size={14} style={{ color: "#f59e0b" }} />
+                  <span className="text-[13px] font-semibold" style={{ color: "#f4f3ef" }}>Email Preview</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: "rgba(248,113,113,0.12)", color: "#f87171" }}>
                     Spintax applied
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setPreviewVariant(v => v + 1)}
                     className="flex items-center gap-1 text-[10px] px-2 py-1 rounded transition-all hover:opacity-70"
-                    style={{ background: "oklch(1 0 0 / 0.06)", color: "oklch(0.55 0.015 255)" }}>
+                    style={{ background: "#1c1c1f", color: "#a1a09c" }}>
                     <Shuffle size={9} /> Re-roll
                   </button>
                   <button onClick={() => setShowPreview(false)}
                     className="w-6 h-6 rounded flex items-center justify-center transition-all hover:opacity-70"
-                    style={{ background: "oklch(1 0 0 / 0.06)", color: "oklch(0.55 0.015 255)" }}>
+                    style={{ background: "#1c1c1f", color: "#a1a09c" }}>
                     <X size={12} />
                   </button>
                 </div>
@@ -562,40 +562,40 @@ export default function EmailSection() {
               {/* Email preview */}
               <div className="p-5">
                 {/* Email meta */}
-                <div className="space-y-2 mb-4 pb-4" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+                <div className="space-y-2 mb-4 pb-4" style={{ borderBottom: "1px solid #1c1c1f" }}>
                   <div className="flex gap-3 text-[11px]">
-                    <span className="w-12 text-right flex-shrink-0" style={{ color: "oklch(0.42 0.015 255)" }}>From</span>
-                    <span style={{ color: "oklch(0.78 0.008 65)" }}>Alex &lt;alex@yourdomain.com&gt;</span>
+                    <span className="w-12 text-right flex-shrink-0" style={{ color: "#72716c" }}>From</span>
+                    <span style={{ color: "#d4d4d2" }}>Alex &lt;alex@yourdomain.com&gt;</span>
                   </div>
                   <div className="flex gap-3 text-[11px]">
-                    <span className="w-12 text-right flex-shrink-0" style={{ color: "oklch(0.42 0.015 255)" }}>To</span>
-                    <span style={{ color: "oklch(0.78 0.008 65)" }}>James &lt;james@whitfieldcapital.com&gt;</span>
+                    <span className="w-12 text-right flex-shrink-0" style={{ color: "#72716c" }}>To</span>
+                    <span style={{ color: "#d4d4d2" }}>James &lt;james@whitfieldcapital.com&gt;</span>
                   </div>
                   <div className="flex gap-3 text-[11px]">
-                    <span className="w-12 text-right flex-shrink-0" style={{ color: "oklch(0.42 0.015 255)" }}>Subject</span>
-                    <span className="font-semibold" style={{ color: "oklch(0.90 0.008 65)" }}>{previewSubject}</span>
+                    <span className="w-12 text-right flex-shrink-0" style={{ color: "#72716c" }}>Subject</span>
+                    <span className="font-semibold" style={{ color: "#f4f3ef" }}>{previewSubject}</span>
                   </div>
                   {abEnabled && subjectB && (
                     <div className="flex gap-3 text-[11px]">
-                      <span className="w-12 text-right flex-shrink-0" style={{ color: "oklch(0.65 0.22 25)" }}>Subj B</span>
-                      <span className="font-semibold" style={{ color: "oklch(0.90 0.008 65)" }}>{previewSubjectB}</span>
+                      <span className="w-12 text-right flex-shrink-0" style={{ color: "#f87171" }}>Subj B</span>
+                      <span className="font-semibold" style={{ color: "#f4f3ef" }}>{previewSubjectB}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Body */}
-                <div className="text-[12px] leading-relaxed whitespace-pre-wrap" style={{ color: "oklch(0.78 0.008 65)" }}>
+                <div className="text-[12px] leading-relaxed whitespace-pre-wrap" style={{ color: "#d4d4d2" }}>
                   {previewBody}
                 </div>
               </div>
 
-              <div className="px-5 py-3 flex items-center justify-between" style={{ borderTop: "1px solid oklch(1 0 0 / 0.07)", background: "oklch(0.10 0.020 255)" }}>
-                <span className="text-[10px]" style={{ color: "oklch(0.42 0.015 255)" }}>
+              <div className="px-5 py-3 flex items-center justify-between" style={{ borderTop: "1px solid #1c1c1f", background: "#121214" }}>
+                <span className="text-[10px]" style={{ color: "#72716c" }}>
                   Sample data: James at Whitfield Capital · Each real send gets unique spintax
                 </span>
                 <button onClick={() => { setShowPreview(false); sendCampaign(); }}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-semibold transition-all hover:opacity-90"
-                  style={{ background: "oklch(0.72 0.12 75)", color: "oklch(0.10 0.025 255)" }}>
+                  style={{ background: "#f59e0b", color: "#09090b" }}>
                   <Send size={9} /> Launch Campaign
                 </button>
               </div>

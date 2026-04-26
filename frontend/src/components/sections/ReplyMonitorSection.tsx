@@ -62,12 +62,12 @@ const DEMO_REPLIES: ReplyThread[] = [
 ];
 
 const INTENT_CONFIG: Record<Intent, { label: string; color: string; icon: any; bg: string }> = {
-  interested: { label: "Interested", color: "oklch(0.65 0.18 145)", bg: "oklch(0.65 0.18 145 / 0.10)", icon: CheckCircle2 },
-  not_now: { label: "Not Now", color: "oklch(0.72 0.12 75)", bg: "oklch(0.72 0.12 75 / 0.10)", icon: Clock },
-  unsubscribe: { label: "Unsubscribe", color: "oklch(0.65 0.2 25)", bg: "oklch(0.65 0.2 25 / 0.10)", icon: Ban },
-  meeting_booked: { label: "Meeting Booked", color: "oklch(0.55 0.10 230)", bg: "oklch(0.55 0.10 230 / 0.10)", icon: Calendar },
-  question: { label: "Question", color: "oklch(0.72 0.16 255)", bg: "oklch(0.72 0.16 255 / 0.10)", icon: AlertCircle },
-  unknown: { label: "Unknown", color: "oklch(0.45 0.015 255)", bg: "oklch(0.45 0.015 255 / 0.10)", icon: Mail },
+  interested: { label: "Interested", color: "#4ade80", bg: "rgba(74,222,128,0.10)", icon: CheckCircle2 },
+  not_now: { label: "Not Now", color: "#f59e0b", bg: "rgba(245,158,11,0.10)", icon: Clock },
+  unsubscribe: { label: "Unsubscribe", color: "#f87171", bg: "rgba(248,113,113,0.1)", icon: Ban },
+  meeting_booked: { label: "Meeting Booked", color: "#60a5fa", bg: "rgba(96,165,250,0.10)", icon: Calendar },
+  question: { label: "Question", color: "#a5b4fc", bg: "rgba(165,180,252,0.1)", icon: AlertCircle },
+  unknown: { label: "Unknown", color: "#72716c", bg: "rgba(114,113,108,0.1)", icon: Mail },
 };
 
 function IntentBadge({ intent, confidence }: { intent: Intent; confidence: number }) {
@@ -214,21 +214,21 @@ export default function ReplyMonitorSection() {
   return (
     <div className="flex h-full overflow-hidden">
       {/* Left panel */}
-      <div className="flex flex-col overflow-hidden" style={{ width: 360, borderRight: "1px solid oklch(1 0 0 / 0.07)" }}>
-        <div className="px-4 py-3.5 flex-shrink-0" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)", background: "oklch(0.10 0.020 255)" }}>
+      <div className="flex flex-col overflow-hidden" style={{ width: 360, borderRight: "1px solid #1c1c1f" }}>
+        <div className="px-4 py-3.5 flex-shrink-0" style={{ borderBottom: "1px solid #1c1c1f", background: "#121214" }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
-              <span className="text-[14px] font-bold" style={{ color: "oklch(0.90 0.008 65)" }}>Reply Monitor</span>
+              <span className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>Reply Monitor</span>
               {unread > 0 && (
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: "oklch(0.65 0.2 25)", color: "oklch(0.98 0 0)" }}>
+                  style={{ background: "#f87171", color: "#fafafa" }}>
                   {unread} new
                 </span>
               )}
             </div>
             <button onClick={syncGmail}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-semibold hover:opacity-80 transition-opacity"
-              style={{ background: "oklch(0.55 0.10 230 / 0.12)", border: "1px solid oklch(0.55 0.10 230 / 0.25)", color: "oklch(0.65 0.12 230)" }}>
+              style={{ background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.25)", color: "#93c5fd" }}>
               <RefreshCw size={10} className={syncing ? "animate-spin" : ""} />
               Sync Gmail
             </button>
@@ -236,7 +236,7 @@ export default function ReplyMonitorSection() {
           <div className="flex flex-wrap gap-1.5">
             <button onClick={() => setFilter("all")}
               className="px-2.5 py-1 rounded-full text-[10px] font-semibold transition-all"
-              style={filter === "all" ? { background: "oklch(0.72 0.12 75 / 0.15)", color: "oklch(0.82 0.14 75)", border: "1px solid oklch(0.72 0.12 75 / 0.25)" } : { color: "oklch(0.45 0.015 255)" }}>
+              style={filter === "all" ? { background: "rgba(245,158,11,0.15)", color: "#fbbf24", border: "1px solid rgba(245,158,11,0.25)" } : { color: "#72716c" }}>
               All ({replies.length})
             </button>
             {(Object.keys(INTENT_CONFIG) as Intent[]).filter(k => k !== "unknown").map(intent => {
@@ -246,7 +246,7 @@ export default function ReplyMonitorSection() {
               return (
                 <button key={intent} onClick={() => setFilter(intent)}
                   className="px-2.5 py-1 rounded-full text-[10px] font-semibold transition-all"
-                  style={filter === intent ? { background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` } : { color: "oklch(0.45 0.015 255)" }}>
+                  style={filter === intent ? { background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` } : { color: "#72716c" }}>
                   {cfg.label} ({count})
                 </button>
               );
@@ -258,25 +258,25 @@ export default function ReplyMonitorSection() {
             <motion.div key={reply.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }}
               className="px-4 py-3.5 cursor-pointer transition-all"
               style={{
-                borderBottom: "1px solid oklch(1 0 0 / 0.06)",
-                background: selected?.id === reply.id ? "oklch(0.72 0.12 75 / 0.07)" : "transparent",
-                borderLeft: selected?.id === reply.id ? "3px solid oklch(0.72 0.12 75)" : "3px solid transparent",
+                borderBottom: "1px solid #1c1c1f",
+                background: selected?.id === reply.id ? "rgba(245,158,11,0.07)" : "transparent",
+                borderLeft: selected?.id === reply.id ? "3px solid #f59e0b" : "3px solid transparent",
               }}
               onClick={() => { setSelected(reply); setReplyText(""); }}>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    {!reply.replied && <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "oklch(0.65 0.2 25)", boxShadow: "0 0 6px oklch(0.65 0.2 25 / 0.6)" }} />}
+                    {!reply.replied && <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#f87171", boxShadow: "0 0 6px rgba(248,113,113,0.6)" }} />}
                     <span className="text-[13px] font-bold truncate"
-                      style={{ color: reply.replied ? "oklch(0.52 0.015 255)" : "oklch(0.88 0.008 65)" }}>
+                      style={{ color: reply.replied ? "#a1a09c" : "#e7e5e4" }}>
                       {reply.from}
                     </span>
                   </div>
-                  <div className="text-[10px] truncate mt-0.5" style={{ color: "oklch(0.45 0.015 255)" }}>{reply.company}</div>
+                  <div className="text-[10px] truncate mt-0.5" style={{ color: "#72716c" }}>{reply.company}</div>
                 </div>
-                <span className="text-[10px] ml-2 flex-shrink-0" style={{ color: "oklch(0.40 0.015 255)" }}>{reply.receivedAt}</span>
+                <span className="text-[10px] ml-2 flex-shrink-0" style={{ color: "#52524e" }}>{reply.receivedAt}</span>
               </div>
-              <div className="text-[11px] truncate mb-2" style={{ color: "oklch(0.52 0.015 255)" }}>{reply.preview}</div>
+              <div className="text-[11px] truncate mb-2" style={{ color: "#a1a09c" }}>{reply.preview}</div>
               <IntentBadge intent={reply.intent} confidence={reply.confidence} />
             </motion.div>
           ))}
@@ -287,12 +287,12 @@ export default function ReplyMonitorSection() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {selected ? (
           <>
-            <div className="px-5 py-4 flex-shrink-0" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)", background: "oklch(0.10 0.020 255)" }}>
+            <div className="px-5 py-4 flex-shrink-0" style={{ borderBottom: "1px solid #1c1c1f", background: "#121214" }}>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-bold mb-1" style={{ color: "oklch(0.90 0.008 65)" }}>{selected.subject}</div>
-                  <div className="text-[11px]" style={{ color: "oklch(0.48 0.015 255)" }}>
-                    From: <span style={{ color: "oklch(0.65 0.008 65)" }}>{selected.from}</span> &lt;{selected.email}&gt;
+                  <div className="text-[14px] font-bold mb-1" style={{ color: "#f4f3ef" }}>{selected.subject}</div>
+                  <div className="text-[11px]" style={{ color: "#72716c" }}>
+                    From: <span style={{ color: "#d4d4d2" }}>{selected.from}</span> &lt;{selected.email}&gt;
                   </div>
                 </div>
                 <IntentBadge intent={selected.intent} confidence={selected.confidence} />
@@ -300,15 +300,15 @@ export default function ReplyMonitorSection() {
             </div>
             <div className="flex-1 overflow-y-auto p-5">
               <div className="rounded-2xl p-5 mb-4"
-                style={{ background: "oklch(0.13 0.024 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-                <div className="text-[12px] leading-relaxed whitespace-pre-wrap" style={{ color: "oklch(0.75 0.008 65)" }}>
+                style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
+                <div className="text-[12px] leading-relaxed whitespace-pre-wrap" style={{ color: "#a1a09c" }}>
                   {selected.fullBody}
                 </div>
               </div>
               {!selected.replied ? (
-                <div className="rounded-2xl p-5" style={{ background: "oklch(0.13 0.024 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                <div className="rounded-2xl p-5" style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="text-[12px] font-bold" style={{ color: "oklch(0.80 0.008 65)" }}>
+                    <div className="text-[12px] font-bold" style={{ color: "#d4d4d2" }}>
                       <Reply size={12} className="inline mr-1.5" />
                       Reply to {selected.from.split(" ")[0]}
                     </div>
@@ -316,13 +316,13 @@ export default function ReplyMonitorSection() {
                     {selected.intent === "interested" || selected.intent === "question" ? (
                       <button onClick={injectBookingLink}
                         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold hover:opacity-80 transition-opacity"
-                        style={{ background: "oklch(0.65 0.18 145 / 0.12)", border: "1px solid oklch(0.65 0.18 145 / 0.25)", color: "oklch(0.65 0.18 145)" }}>
+                        style={{ background: "rgba(74,222,128,0.12)", border: "1px solid rgba(74,222,128,0.25)", color: "#4ade80" }}>
                         <Link size={9} /> Inject Booking Link
                       </button>
                     ) : null}
                     <button onClick={generateAIReply} disabled={aiGenerating}
                       className="flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold hover:opacity-80 transition-opacity"
-                      style={{ background: "oklch(0.55 0.10 230 / 0.15)", border: "1px solid oklch(0.55 0.10 230 / 0.30)", color: "oklch(0.65 0.12 230)" }}>
+                      style={{ background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.30)", color: "#93c5fd" }}>
                       {aiGenerating ? <RefreshCw size={10} className="animate-spin" /> : <Sparkles size={10} />}
                       AI Reply
                     </button>
@@ -331,29 +331,29 @@ export default function ReplyMonitorSection() {
                   <textarea value={replyText} onChange={e => setReplyText(e.target.value)} rows={6}
                     placeholder="Write your reply..."
                     className="w-full px-4 py-3 rounded-xl text-[12px] leading-relaxed outline-none resize-none"
-                    style={{ background: "oklch(0.10 0.020 255)", border: "1px solid oklch(1 0 0 / 0.09)", color: "oklch(0.80 0.008 65)" }} />
+                    style={{ background: "#121214", border: "1px solid #222226", color: "#d4d4d2" }} />
                   <div className="flex justify-end mt-3">
                     <button onClick={sendReply} disabled={!replyText.trim()}
                       className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[12px] font-bold hover:opacity-90 transition-opacity disabled:opacity-40"
-                      style={{ background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))", color: "oklch(0.10 0.025 255)", boxShadow: "0 4px 14px oklch(0.72 0.12 75 / 0.25)" }}>
+                      style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b", boxShadow: "0 4px 14px rgba(245,158,11,0.25)" }}>
                       <Send size={11} /> Send Reply
                     </button>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-3 p-4 rounded-2xl"
-                  style={{ background: "oklch(0.65 0.18 145 / 0.08)", border: "1px solid oklch(0.65 0.18 145 / 0.22)" }}>
-                  <CheckCircle2 size={14} style={{ color: "oklch(0.65 0.18 145)" }} />
-                  <span className="text-[12px] font-semibold" style={{ color: "oklch(0.65 0.18 145)" }}>Reply sent</span>
+                  style={{ background: "rgba(74,222,128,0.08)", border: "1px solid rgba(74,222,128,0.22)" }}>
+                  <CheckCircle2 size={14} style={{ color: "#4ade80" }} />
+                  <span className="text-[12px] font-semibold" style={{ color: "#4ade80" }}>Reply sent</span>
                 </div>
               )}
             </div>
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center gap-3">
-            <Mail size={28} style={{ color: "oklch(0.28 0.015 255)" }} />
-            <div className="text-[13px] font-medium" style={{ color: "oklch(0.45 0.015 255)" }}>Select a reply to view</div>
-            <div className="text-[11px]" style={{ color: "oklch(0.35 0.015 255)" }}>AI classifies intent automatically</div>
+            <Mail size={28} style={{ color: "#222226" }} />
+            <div className="text-[13px] font-medium" style={{ color: "#72716c" }}>Select a reply to view</div>
+            <div className="text-[11px]" style={{ color: "#52524e" }}>AI classifies intent automatically</div>
           </div>
         )}
       </div>

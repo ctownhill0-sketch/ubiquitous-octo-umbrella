@@ -13,14 +13,14 @@ import {
 const BASE = "http://localhost:7432/api";
 
 const STATUS_COLORS: Record<string, string> = {
-  "New": "oklch(0.55 0.10 230)",
-  "Emailed": "oklch(0.65 0.12 230)",
-  "Follow-Up Sent": "oklch(0.72 0.12 75)",
-  "Hot Lead": "oklch(0.65 0.2 25)",
-  "Meeting Booked": "oklch(0.65 0.18 145)",
-  "Closed - Won": "oklch(0.60 0.18 145)",
-  "Not Interested": "oklch(0.40 0.015 255)",
-  "Unsubscribed": "oklch(0.35 0.015 255)",
+  "New": "#60a5fa",
+  "Emailed": "#93c5fd",
+  "Follow-Up Sent": "#f59e0b",
+  "Hot Lead": "#f87171",
+  "Meeting Booked": "#4ade80",
+  "Closed - Won": "#4ade80",
+  "Not Interested": "#52524e",
+  "Unsubscribed": "#52524e",
 };
 
 const FALLBACK_DAILY = [
@@ -44,8 +44,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !Array.isArray(payload) || payload.length === 0) return null;
   return (
     <div className="rounded-xl px-3 py-2.5 text-xs shadow-2xl"
-      style={{ background: "oklch(0.16 0.025 255)", border: "1px solid oklch(1 0 0 / 0.12)" }}>
-      <p className="font-bold mb-1.5" style={{ color: "oklch(0.75 0.008 65)" }}>{label}</p>
+      style={{ background: "#18181b", border: "1px solid rgba(255,255,255,0.12)" }}>
+      <p className="font-bold mb-1.5" style={{ color: "#a1a09c" }}>{label}</p>
       {payload.map((p: any, i: number) => (
         <p key={p?.dataKey ?? i} className="font-mono flex items-center gap-1.5 mb-0.5" style={{ color: p?.color }}>
           <span className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0" style={{ background: p?.color }} />
@@ -61,7 +61,7 @@ function StatCard({ icon: Icon, label, value, sub, color, change, delay = 0 }: a
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
       className="rounded-2xl p-5"
-      style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+      style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
       <div className="flex items-start justify-between mb-3">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center"
           style={{ background: `${color}15`, border: `1px solid ${color}25` }}>
@@ -69,15 +69,15 @@ function StatCard({ icon: Icon, label, value, sub, color, change, delay = 0 }: a
         </div>
         {change !== undefined && (
           <div className="flex items-center gap-1 text-[10px] font-bold"
-            style={{ color: positive ? "oklch(0.65 0.18 145)" : "oklch(0.65 0.2 25)" }}>
+            style={{ color: positive ? "#4ade80" : "#f87171" }}>
             {positive ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />}
             {Math.abs(change)}%
           </div>
         )}
       </div>
-      <div className="text-[28px] font-black leading-none mb-1" style={{ color: "oklch(0.92 0.008 65)" }}>{value}</div>
-      <div className="text-[11px] font-semibold" style={{ color: "oklch(0.55 0.015 255)" }}>{label}</div>
-      {sub && <div className="text-[10px] mt-0.5" style={{ color: "oklch(0.40 0.015 255)" }}>{sub}</div>}
+      <div className="text-[28px] font-black leading-none mb-1" style={{ color: "#f4f3ef" }}>{value}</div>
+      <div className="text-[11px] font-semibold" style={{ color: "#a1a09c" }}>{label}</div>
+      {sub && <div className="text-[10px] mt-0.5" style={{ color: "#52524e" }}>{sub}</div>}
     </motion.div>
   );
 }
@@ -144,7 +144,7 @@ export default function AnalyticsSection() {
   const pieData = statusBreakdown.map(s => ({
     name: s.status,
     value: s.count,
-    color: STATUS_COLORS[s.status] || "oklch(0.45 0.015 255)",
+    color: STATUS_COLORS[s.status] || "#72716c",
   }));
 
   const pipelineValue = deals?.total_pipeline_value ?? 187500;
@@ -158,10 +158,10 @@ export default function AnalyticsSection() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[18px] font-black" style={{ color: "oklch(0.93 0.008 65)" }}>Analytics</h2>
-          <p className="text-[11px] mt-0.5" style={{ color: "oklch(0.48 0.015 255)" }}>
+          <h2 className="text-[18px] font-black" style={{ color: "#f4f3ef" }}>Analytics</h2>
+          <p className="text-[11px] mt-0.5" style={{ color: "#72716c" }}>
             Real-time campaign performance and pipeline metrics
-            {!analytics && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-md" style={{ background: "oklch(0.72 0.12 75 / 0.12)", color: "oklch(0.72 0.12 75)" }}>demo data</span>}
+            {!analytics && <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-md" style={{ background: "rgba(245,158,11,0.12)", color: "#f59e0b" }}>demo data</span>}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -169,14 +169,14 @@ export default function AnalyticsSection() {
             <button key={r} onClick={() => setRange(r)}
               className="px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all"
               style={range === r
-                ? { background: "oklch(0.72 0.12 75 / 0.15)", border: "1px solid oklch(0.72 0.12 75 / 0.35)", color: "oklch(0.82 0.14 75)" }
-                : { background: "oklch(1 0 0 / 0.04)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.48 0.015 255)" }}>
+                ? { background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.35)", color: "#fbbf24" }
+                : { background: "rgba(255,255,255,0.03)", border: "1px solid #1c1c1f", color: "#72716c" }}>
               {r}d
             </button>
           ))}
           <button onClick={load} disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all hover:opacity-80"
-            style={{ background: "oklch(1 0 0 / 0.04)", border: "1px solid oklch(1 0 0 / 0.08)", color: "oklch(0.55 0.015 255)" }}>
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid #1c1c1f", color: "#a1a09c" }}>
             <RefreshCw size={11} className={loading ? "animate-spin" : ""} />
             Refresh
           </button>
@@ -185,30 +185,30 @@ export default function AnalyticsSection() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-4 gap-4">
-        <StatCard icon={Users} label="Total Leads" value={totalLeads} color="oklch(0.65 0.12 230)" change={12} delay={0.05} />
-        <StatCard icon={Mail} label="Emails Sent" value={emailsSent} sub={`${openRate}% open rate`} color="oklch(0.72 0.12 75)" change={8} delay={0.10} />
-        <StatCard icon={MessageSquare} label="Replies" value={emailsReplied} sub={`${replyRate}% reply rate`} color="oklch(0.65 0.18 145)" change={5} delay={0.15} />
-        <StatCard icon={Target} label="Hot Leads" value={hotLeads} sub={`${meetingsBooked} meetings booked`} color="oklch(0.65 0.2 25)" change={25} delay={0.20} />
+        <StatCard icon={Users} label="Total Leads" value={totalLeads} color="#93c5fd" change={12} delay={0.05} />
+        <StatCard icon={Mail} label="Emails Sent" value={emailsSent} sub={`${openRate}% open rate`} color="#f59e0b" change={8} delay={0.10} />
+        <StatCard icon={MessageSquare} label="Replies" value={emailsReplied} sub={`${replyRate}% reply rate`} color="#4ade80" change={5} delay={0.15} />
+        <StatCard icon={Target} label="Hot Leads" value={hotLeads} sub={`${meetingsBooked} meetings booked`} color="#f87171" change={25} delay={0.20} />
       </div>
 
       {/* Pipeline value row */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Total Pipeline", value: `$${(pipelineValue / 1000).toFixed(0)}k`, sub: `${totalDeals} deals tracked`, color: "oklch(0.72 0.12 75)" },
-          { label: "Weighted Forecast", value: `$${(weightedPipeline / 1000).toFixed(0)}k`, sub: "Probability-adjusted", color: "oklch(0.65 0.18 145)" },
-          { label: "Expected This Month", value: `$${(expectedMonth / 1000).toFixed(0)}k`, sub: `Avg deal: $${(avgDeal / 1000).toFixed(0)}k`, color: "oklch(0.65 0.2 25)" },
+          { label: "Total Pipeline", value: `$${(pipelineValue / 1000).toFixed(0)}k`, sub: `${totalDeals} deals tracked`, color: "#f59e0b" },
+          { label: "Weighted Forecast", value: `$${(weightedPipeline / 1000).toFixed(0)}k`, sub: "Probability-adjusted", color: "#4ade80" },
+          { label: "Expected This Month", value: `$${(expectedMonth / 1000).toFixed(0)}k`, sub: `Avg deal: $${(avgDeal / 1000).toFixed(0)}k`, color: "#f87171" },
         ].map((item, i) => (
           <motion.div key={item.label} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 + i * 0.05 }}
             className="rounded-2xl p-4 flex items-center gap-4"
-            style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+            style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
             <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{ background: `${item.color}12`, border: `1px solid ${item.color}22` }}>
               <DollarSign size={16} style={{ color: item.color }} />
             </div>
             <div>
-              <div className="text-[22px] font-black" style={{ color: "oklch(0.92 0.008 65)" }}>{item.value}</div>
-              <div className="text-[11px] font-semibold" style={{ color: "oklch(0.55 0.015 255)" }}>{item.label}</div>
-              <div className="text-[10px]" style={{ color: "oklch(0.40 0.015 255)" }}>{item.sub}</div>
+              <div className="text-[22px] font-black" style={{ color: "#f4f3ef" }}>{item.value}</div>
+              <div className="text-[11px] font-semibold" style={{ color: "#a1a09c" }}>{item.label}</div>
+              <div className="text-[10px]" style={{ color: "#52524e" }}>{item.sub}</div>
             </div>
           </motion.div>
         ))}
@@ -219,21 +219,21 @@ export default function AnalyticsSection() {
         {/* Activity chart — 2/3 width */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
           className="col-span-2 rounded-2xl p-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className="text-[13px] font-bold" style={{ color: "oklch(0.88 0.008 65)" }}>Email Activity</div>
-              <div className="text-[10px]" style={{ color: "oklch(0.45 0.015 255)" }}>Sent, opened, and replied over time</div>
+              <div className="text-[13px] font-bold" style={{ color: "#e7e5e4" }}>Email Activity</div>
+              <div className="text-[10px]" style={{ color: "#72716c" }}>Sent, opened, and replied over time</div>
             </div>
             <div className="flex items-center gap-3 text-[10px]">
               {[
-                { key: "emails_sent", label: "Sent", color: "oklch(0.65 0.12 230)" },
-                { key: "emails_opened", label: "Opened", color: "oklch(0.72 0.12 75)" },
-                { key: "replies", label: "Replied", color: "oklch(0.65 0.18 145)" },
+                { key: "emails_sent", label: "Sent", color: "#93c5fd" },
+                { key: "emails_opened", label: "Opened", color: "#f59e0b" },
+                { key: "replies", label: "Replied", color: "#4ade80" },
               ].map(l => (
                 <div key={l.key} className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full" style={{ background: l.color }} />
-                  <span style={{ color: "oklch(0.50 0.015 255)" }}>{l.label}</span>
+                  <span style={{ color: "#a1a09c" }}>{l.label}</span>
                 </div>
               ))}
             </div>
@@ -242,25 +242,25 @@ export default function AnalyticsSection() {
             <AreaChart data={slicedDaily} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
               <defs>
                 <linearGradient id="gradSent" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="oklch(0.65 0.12 230)" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="oklch(0.65 0.12 230)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#93c5fd" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#93c5fd" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gradOpened" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="oklch(0.72 0.12 75)" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="oklch(0.72 0.12 75)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gradReplied" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="oklch(0.65 0.18 145)" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="oklch(0.65 0.18 145)" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#4ade80" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#4ade80" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.05)" />
-              <XAxis dataKey="date" tick={{ fill: "oklch(0.40 0.015 255)", fontSize: 9 }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fill: "oklch(0.40 0.015 255)", fontSize: 9 }} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <XAxis dataKey="date" tick={{ fill: "#52524e", fontSize: 9 }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fill: "#52524e", fontSize: 9 }} tickLine={false} axisLine={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="emails_sent" name="Sent" stroke="oklch(0.65 0.12 230)" strokeWidth={2} fill="url(#gradSent)" dot={false} />
-              <Area type="monotone" dataKey="emails_opened" name="Opened" stroke="oklch(0.72 0.12 75)" strokeWidth={2} fill="url(#gradOpened)" dot={false} />
-              <Area type="monotone" dataKey="replies" name="Replied" stroke="oklch(0.65 0.18 145)" strokeWidth={2} fill="url(#gradReplied)" dot={false} />
+              <Area type="monotone" dataKey="emails_sent" name="Sent" stroke="#93c5fd" strokeWidth={2} fill="url(#gradSent)" dot={false} />
+              <Area type="monotone" dataKey="emails_opened" name="Opened" stroke="#f59e0b" strokeWidth={2} fill="url(#gradOpened)" dot={false} />
+              <Area type="monotone" dataKey="replies" name="Replied" stroke="#4ade80" strokeWidth={2} fill="url(#gradReplied)" dot={false} />
             </AreaChart>
           </ResponsiveContainer>
         </motion.div>
@@ -268,9 +268,9 @@ export default function AnalyticsSection() {
         {/* Pipeline breakdown pie */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
           className="rounded-2xl p-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-          <div className="text-[13px] font-bold mb-1" style={{ color: "oklch(0.88 0.008 65)" }}>Pipeline Stages</div>
-          <div className="text-[10px] mb-3" style={{ color: "oklch(0.45 0.015 255)" }}>Lead status breakdown</div>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
+          <div className="text-[13px] font-bold mb-1" style={{ color: "#e7e5e4" }}>Pipeline Stages</div>
+          <div className="text-[10px] mb-3" style={{ color: "#72716c" }}>Lead status breakdown</div>
           <ResponsiveContainer width="100%" height={140}>
             <PieChart>
               <Pie data={pieData} cx="50%" cy="50%" innerRadius={40} outerRadius={65} paddingAngle={2} dataKey="value">
@@ -286,9 +286,9 @@ export default function AnalyticsSection() {
               <div key={item.name} className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: item.color }} />
-                  <span className="text-[10px]" style={{ color: "oklch(0.58 0.015 255)" }}>{item.name}</span>
+                  <span className="text-[10px]" style={{ color: "#a1a09c" }}>{item.name}</span>
                 </div>
-                <span className="text-[10px] font-bold font-mono" style={{ color: "oklch(0.72 0.008 65)" }}>{item.value}</span>
+                <span className="text-[10px] font-bold font-mono" style={{ color: "#d4d4d2" }}>{item.value}</span>
               </div>
             ))}
           </div>
@@ -300,9 +300,9 @@ export default function AnalyticsSection() {
         {/* Top cities */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
           className="rounded-2xl p-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-          <div className="text-[13px] font-bold mb-1" style={{ color: "oklch(0.88 0.008 65)" }}>Top Markets</div>
-          <div className="text-[10px] mb-4" style={{ color: "oklch(0.45 0.015 255)" }}>Leads by city</div>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
+          <div className="text-[13px] font-bold mb-1" style={{ color: "#e7e5e4" }}>Top Markets</div>
+          <div className="text-[10px] mb-4" style={{ color: "#72716c" }}>Leads by city</div>
           <div className="space-y-3">
             {cityBreakdown.slice(0, 5).map((city, i) => {
               const max = Math.max(...cityBreakdown.map((c: any) => c.count), 1);
@@ -310,15 +310,15 @@ export default function AnalyticsSection() {
               return (
                 <div key={city.city}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] font-semibold" style={{ color: "oklch(0.72 0.008 65)" }}>{city.city}</span>
-                    <span className="text-[11px] font-bold font-mono" style={{ color: "oklch(0.72 0.12 75)" }}>{city.count}</span>
+                    <span className="text-[11px] font-semibold" style={{ color: "#d4d4d2" }}>{city.city}</span>
+                    <span className="text-[11px] font-bold font-mono" style={{ color: "#f59e0b" }}>{city.count}</span>
                   </div>
-                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(1 0 0 / 0.06)" }}>
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "#1c1c1f" }}>
                     <motion.div className="h-full rounded-full"
                       initial={{ width: 0 }}
                       animate={{ width: `${pct}%` }}
                       transition={{ duration: 0.8, delay: 0.4 + i * 0.05 }}
-                      style={{ background: "linear-gradient(90deg, oklch(0.65 0.12 230), oklch(0.72 0.12 75))" }} />
+                      style={{ background: "linear-gradient(90deg, #93c5fd, #f59e0b)" }} />
                   </div>
                 </div>
               );
@@ -329,17 +329,17 @@ export default function AnalyticsSection() {
         {/* Leads scraped bar chart */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
           className="rounded-2xl p-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-          <div className="text-[13px] font-bold mb-1" style={{ color: "oklch(0.88 0.008 65)" }}>Leads Scraped</div>
-          <div className="text-[10px] mb-3" style={{ color: "oklch(0.45 0.015 255)" }}>Daily new lead discovery</div>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
+          <div className="text-[13px] font-bold mb-1" style={{ color: "#e7e5e4" }}>Leads Scraped</div>
+          <div className="text-[10px] mb-3" style={{ color: "#72716c" }}>Daily new lead discovery</div>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={slicedDaily} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.05)" />
-              <XAxis dataKey="date" tick={{ fill: "oklch(0.40 0.015 255)", fontSize: 9 }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fill: "oklch(0.40 0.015 255)", fontSize: 9 }} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <XAxis dataKey="date" tick={{ fill: "#52524e", fontSize: 9 }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fill: "#52524e", fontSize: 9 }} tickLine={false} axisLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="leads_scraped" name="Leads" radius={[3, 3, 0, 0]}
-                fill="oklch(0.65 0.18 145)" opacity={0.85} />
+                fill="#4ade80" opacity={0.85} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>

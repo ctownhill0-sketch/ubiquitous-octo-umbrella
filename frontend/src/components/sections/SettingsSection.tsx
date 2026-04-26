@@ -62,8 +62,8 @@ export default function SettingsSection() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[18px] font-bold" style={{ color: "oklch(0.93 0.008 65)" }}>Settings</h1>
-          <p className="text-[12px] mt-0.5" style={{ color: "oklch(0.48 0.015 255)" }}>
+          <h1 className="text-[18px] font-bold" style={{ color: "#f4f3ef" }}>Settings</h1>
+          <p className="text-[12px] mt-0.5" style={{ color: "#72716c" }}>
             API keys, email config, and automation parameters
           </p>
         </div>
@@ -71,16 +71,16 @@ export default function SettingsSection() {
           {/* Backend status */}
           <div className="flex items-center gap-2 text-[11px] px-3 py-2 rounded-xl font-semibold"
             style={{
-              background: backendStatus === "online" ? "oklch(0.72 0.18 142 / 0.10)" : backendStatus === "offline" ? "oklch(0.65 0.2 25 / 0.10)" : "oklch(0.72 0.12 75 / 0.10)",
-              color: backendStatus === "online" ? "oklch(0.72 0.18 142)" : backendStatus === "offline" ? "oklch(0.75 0.15 25)" : "oklch(0.72 0.12 75)",
-              border: `1px solid ${backendStatus === "online" ? "oklch(0.72 0.18 142 / 0.22)" : backendStatus === "offline" ? "oklch(0.65 0.2 25 / 0.22)" : "oklch(0.72 0.12 75 / 0.22)"}`,
+              background: backendStatus === "online" ? "rgba(74,222,128,0.1)" : backendStatus === "offline" ? "rgba(248,113,113,0.1)" : "rgba(245,158,11,0.10)",
+              color: backendStatus === "online" ? "#4ade80" : backendStatus === "offline" ? "#f87171" : "#f59e0b",
+              border: `1px solid ${backendStatus === "online" ? "rgba(74,222,128,0.22)" : backendStatus === "offline" ? "rgba(248,113,113,0.22)" : "rgba(245,158,11,0.22)"}`,
             }}>
             {backendStatus === "online" ? <CheckCircle size={12} /> : backendStatus === "offline" ? <AlertCircle size={12} /> : <RefreshCw size={12} className="animate-spin" />}
             Backend {backendStatus}
           </div>
           <button onClick={handleSave} disabled={saving}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[12px] font-bold disabled:opacity-50 transition-all hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, oklch(0.78 0.14 75), oklch(0.68 0.12 65))", color: "oklch(0.09 0.02 255)", boxShadow: "0 4px 16px oklch(0.72 0.12 75 / 0.30)" }}>
+            style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b", boxShadow: "0 4px 16px rgba(245,158,11,0.30)" }}>
             {saving ? <RefreshCw size={13} className="animate-spin" /> : <Save size={13} />}
             Save Settings
           </button>
@@ -91,16 +91,16 @@ export default function SettingsSection() {
         {/* API Keys */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="rounded-2xl p-6 space-y-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "oklch(0.72 0.12 75 / 0.12)", border: "1px solid oklch(0.72 0.12 75 / 0.22)" }}>
-              <Key size={14} style={{ color: "oklch(0.82 0.14 75)" }} />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.22)" }}>
+              <Key size={14} style={{ color: "#fbbf24" }} />
             </div>
-            <h3 className="text-[14px] font-bold" style={{ color: "oklch(0.92 0.008 65)" }}>API Keys</h3>
+            <h3 className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>API Keys</h3>
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>
               ANTHROPIC API KEY (Claude AI)
             </label>
             <div className="relative">
@@ -110,38 +110,38 @@ export default function SettingsSection() {
                 onChange={e => set("anthropicKey", e.target.value)}
                 placeholder="sk-ant-…"
                 className="w-full px-3.5 py-2.5 pr-10 rounded-xl text-[12px] outline-none font-mono"
-                style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }}
+                style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }}
               />
               <button onClick={() => setShowAnthropicKey(v => !v)}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2"
-                style={{ color: "oklch(0.45 0.015 255)" }}>
+                style={{ color: "#72716c" }}>
                 {showAnthropicKey ? <EyeOff size={13} /> : <Eye size={13} />}
               </button>
             </div>
-            <p className="text-[10px] mt-1" style={{ color: "oklch(0.45 0.015 255)" }}>
-              Get your key at <a href="https://console.anthropic.com" target="_blank" rel="noreferrer" style={{ color: "oklch(0.65 0.18 255)" }}>console.anthropic.com</a>
+            <p className="text-[10px] mt-1" style={{ color: "#72716c" }}>
+              Get your key at <a href="https://console.anthropic.com" target="_blank" rel="noreferrer" style={{ color: "#a5b4fc" }}>console.anthropic.com</a>
             </p>
           </div>
 
-          <div className="pt-2 space-y-3" style={{ borderTop: "1px solid oklch(1 0 0 / 0.06)" }}>
-            <p className="text-[10px] font-medium" style={{ color: "oklch(0.55 0.015 255)" }}>GMAIL APP PASSWORD</p>
+          <div className="pt-2 space-y-3" style={{ borderTop: "1px solid #1c1c1f" }}>
+            <p className="text-[10px] font-medium" style={{ color: "#a1a09c" }}>GMAIL APP PASSWORD</p>
             <div>
-              <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>GMAIL ADDRESS</label>
+              <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>GMAIL ADDRESS</label>
               <input value={(form as any).senderEmail ?? ""} onChange={e => set("senderEmail" as any, e.target.value)}
                 placeholder="you@gmail.com" type="email"
                 className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none"
-                style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
+                style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
             </div>
             <div>
-              <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>APP PASSWORD (16 characters)</label>
+              <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>APP PASSWORD (16 characters)</label>
               <input value={(form as any).appPassword ?? ""} onChange={e => setForm(prev => ({ ...prev, appPassword: e.target.value }))}
                 placeholder="xxxx xxxx xxxx xxxx" type="password"
                 className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none font-mono"
-                style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
-              <p className="text-[10px] mt-1" style={{ color: "oklch(0.45 0.015 255)" }}>
+                style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
+              <p className="text-[10px] mt-1" style={{ color: "#72716c" }}>
                 Google Account → Security → 2-Step Verification → App Passwords → create one for "Mail".
                 <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noreferrer"
-                  className="ml-1" style={{ color: "oklch(0.65 0.18 255)" }}>Open App Passwords →</a>
+                  className="ml-1" style={{ color: "#a5b4fc" }}>Open App Passwords →</a>
               </p>
             </div>
           </div>
@@ -150,49 +150,49 @@ export default function SettingsSection() {
         {/* Email Settings */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className="rounded-2xl p-6 space-y-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "oklch(0.55 0.10 230 / 0.12)", border: "1px solid oklch(0.55 0.10 230 / 0.22)" }}>
-              <Mail size={14} style={{ color: "oklch(0.65 0.12 230)" }} />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.22)" }}>
+              <Mail size={14} style={{ color: "#93c5fd" }} />
             </div>
-            <h3 className="text-[14px] font-bold" style={{ color: "oklch(0.92 0.008 65)" }}>Email Settings</h3>
+            <h3 className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>Email Settings</h3>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>SENDER NAME</label>
+              <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>SENDER NAME</label>
               <input value={form.senderName ?? ""} onChange={e => set("senderName", e.target.value)}
                 placeholder="Your Name"
                 className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none"
-                style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
+                style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
             </div>
             <div>
-              <label className="text-[10px] font-semibold uppercase tracking-wider block mb-1.5" style={{ color: "oklch(0.48 0.015 255)" }}>SENDER EMAIL</label>
+              <label className="text-[10px] font-semibold uppercase tracking-wider block mb-1.5" style={{ color: "#72716c" }}>SENDER EMAIL</label>
               <input value={form.senderEmail ?? ""} onChange={e => set("senderEmail", e.target.value)}
                 placeholder="you@gmail.com"
                 className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none"
-                style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
+                style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>
-              MAX EMAILS PER DAY: <span style={{ color: "oklch(0.72 0.12 75)" }}>{form.maxEmailsPerDay ?? 50}</span>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>
+              MAX EMAILS PER DAY: <span style={{ color: "#f59e0b" }}>{form.maxEmailsPerDay ?? 50}</span>
             </label>
             <input type="range" min={10} max={200} step={10} value={form.maxEmailsPerDay ?? 50}
               onChange={e => set("maxEmailsPerDay", Number(e.target.value))}
               className="w-full accent-amber-400" />
-            <div className="flex justify-between text-[9px] mt-1" style={{ color: "oklch(0.45 0.015 255)" }}>
+            <div className="flex justify-between text-[9px] mt-1" style={{ color: "#72716c" }}>
               <span>10</span><span>200</span>
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>FOLLOW-UP SCHEDULE (days)</label>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>FOLLOW-UP SCHEDULE (days)</label>
             <div className="flex items-center gap-2">
               {(form.followUpDays ?? [3, 7, 14]).map((day, i) => (
                 <div key={i} className="flex items-center gap-1">
-                  <span className="text-[10px]" style={{ color: "oklch(0.45 0.015 255)" }}>Email {i + 2}:</span>
+                  <span className="text-[10px]" style={{ color: "#72716c" }}>Email {i + 2}:</span>
                   <input type="number" value={day} min={1} max={30}
                     onChange={e => {
                       const days = [...(form.followUpDays ?? [3, 7, 14])];
@@ -200,8 +200,8 @@ export default function SettingsSection() {
                       set("followUpDays", days);
                     }}
                     className="w-12 px-2 py-1 rounded text-xs text-center outline-none font-mono"
-                    style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.1)", color: "oklch(0.85 0.008 65)" }} />
-                  <span className="text-[10px]" style={{ color: "oklch(0.45 0.015 255)" }}>d</span>
+                    style={{ background: "#121214", border: "1px solid rgba(244,243,239,0.1)", color: "#e7e5e4" }} />
+                  <span className="text-[10px]" style={{ color: "#72716c" }}>d</span>
                 </div>
               ))}
             </div>
@@ -211,27 +211,27 @@ export default function SettingsSection() {
         {/* Scraper Settings */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
           className="rounded-2xl p-6 space-y-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "oklch(0.65 0.18 145 / 0.12)", border: "1px solid oklch(0.65 0.18 145 / 0.22)" }}>
-              <Settings size={14} style={{ color: "oklch(0.72 0.16 145)" }} />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(74,222,128,0.12)", border: "1px solid rgba(74,222,128,0.22)" }}>
+              <Settings size={14} style={{ color: "#86efac" }} />
             </div>
-            <h3 className="text-[14px] font-bold" style={{ color: "oklch(0.92 0.008 65)" }}>Scraper Settings</h3>
+            <h3 className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>Scraper Settings</h3>
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>DEFAULT KEYWORD</label>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>DEFAULT KEYWORD</label>
             <input value={form.targetKeyword ?? ""} onChange={e => set("targetKeyword", e.target.value)}
               placeholder="independent financial advisor"
               className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none"
-              style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
+              style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5 flex items-center gap-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>
-              <Map size={10} style={{ color: "oklch(0.72 0.16 145)" }} />
+            <label className="text-[10px] font-medium block mb-1.5 flex items-center gap-1.5" style={{ color: "#a1a09c" }}>
+              <Map size={10} style={{ color: "#86efac" }} />
               GOOGLE MAPS API KEY
-              <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: "oklch(0.72 0.16 145 / 0.15)", color: "oklch(0.72 0.16 145)" }}>UNLOCKS 60+ RESULTS</span>
+              <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: "rgba(74,222,128,0.15)", color: "#86efac" }}>UNLOCKS 60+ RESULTS</span>
             </label>
             <input
               type="password"
@@ -239,22 +239,22 @@ export default function SettingsSection() {
               onChange={e => setForm(prev => ({ ...prev, googleMapsApiKey: e.target.value }))}
               placeholder="AIzaSy…"
               className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none font-mono"
-              style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(0.72 0.16 145 / 0.25)", color: "oklch(0.85 0.008 65)" }}
+              style={{ background: "#121214", border: "1px solid rgba(74,222,128,0.25)", color: "#e7e5e4" }}
             />
-            <p className="text-[10px] mt-1" style={{ color: "oklch(0.45 0.015 255)" }}>
+            <p className="text-[10px] mt-1" style={{ color: "#72716c" }}>
               Uses Google Places API for up to 60 results per query (3 pages × 20). Without a key, the scraper uses HTML parsing (~20 results).
-              Get a key at <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" rel="noreferrer" style={{ color: "oklch(0.65 0.18 255)" }}>Google Cloud Console →</a>
+              Get a key at <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" rel="noreferrer" style={{ color: "#a5b4fc" }}>Google Cloud Console →</a>
             </p>
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>
-              SCRAPE DELAY (seconds): <span style={{ color: "oklch(0.72 0.12 75)" }}>{form.scrapeDelay ?? 2}s</span>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>
+              SCRAPE DELAY (seconds): <span style={{ color: "#f59e0b" }}>{form.scrapeDelay ?? 2}s</span>
             </label>
             <input type="range" min={1} max={10} step={0.5} value={form.scrapeDelay ?? 2}
               onChange={e => set("scrapeDelay", Number(e.target.value))}
               className="w-full accent-amber-400" />
-            <p className="text-[10px] mt-1" style={{ color: "oklch(0.45 0.015 255)" }}>
+            <p className="text-[10px] mt-1" style={{ color: "#72716c" }}>
               Delay between requests to avoid rate limiting. Recommended: 2–4s.
             </p>
           </div>
@@ -263,67 +263,67 @@ export default function SettingsSection() {
         {/* Product Settings */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
           className="rounded-2xl p-6 space-y-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "oklch(0.65 0.2 25 / 0.12)", border: "1px solid oklch(0.65 0.2 25 / 0.22)" }}>
-              <Zap size={14} style={{ color: "oklch(0.72 0.18 25)" }} />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.22)" }}>
+              <Zap size={14} style={{ color: "#fca5a5" }} />
             </div>
-            <h3 className="text-[14px] font-bold" style={{ color: "oklch(0.92 0.008 65)" }}>Product Info</h3>
+            <h3 className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>Product Info</h3>
           </div>
-          <p className="text-[10px]" style={{ color: "oklch(0.45 0.015 255)" }}>
+          <p className="text-[10px]" style={{ color: "#72716c" }}>
             Used by Claude AI when writing personalised emails and AI research.
           </p>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>PRODUCT / SERVICE NAME</label>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>PRODUCT / SERVICE NAME</label>
             <input value={form.productName ?? ""} onChange={e => set("productName", e.target.value)}
               placeholder="e.g. LeadStack, My Consulting, etc."
               className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none"
-              style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
+              style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold uppercase tracking-wider block mb-1.5" style={{ color: "oklch(0.48 0.015 255)" }}>WEBSITE / PRODUCT URL</label>
+            <label className="text-[10px] font-semibold uppercase tracking-wider block mb-1.5" style={{ color: "#72716c" }}>WEBSITE / PRODUCT URL</label>
             <input value={form.productUrl ?? ""} onChange={e => set("productUrl", e.target.value)}
               placeholder="https://yoursite.com"
               className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none"
-              style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
+              style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
           </div>
         </motion.div>
 
         {/* Booking & Automation */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
           className="rounded-2xl p-6 space-y-5"
-          style={{ background: "oklch(0.13 0.025 255)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+          style={{ background: "#121214", border: "1px solid #1c1c1f" }}>
           <div className="flex items-center gap-2.5 mb-1">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "oklch(0.55 0.10 230 / 0.12)", border: "1px solid oklch(0.55 0.10 230 / 0.22)" }}>
-              <Calendar size={14} style={{ color: "oklch(0.65 0.12 230)" }} />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.22)" }}>
+              <Calendar size={14} style={{ color: "#93c5fd" }} />
             </div>
-            <h3 className="text-[14px] font-bold" style={{ color: "oklch(0.92 0.008 65)" }}>Booking & Automation</h3>
+            <h3 className="text-[14px] font-bold" style={{ color: "#f4f3ef" }}>Booking & Automation</h3>
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>CALENDLY / BOOKING URL</label>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>CALENDLY / BOOKING URL</label>
             <div className="relative">
-              <Link size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "oklch(0.45 0.015 255)" }} />
+              <Link size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#72716c" }} />
               <input value={(form as any).calendlyUrl ?? ""} onChange={e => set("calendlyUrl" as any, e.target.value)}
                 placeholder="https://calendly.com/yourname/30min"
                 className="w-full pl-8 pr-3.5 py-2.5 rounded-xl text-[12px] outline-none"
-                style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
+                style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
             </div>
-            <p className="text-[10px] mt-1" style={{ color: "oklch(0.45 0.015 255)" }}>
+            <p className="text-[10px] mt-1" style={{ color: "#72716c" }}>
               Auto-injected into reply drafts when a lead shows interest. One click to book.
             </p>
           </div>
 
           <div>
-            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "oklch(0.55 0.015 255)" }}>EMAIL SIGNATURE</label>
+            <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>EMAIL SIGNATURE</label>
             <textarea value={(form as any).senderSignature ?? ""} onChange={e => set("senderSignature" as any, e.target.value)}
               rows={3}
               placeholder={`Best,\nYour Name\nYour Title | yourcompany.com`}
               className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none resize-none font-mono"
-              style={{ background: "oklch(0.10 0.02 255)", border: "1px solid oklch(1 0 0 / 0.10)", color: "oklch(0.85 0.008 65)" }} />
-            <p className="text-[10px] mt-1" style={{ color: "oklch(0.45 0.015 255)" }}>
+              style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
+            <p className="text-[10px] mt-1" style={{ color: "#72716c" }}>
               Appended to all outgoing emails automatically.
             </p>
           </div>
