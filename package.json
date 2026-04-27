@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "LeadStack - Premium Lead Generation Desktop App",
   "main": "electron/main.js",
+  "author": "LeadStack",
+  "copyright": "Copyright © 2026 LeadStack",
   "scripts": {
     "start": "electron .",
-    "build-react": "cd frontend && npm run build",
     "dev": "concurrently \"cd frontend && npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "dist": "npm run build-react && electron-builder --mac",
-    "dist:dmg": "npm run build-react && electron-builder --mac dmg"
+    "build": "cd frontend && npm run build",
+    "build:mac": "npm run build && electron-builder --mac --publish never",
+    "build:win": "npm run build && electron-builder --win --publish never",
+    "build:all": "npm run build && electron-builder --mac --win --publish never",
+    "release": "npm run build && electron-builder --mac --win --publish always"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
@@ -19,59 +23,71 @@
   "build": {
     "appId": "com.leadstack.app",
     "productName": "LeadStack",
-    "mac": {
-      "category": "public.app-category.business",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "arm64",
-            "x64"
-          ]
-        }
-      ],
-      "icon": "electron/icon.png",
-      "darkModeSupport": true
-    },
-    "dmg": {
-      "title": "LeadStack",
-      "background": "electron/dmg-background.png",
-      "icon": "electron/icon.png",
-      "iconSize": 80,
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ],
-      "window": {
-        "width": 540,
-        "height": 380
-      }
+    "copyright": "Copyright © 2026 LeadStack",
+    "icon": "assets/icon.png",
+    "publish": {
+      "provider": "github",
+      "owner": "ctownhill0-sketch",
+      "repo": "ubiquitous-octo-umbrella"
     },
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "assets"
     },
     "files": [
       "electron/**/*",
       "frontend/dist/**/*",
-      "backend/**/*",
-      "!backend/__pycache__",
-      "!backend/*.pyc",
-      "!backend/leads.db",
-      "!backend/server_v1.py",
-      "!backend/debug_*.py",
-      "!backend/app.py",
-      "!backend/run.sh",
-      "!backend/run.bat",
-      "!backend/money_machine.db"
-    ]
-  },
-  "author": "LeadStack"
+      "assets/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!__pycache__",
+          "!*.pyc",
+          "!leads.db",
+          "!money_machine.db",
+          "!warmup.db",
+          "!deals.db",
+          "!server_v1.py",
+          "!debug_*.py",
+          "!app.py",
+          "!run.sh",
+          "!run.bat"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.business",
+      "icon": "assets/icon.png",
+      "darkModeSupport": true,
+      "target": [
+        { "target": "pkg", "arch": ["arm64", "x64"] }
+      ]
+    },
+    "pkg": {
+      "allowAnywhere": true,
+      "allowCurrentUserHome": true,
+      "isRelocatable": true,
+      "license": "assets/license.txt"
+    },
+    "win": {
+      "icon": "assets/icon.png",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "LeadStack",
+      "installerHeaderIcon": "assets/icon.png",
+      "uninstallerIcon": "assets/icon.png",
+      "license": "assets/license.txt"
+    }
+  }
 }
