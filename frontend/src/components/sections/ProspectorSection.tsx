@@ -191,6 +191,9 @@ export default function ProspectorSection() {
       if (!res.ok) throw new Error(`status ${res.status}`);
       setAdded((prev) => new Set(prev).add(m.id));
       toast.success(`Added ${m.name} to LeadStack`);
+      // Notify the shell so StatusBar / sidebar badge update without
+      // waiting for the next 30s poll.
+      window.dispatchEvent(new CustomEvent("leadstack:data-changed"));
     } catch (e) {
       toast.error(e instanceof Error ? `Could not add ${m.name}: ${e.message}` : "Add failed");
     } finally {

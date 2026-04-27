@@ -1,5 +1,5 @@
 // LeadStack — Main Dashboard Page (Precision Dark shell)
-import { useEffect, useState, Suspense, lazy } from "react";
+import { useEffect, useRef, useState, Suspense, lazy } from "react";
 import Sidebar, { SectionId } from "@/components/Sidebar";
 import Header from "@/components/Header";
 import StatusBar from "@/components/StatusBar";
@@ -68,12 +68,25 @@ export default function Dashboard() {
   const [backendOnline, setBackendOnline] = useState(true);
 
   // Backend status + workspace stats — feeds the status bar and the sidebar badge.
+  // Sections that mutate leads dispatch `leadstack:data-changed` so we refresh
+  // immediately instead of waiting for the 30s poll.
+  const inFlightRef = useRef(false);
+  const abortRef = useRef<AbortController | null>(null);
   useEffect(() => {
     let cancelled = false;
+
     const refresh = async () => {
+      // Don't stack requests on slow networks: skip if a fetch is already in
+      // flight, and abort any prior poll before starting a fresh one.
+      if (inFlightRef.current) return;
+      inFlightRef.current = true;
+      abortRef.current?.abort();
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+
       try {
-        const res = await fetch("http://localhost:7432/api/stats");
-        if (!res.ok) throw new Error();
+        const res = await fetch("http://localhost:7432/api/stats", { signal: ctrl.signal });
+        if (!res.ok) throw new Error(`status ${res.status}`);
         const data = await res.json();
         if (cancelled) return;
         setBackendOnline(true);
@@ -83,25 +96,49 @@ export default function Dashboard() {
           hotLeads: data.hotLeads ?? 0,
         });
         setHotLeadCount(data.hotLeads ?? 0);
-      } catch {
-        if (!cancelled) setBackendOnline(false);
+      } catch (err) {
+        if (cancelled) return;
+        // AbortError isn't a real failure — it just means a newer poll started.
+        if ((err as Error)?.name !== "AbortError") setBackendOnline(false);
+      } finally {
+        inFlightRef.current = false;
       }
     };
+
     refresh();
     const id = setInterval(refresh, 30_000);
-    return () => { cancelled = true; clearInterval(id); };
+    const onDataChanged = () => { refresh(); };
+    window.addEventListener("leadstack:data-changed", onDataChanged);
+
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+      abortRef.current?.abort();
+      window.removeEventListener("leadstack:data-changed", onDataChanged);
+    };
   }, []);
 
   // Global keyboard shortcuts: ⌘K palette, ⌘1-5 nav.
   useEffect(() => {
+    const isInEditable = (target: EventTarget | null): boolean => {
+      const el = target as HTMLElement | null;
+      if (!el) return false;
+      if (el.isContentEditable) return true;
+      const tag = el.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    };
+
     const onKey = (e: KeyboardEvent) => {
       const meta = e.metaKey || e.ctrlKey;
+      // ⌘K is a global escape hatch — fires from anywhere, including text fields.
       if (meta && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setPalette((p) => !p);
         return;
       }
-      if (meta && SHORTCUTS[e.key]) {
+      // ⌘1–⌘5 navigation must NOT fire while the user is typing a campaign,
+      // a search query, or a note — that would lose their input.
+      if (meta && SHORTCUTS[e.key] && !isInEditable(e.target)) {
         e.preventDefault();
         setActiveSection(SHORTCUTS[e.key]);
       }

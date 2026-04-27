@@ -53,6 +53,16 @@ const DEMO_LEADS: Lead[] = [
 
 const BASE = "http://localhost:7432/api";
 
+// Namespaced HTML5 DnD payload so kanban drags can never drop into
+// foreign drop zones (sequences, file inputs, etc.).
+const DND_TYPE = "application/x-leadstack-lead";
+
+// Tells the shell (Dashboard) to refresh /api/stats so the StatusBar
+// and sidebar badges stay in sync after a mutation.
+function notifyDataChanged() {
+  window.dispatchEvent(new CustomEvent("leadstack:data-changed"));
+}
+
 function formatK(n: number) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000)     return `$${Math.round(n / 1_000)}k`;
@@ -129,6 +139,7 @@ export default function CRMSection() {
         body: JSON.stringify({ status: newStage }),
       });
       toast.success(`${lead.name} → ${STAGES.find((s) => s.id === newStage)?.label}`);
+      notifyDataChanged();
     } catch {
       toast.info(`${lead.name} moved (offline — will sync later)`);
     }
@@ -166,6 +177,7 @@ export default function CRMSection() {
       const res = await fetch(`${BASE}/leads/${lead.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error(String(res.status));
       toast.success(`Deleted ${lead.name}`);
+      notifyDataChanged();
     } catch (e) {
       // Restore on failure.
       setLeads(before);
@@ -225,6 +237,30 @@ export default function CRMSection() {
           className="flex-1 overflow-x-auto overflow-y-hidden"
           style={{ background: "var(--bg-base)" }}
         >
+          {leads.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-6">
+              <div
+                style={{
+                  width: 48, height: 48, borderRadius: 11,
+                  background: "rgba(245,158,11,0.08)",
+                  border: "1px solid rgba(245,158,11,0.22)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <Plus size={20} color="var(--amber-text)" />
+              </div>
+              <div className="text-[14px] font-medium" style={{ color: "var(--text-primary)" }}>
+                No leads in your pipeline yet
+              </div>
+              <div className="text-[12px]" style={{ color: "var(--text-muted)", maxWidth: 360 }}>
+                Add your first lead manually, scrape one from Google Maps, or use Prospector to find target accounts in your ICP.
+              </div>
+              <div className="flex gap-2 mt-1">
+                <button className="ls-btn-primary"><Plus size={12} /> Add lead</button>
+                <button className="ls-btn-ghost">Open Prospector</button>
+              </div>
+            </div>
+          ) : (
           <div className="flex h-full px-4 py-4 gap-3 min-w-max">
             {STAGES.map((stage) => {
               const colLeads = filtered.filter((l) => l.stage === stage.id);
@@ -232,10 +268,16 @@ export default function CRMSection() {
               return (
                 <div
                   key={stage.id}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => {
-                    if (!draggingId) return;
-                    const lead = leads.find((l) => l.id === draggingId);
+                  onDragOver={(e) => {
+                    // Only accept our own kanban payload — guards against
+                    // stray drops (files, links, drags from other panes).
+                    if (e.dataTransfer.types.includes(DND_TYPE)) e.preventDefault();
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const id = e.dataTransfer.getData(DND_TYPE) || draggingId;
+                    if (!id) return;
+                    const lead = leads.find((l) => l.id === id);
                     if (lead) updateStage(lead, stage.id);
                     setDraggingId(null);
                   }}
@@ -290,7 +332,11 @@ export default function CRMSection() {
                           lead={l}
                           isSelected={selected?.id === l.id}
                           onClick={() => setSelected(l)}
-                          onDragStart={() => setDraggingId(l.id)}
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData(DND_TYPE, l.id);
+                            e.dataTransfer.effectAllowed = "move";
+                            setDraggingId(l.id);
+                          }}
                           onDragEnd={() => setDraggingId(null)}
                         />
                       ))
@@ -310,6 +356,7 @@ export default function CRMSection() {
               );
             })}
           </div>
+          )}
         </div>
 
         {/* Detail panel */}
@@ -338,7 +385,7 @@ function KanbanCard({
   lead: Lead;
   isSelected: boolean;
   onClick: () => void;
-  onDragStart: () => void;
+  onDragStart: (e: React.DragEvent<HTMLDivElement>) => void;
   onDragEnd: () => void;
 }) {
   const initials = lead.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();

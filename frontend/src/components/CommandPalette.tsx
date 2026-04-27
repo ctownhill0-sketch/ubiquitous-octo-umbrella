@@ -139,28 +139,43 @@ export default function CommandPalette({ open, onClose, onNavigate, onAction }: 
     if (active >= filtered.length) setActive(0);
   }, [filtered.length, active]);
 
-  // Keyboard nav.
+  // Keep refs to mutable inputs the keydown handler reads, so we don't
+  // re-attach the listener on every render. Without this, the inline
+  // arrow `onClose` from the parent re-attaches the window listener
+  // dozens of times per second.
+  const filteredRef = useRef(filtered);
+  const activeRef = useRef(active);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { filteredRef.current = filtered; }, [filtered]);
+  useEffect(() => { activeRef.current = active; }, [active]);
+  useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
+
+  // Keyboard nav (mounted once per `open` toggle).
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        e.stopPropagation();
+        onCloseRef.current();
       } else if (e.key === "ArrowDown") {
         e.preventDefault();
-        setActive((i) => Math.min(i + 1, Math.max(filtered.length - 1, 0)));
+        const len = filteredRef.current.length;
+        setActive((i) => Math.min(i + 1, Math.max(len - 1, 0)));
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setActive((i) => Math.max(i - 1, 0));
       } else if (e.key === "Enter") {
         e.preventDefault();
-        const cur = filtered[active];
+        const cur = filteredRef.current[activeRef.current];
         if (cur) cur.onRun();
       }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [open, filtered, active, onClose]);
+    // Capture phase so Escape closes the palette before any inner
+    // input handler swallows it.
+    window.addEventListener("keydown", handler, true);
+    return () => window.removeEventListener("keydown", handler, true);
+  }, [open]);
 
   // Auto-scroll the active row into view.
   useEffect(() => {
