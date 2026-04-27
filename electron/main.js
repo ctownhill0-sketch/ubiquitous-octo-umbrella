@@ -110,14 +110,43 @@ async function createWindow() {
 
   // Wait for Python backend, then load the app
   const ready = await waitForBackend();
-  if (!ready) console.warn('[main] Backend not ready — loading in offline mode');
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools({ mode: 'detach' });
-  } else {
+  } else if (ready) {
     // Load from Flask server (same origin as API calls) to avoid file:// CORS issues
     mainWindow.loadURL(`http://localhost:${BACKEND_PORT}`);
+  } else {
+    // Backend never came up — show a branded fallback page instead of the
+    // raw Chromium "ERR_CONNECTION_REFUSED" screen.
+    console.warn('[main] Backend not ready — showing fallback page');
+    const fallbackHtml = `<!DOCTYPE html><html><head><title>LeadStack — Backend not ready</title>
+<style>
+  body{margin:0;background:#09090b;color:#f4f3ef;font-family:-apple-system,system-ui,sans-serif;
+       display:flex;align-items:center;justify-content:center;height:100vh}
+  .card{background:#121214;border:1px solid #1c1c1f;border-radius:12px;padding:32px 36px;
+        max-width:480px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  h1{margin:0 0 6px;font-size:20px;font-weight:600}
+  p{margin:6px 0;color:#a1a09c;font-size:13.5px;line-height:1.6}
+  code{background:#1c1c1f;padding:2px 6px;border-radius:4px;font-size:12px;color:#fbbf24}
+  button{margin-top:18px;background:#f59e0b;color:#09090b;border:0;border-radius:6px;
+         padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer}
+  button:hover{filter:brightness(1.1)}
+  .small{margin-top:12px;color:#52524e;font-size:11px}
+</style></head><body>
+<div class="card">
+  <h1>LeadStack couldn't start its backend</h1>
+  <p>The Python backend didn't respond on port ${BACKEND_PORT}. This usually means
+     Python 3.10+ isn't installed or the requirements haven't been set up yet.</p>
+  <p>Open Terminal, <code>cd</code> to the LeadStack folder and run:</p>
+  <p><code>pip3 install -r backend/requirements.txt</code></p>
+  <p>Then quit and reopen LeadStack.</p>
+  <button onclick="location.reload()">Retry</button>
+  <div class="small">If this keeps happening, contact support with the contents of Console.app.</div>
+</div>
+</body></html>`;
+    mainWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(fallbackHtml));
   }
 
   mainWindow.on('closed', () => { mainWindow = null; });
@@ -125,8 +154,12 @@ async function createWindow() {
 
 // ─── IPC Handlers ─────────────────────────────────────────────────────────────
 
-// Proxy API calls to Python backend
-ipcMain.handle('api-call', async (event, { method, endpoint, data }) => {
+// Proxy API calls to Python backend.
+// The renderer also calls fetch() directly (same-origin in production), so
+// this IPC bridge is for callers that need an Electron-only path. We add
+// a hard timeout so a hung backend never produces a hung promise.
+const API_CALL_TIMEOUT_MS = 30_000;
+ipcMain.handle('api-call', async (_event, { method, endpoint, data }) => {
   return new Promise((resolve, reject) => {
     const body = data ? JSON.stringify(data) : null;
     const options = {
@@ -134,6 +167,7 @@ ipcMain.handle('api-call', async (event, { method, endpoint, data }) => {
       port: BACKEND_PORT,
       path: endpoint,
       method: method || 'GET',
+      timeout: API_CALL_TIMEOUT_MS,
       headers: {
         'Content-Type': 'application/json',
         ...(body ? { 'Content-Length': Buffer.byteLength(body) } : {}),
@@ -150,6 +184,9 @@ ipcMain.handle('api-call', async (event, { method, endpoint, data }) => {
     });
 
     req.on('error', (err) => reject(err.message));
+    req.on('timeout', () => {
+      req.destroy(new Error(`api-call timed out after ${API_CALL_TIMEOUT_MS}ms`));
+    });
     if (body) req.write(body);
     req.end();
   });

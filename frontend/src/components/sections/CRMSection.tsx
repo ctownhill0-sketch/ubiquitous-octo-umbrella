@@ -128,20 +128,31 @@ export default function CRMSection() {
 
   const updateStage = useCallback(async (lead: Lead, newStage: Stage) => {
     if (lead.stage === newStage) return;
+    const prevStage = lead.stage;
+    const prevDays = lead.daysInStage;
+
+    // Optimistic — flip immediately so the kanban feels instant.
     setLeads((prev) => prev.map((l) => (l.id === lead.id ? { ...l, stage: newStage, daysInStage: 0 } : l)));
     if (selected?.id === lead.id) {
       setSelected((s) => (s ? { ...s, stage: newStage } : s));
     }
+
     try {
-      await fetch(`${BASE}/leads/${lead.id}`, {
+      const res = await fetch(`${BASE}/leads/${lead.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStage }),
       });
+      if (!res.ok) throw new Error(`status ${res.status}`);
       toast.success(`${lead.name} → ${STAGES.find((s) => s.id === newStage)?.label}`);
       notifyDataChanged();
-    } catch {
-      toast.info(`${lead.name} moved (offline — will sync later)`);
+    } catch (e) {
+      // Roll back so the kanban matches what's actually persisted.
+      setLeads((prev) => prev.map((l) => (l.id === lead.id ? { ...l, stage: prevStage, daysInStage: prevDays } : l)));
+      if (selected?.id === lead.id) {
+        setSelected((s) => (s ? { ...s, stage: prevStage } : s));
+      }
+      toast.error(e instanceof Error ? `Move failed: ${e.message}` : "Move failed — couldn't reach the server");
     }
   }, [selected]);
 

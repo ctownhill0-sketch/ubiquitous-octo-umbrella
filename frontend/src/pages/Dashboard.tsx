@@ -87,15 +87,19 @@ export default function Dashboard() {
       try {
         const res = await fetch("http://localhost:7432/api/stats", { signal: ctrl.signal });
         if (!res.ok) throw new Error(`status ${res.status}`);
-        const data = await res.json();
+        // Defensive parse — a misbehaving backend could return null, an empty
+        // body, or non-JSON. Treat any of those as "no data" instead of
+        // crashing on `null.totalLeads`.
+        const raw = await res.json().catch(() => null);
+        const data = (raw && typeof raw === "object") ? raw as Record<string, unknown> : {};
         if (cancelled) return;
         setBackendOnline(true);
         setStats({
-          totalLeads: data.totalLeads ?? 0,
-          leadsToday: data.leadsToday ?? 0,
-          hotLeads: data.hotLeads ?? 0,
+          totalLeads: Number(data.totalLeads) || 0,
+          leadsToday: Number(data.leadsToday) || 0,
+          hotLeads:   Number(data.hotLeads)   || 0,
         });
-        setHotLeadCount(data.hotLeads ?? 0);
+        setHotLeadCount(Number(data.hotLeads) || 0);
       } catch (err) {
         if (cancelled) return;
         // AbortError isn't a real failure — it just means a newer poll started.
@@ -143,8 +147,10 @@ export default function Dashboard() {
         setActiveSection(SHORTCUTS[e.key]);
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    // Capture phase so the global shortcut intercepts before any nested
+    // input handler can swallow the keystroke.
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
   }, []);
 
   const ActiveComponent = SECTIONS[activeSection];
