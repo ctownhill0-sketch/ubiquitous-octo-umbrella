@@ -23,22 +23,31 @@ const STATUS_COLORS: Record<string, string> = {
   "Unsubscribed": "#52524e",
 };
 
-const FALLBACK_DAILY = [
-  { date: "Apr 1", emails_sent: 22, emails_opened: 9, replies: 2, leads_scraped: 15 },
-  { date: "Apr 2", emails_sent: 18, emails_opened: 7, replies: 1, leads_scraped: 0 },
-  { date: "Apr 3", emails_sent: 35, emails_opened: 15, replies: 4, leads_scraped: 28 },
-  { date: "Apr 4", emails_sent: 28, emails_opened: 11, replies: 3, leads_scraped: 0 },
-  { date: "Apr 5", emails_sent: 0, emails_opened: 2, replies: 1, leads_scraped: 0 },
-  { date: "Apr 6", emails_sent: 0, emails_opened: 1, replies: 0, leads_scraped: 0 },
-  { date: "Apr 7", emails_sent: 42, emails_opened: 18, replies: 5, leads_scraped: 40 },
-  { date: "Apr 8", emails_sent: 38, emails_opened: 16, replies: 4, leads_scraped: 0 },
-  { date: "Apr 9", emails_sent: 47, emails_opened: 20, replies: 6, leads_scraped: 35 },
-  { date: "Apr 10", emails_sent: 31, emails_opened: 13, replies: 3, leads_scraped: 0 },
-  { date: "Apr 11", emails_sent: 12, emails_opened: 5, replies: 2, leads_scraped: 22 },
-  { date: "Apr 12", emails_sent: 0, emails_opened: 7, replies: 0, leads_scraped: 0 },
-  { date: "Apr 13", emails_sent: 0, emails_opened: 3, replies: 0, leads_scraped: 0 },
-  { date: "Apr 14", emails_sent: 0, emails_opened: 1, replies: 0, leads_scraped: 0 },
+// Build the demo trend relative to today so users in May/June/etc. don't
+// see "Apr 1 → Apr 14" stale dates when the backend hasn't returned data.
+const FALLBACK_NUMBERS: Array<{ emails_sent: number; emails_opened: number; replies: number; leads_scraped: number }> = [
+  { emails_sent: 22, emails_opened: 9,  replies: 2, leads_scraped: 15 },
+  { emails_sent: 18, emails_opened: 7,  replies: 1, leads_scraped: 0  },
+  { emails_sent: 35, emails_opened: 15, replies: 4, leads_scraped: 28 },
+  { emails_sent: 28, emails_opened: 11, replies: 3, leads_scraped: 0  },
+  { emails_sent: 0,  emails_opened: 2,  replies: 1, leads_scraped: 0  },
+  { emails_sent: 0,  emails_opened: 1,  replies: 0, leads_scraped: 0  },
+  { emails_sent: 42, emails_opened: 18, replies: 5, leads_scraped: 40 },
+  { emails_sent: 38, emails_opened: 16, replies: 4, leads_scraped: 0  },
+  { emails_sent: 47, emails_opened: 20, replies: 6, leads_scraped: 35 },
+  { emails_sent: 31, emails_opened: 13, replies: 3, leads_scraped: 0  },
+  { emails_sent: 12, emails_opened: 5,  replies: 2, leads_scraped: 22 },
+  { emails_sent: 0,  emails_opened: 7,  replies: 0, leads_scraped: 0  },
+  { emails_sent: 0,  emails_opened: 3,  replies: 0, leads_scraped: 0  },
+  { emails_sent: 0,  emails_opened: 1,  replies: 0, leads_scraped: 0  },
 ];
+
+const FALLBACK_DAILY = FALLBACK_NUMBERS.map((row, i) => {
+  const d = new Date();
+  d.setDate(d.getDate() - (FALLBACK_NUMBERS.length - 1 - i));
+  const date = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return { date, ...row };
+});
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !Array.isArray(payload) || payload.length === 0) return null;
@@ -97,7 +106,7 @@ export default function AnalyticsSection() {
       ]);
       if (aRes?.ok) setAnalytics(await aRes.json());
       if (dRes?.ok) setDeals(await dRes.json());
-    } catch { /* use fallback */ }
+    } catch (e) { console.warn("[Analytics] load failed, using fallbacks:", e); }
     setLoading(false);
   };
 

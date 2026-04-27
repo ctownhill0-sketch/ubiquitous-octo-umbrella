@@ -151,11 +151,14 @@ export default function WarmupSection() {
     try {
       const res = await fetch(`${API}/api/warmup/simulate`, { method: "POST" });
       if (res.ok) {
-        const data = await res.json();
-        toast.success(`Warmup simulated — ${data.sent} emails exchanged`);
+        const data = await res.json().catch(() => ({}));
+        const sent = Number(data?.sent) || 0;
+        toast.success(sent
+          ? `Warmup simulated — ${sent} email${sent === 1 ? "" : "s"} exchanged`
+          : "Warmup simulated — no exchange this cycle");
         loadAll();
       } else {
-        toast.error("Simulation failed");
+        toast.error(`Simulation failed (${res.status})`);
       }
     } catch {
       toast.info("Backend offline — demo mode");

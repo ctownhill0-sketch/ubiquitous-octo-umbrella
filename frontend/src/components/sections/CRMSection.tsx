@@ -121,7 +121,7 @@ export default function CRMSection() {
         };
       });
       if (mapped.length) setLeads(mapped);
-    } catch { /* offline — keep demo data */ }
+    } catch (e) { console.warn("[CRM] backend unreachable, keeping demo data:", e); }
   }, []);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);

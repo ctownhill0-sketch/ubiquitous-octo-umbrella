@@ -25,7 +25,7 @@ export default function SettingsSection() {
       productUrl: "",
       calendlyUrl: "",
       senderSignature: "",
-    } as SettingsType & { calendlyUrl: string; senderSignature: string }
+    }
   });
 
   const [form, setForm] = useState<Partial<SettingsType>>({});
@@ -127,14 +127,14 @@ export default function SettingsSection() {
             <p className="text-[10px] font-medium" style={{ color: "#a1a09c" }}>GMAIL APP PASSWORD</p>
             <div>
               <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>GMAIL ADDRESS</label>
-              <input value={(form as any).senderEmail ?? ""} onChange={e => set("senderEmail" as any, e.target.value)}
+              <input value={form.senderEmail ?? ""} onChange={e => set("senderEmail", e.target.value)}
                 placeholder="you@gmail.com" type="email"
                 className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none"
                 style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
             </div>
             <div>
               <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>APP PASSWORD (16 characters)</label>
-              <input value={(form as any).appPassword ?? ""} onChange={e => setForm(prev => ({ ...prev, appPassword: e.target.value }))}
+              <input value={form.appPassword ?? ""} onChange={e => setForm(prev => ({ ...prev, appPassword: e.target.value }))}
                 placeholder="xxxx xxxx xxxx xxxx" type="password"
                 className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none font-mono"
                 style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
@@ -235,7 +235,7 @@ export default function SettingsSection() {
             </label>
             <input
               type="password"
-              value={(form as any).googleMapsApiKey ?? ""}
+              value={(form.googleMapsApiKey as string | undefined) ?? ""}
               onChange={e => setForm(prev => ({ ...prev, googleMapsApiKey: e.target.value }))}
               placeholder="AIzaSy…"
               className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none font-mono"
@@ -306,7 +306,7 @@ export default function SettingsSection() {
             <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>CALENDLY / BOOKING URL</label>
             <div className="relative">
               <Link size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#72716c" }} />
-              <input value={(form as any).calendlyUrl ?? ""} onChange={e => set("calendlyUrl" as any, e.target.value)}
+              <input value={form.calendlyUrl ?? ""} onChange={e => set("calendlyUrl", e.target.value)}
                 placeholder="https://calendly.com/yourname/30min"
                 className="w-full pl-8 pr-3.5 py-2.5 rounded-xl text-[12px] outline-none"
                 style={{ background: "#121214", border: "1px solid rgba(255,255,255,0.10)", color: "#e7e5e4" }} />
@@ -318,7 +318,7 @@ export default function SettingsSection() {
 
           <div>
             <label className="text-[10px] font-medium block mb-1.5" style={{ color: "#a1a09c" }}>EMAIL SIGNATURE</label>
-            <textarea value={(form as any).senderSignature ?? ""} onChange={e => set("senderSignature" as any, e.target.value)}
+            <textarea value={form.senderSignature ?? ""} onChange={e => set("senderSignature", e.target.value)}
               rows={3}
               placeholder={`Best,\nYour Name\nYour Title | yourcompany.com`}
               className="w-full px-3.5 py-2.5 rounded-xl text-[12px] outline-none resize-none font-mono"

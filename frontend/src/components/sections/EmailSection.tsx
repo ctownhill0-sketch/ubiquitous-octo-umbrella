@@ -98,8 +98,8 @@ export default function EmailSection() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(DEMO_CAMPAIGNS);
   const [sendingCampaign, setSendingCampaign] = useState(false);
   const [activeTab, setActiveTab] = useState<"campaigns" | "compose" | "templates">("campaigns");
-  const [subject, setSubject] = useState(TEMPLATE_EMAILS[0].subject);
-  const [body, setBody] = useState(TEMPLATE_EMAILS[0].body);
+  const [subject, setSubject] = useState(TEMPLATE_EMAILS[0]?.subject ?? "");
+  const [body, setBody] = useState(TEMPLATE_EMAILS[0]?.body ?? "");
   const [aiLoading, setAiLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewVariant, setPreviewVariant] = useState(0); // for re-rolling spintax
@@ -115,9 +115,13 @@ export default function EmailSection() {
     try {
       const res = await fetch(`${BASE}/email/campaigns`);
       if (!res.ok) return;
-      const data = await res.json();
-      if (data.campaigns && data.campaigns.length > 0) setCampaigns(data.campaigns);
-    } catch { /* offline */ }
+      const data = await res.json().catch(() => null);
+      if (data && Array.isArray(data.campaigns) && data.campaigns.length > 0) {
+        setCampaigns(data.campaigns);
+      }
+    } catch (e) {
+      console.warn("[Email] fetchCampaigns failed:", e);
+    }
   }, []);
 
   useEffect(() => { fetchCampaigns(); }, [fetchCampaigns]);
@@ -594,9 +598,10 @@ export default function EmailSection() {
                   Sample data: James at Whitfield Capital · Each real send gets unique spintax
                 </span>
                 <button onClick={() => { setShowPreview(false); sendCampaign(); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-semibold transition-all hover:opacity-90"
+                  disabled={sendingCampaign}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-semibold transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ background: "#f59e0b", color: "#09090b" }}>
-                  <Send size={9} /> Launch Campaign
+                  <Send size={9} /> {sendingCampaign ? "Launching..." : "Launch Campaign"}
                 </button>
               </div>
             </motion.div>

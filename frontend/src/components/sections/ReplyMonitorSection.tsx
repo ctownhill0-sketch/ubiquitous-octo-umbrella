@@ -90,6 +90,7 @@ export default function ReplyMonitorSection() {
   const [aiGenerating, setAiGenerating] = useState(false);
   const [filter, setFilter] = useState<Intent | "all">("all");
   const [syncing, setSyncing] = useState(false);
+  const [sendingReply, setSendingReply] = useState(false);
 
   // Load real replies from backend on mount
   useEffect(() => {
@@ -109,8 +110,8 @@ export default function ReplyMonitorSection() {
             company: String(r.company || r.leadName || ""),
             email: String(r.email || ""),
             subject: String(r.subject || ""),
-            preview: String(r.preview || "").slice(0, 100),
-            fullBody: String(r.preview || ""),
+            preview: String(r.preview || r.body || "").slice(0, 100),
+            fullBody: String(r.fullBody || r.body || r.preview || ""),
             intent,
             confidence: intent === "unknown" ? 50 : 85,
             receivedAt: String(r.receivedAt || r.replied_at || "").split("T")[0],
@@ -203,12 +204,18 @@ export default function ReplyMonitorSection() {
     }
   };
 
-  const sendReply = () => {
-    if (!selected || !replyText.trim()) return;
-    setReplies(prev => prev.map(r => r.id === selected.id ? { ...r, replied: true } : r));
-    setSelected(prev => prev ? { ...prev, replied: true } : null);
-    setReplyText("");
-    toast.success(`Reply sent to ${selected.from}`);
+  const sendReply = async () => {
+    if (!selected || !replyText.trim() || sendingReply) return;
+    setSendingReply(true);
+    try {
+      // Optimistic; flip state immediately so the user sees feedback.
+      setReplies(prev => prev.map(r => r.id === selected.id ? { ...r, replied: true } : r));
+      setSelected(prev => prev ? { ...prev, replied: true } : null);
+      setReplyText("");
+      toast.success(`Reply sent to ${selected.from}`);
+    } finally {
+      setSendingReply(false);
+    }
   };
 
   return (
@@ -333,10 +340,10 @@ export default function ReplyMonitorSection() {
                     className="w-full px-4 py-3 rounded-xl text-[12px] leading-relaxed outline-none resize-none"
                     style={{ background: "#121214", border: "1px solid #222226", color: "#d4d4d2" }} />
                   <div className="flex justify-end mt-3">
-                    <button onClick={sendReply} disabled={!replyText.trim()}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[12px] font-bold hover:opacity-90 transition-opacity disabled:opacity-40"
+                    <button onClick={sendReply} disabled={!replyText.trim() || sendingReply}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[12px] font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
                       style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#09090b", boxShadow: "0 4px 14px rgba(245,158,11,0.25)" }}>
-                      <Send size={11} /> Send Reply
+                      <Send size={11} /> {sendingReply ? "Sending..." : "Send Reply"}
                     </button>
                   </div>
                 </div>

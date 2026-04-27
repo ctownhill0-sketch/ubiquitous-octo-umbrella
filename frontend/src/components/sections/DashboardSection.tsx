@@ -101,7 +101,7 @@ export default function DashboardSection() {
         ]);
         if (!cancelled && statsRes.ok) setStats(await statsRes.json());
         if (!cancelled && anaRes.ok)   setAnalytics(await anaRes.json());
-      } catch { /* offline — fallbacks */ }
+      } catch (e) { console.warn("[Dashboard] stats/analytics fetch failed:", e); }
     };
     load();
   }, []);

@@ -195,6 +195,10 @@ export interface Settings {
   productUrl: string;
   calendlyUrl?: string;
   senderSignature?: string;
+  googleMapsApiKey?: string;
+  // Allow forward-compatible read of fields the backend adds without
+  // requiring a type bump (anthropicApiKey, etc.).
+  [key: string]: unknown;
 }
 
 export function getSettings(): Promise<Settings> {

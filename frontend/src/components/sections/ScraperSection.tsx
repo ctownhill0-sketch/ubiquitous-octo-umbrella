@@ -80,7 +80,7 @@ export default function ScraperSection() {
         if (!mountedRef.current) return;
         if (data?.leads?.length > 0) {
           setLeads(data.leads.map((l: any, i: number) => ({
-            id: String(l.id || i + 1), name: l.name || "Unknown", company: l.name || "Unknown",
+            id: String(l.id || i + 1), name: l.name || "Unknown", company: l.company || l.name || "Unknown",
             email: l.email || "", phone: l.phone || "", website: l.website || "",
             location: l.address || "", source: "google" as const, status: "new" as const,
           })));
@@ -160,13 +160,13 @@ export default function ScraperSection() {
             if (liveRes.ok) {
               const liveData = await liveRes.json();
               const liveLeads = (liveData.leads || []).map((l: any, i: number) => ({
-                id: String(l.id || i + 1), name: l.name || "Unknown", company: l.name || "Unknown",
+                id: String(l.id || i + 1), name: l.name || "Unknown", company: l.company || l.name || "Unknown",
                 email: l.email || "", phone: l.phone || "", website: l.website || "",
                 location: l.address || "", source: "google" as const, status: "new" as const,
               }));
               if (mountedRef.current && liveLeads.length > 0) setLeads(liveLeads);
             }
-          } catch { /* ignore */ }
+          } catch (e) { console.warn("[Scraper] live refresh failed:", e); }
         }
       }
       if (cancelScrapeRef.current || !mountedRef.current) return;
@@ -176,7 +176,7 @@ export default function ScraperSection() {
       if (leadsRes.ok) {
         const data = await leadsRes.json();
         const newLeads = (data.leads || []).map((l: any, i: number) => ({
-          id: String(l.id || i + 1), name: l.name || "Unknown", company: l.name || "Unknown",
+          id: String(l.id || i + 1), name: l.name || "Unknown", company: l.company || l.name || "Unknown",
           email: l.email || "", phone: l.phone || "", website: l.website || "",
           location: l.address || "", source: "google" as const, status: "new" as const,
         }));

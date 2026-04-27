@@ -55,9 +55,13 @@ export default function LinkedInSection() {
     setSessionStatus("checking");
     try {
       const res = await fetch(`${BASE}/linkedin/session`);
-      const data = await res.json();
+      if (!res.ok) {
+        if (mountedRef.current) setSessionStatus("not_logged_in");
+        return;
+      }
+      const data = await res.json().catch(() => ({}));
       if (!mountedRef.current) return;
-      setSessionStatus(data.logged_in ? "logged_in" : "not_logged_in");
+      setSessionStatus(data?.logged_in ? "logged_in" : "not_logged_in");
     } catch {
       if (!mountedRef.current) return;
       setSessionStatus("not_logged_in");
@@ -73,9 +77,9 @@ export default function LinkedInSection() {
     setLoggingIn(true);
     try {
       const res = await fetch(`${BASE}/linkedin/login`, { method: "POST" });
-      const data = await res.json();
-      if (data.error) {
-        toast.error(data.message || "Could not open browser");
+      const data = await res.json().catch(() => ({} as { error?: string; message?: string }));
+      if (!res.ok || data?.error) {
+        toast.error(data?.message || data?.error || "Could not open browser");
         setLoggingIn(false);
       } else {
         toast.info("Browser opened — log in to LinkedIn, then come back here");
@@ -83,8 +87,9 @@ export default function LinkedInSection() {
         pollIntervalRef.current = setInterval(async () => {
           try {
             const check = await fetch(`${BASE}/linkedin/session`);
-            const status = await check.json();
-            if (status.logged_in && mountedRef.current) {
+            if (!check.ok) return;
+            const status = await check.json().catch(() => null);
+            if (status?.logged_in && mountedRef.current) {
               stopLoginPoll();
               setSessionStatus("logged_in");
               setLoggingIn(false);
@@ -126,19 +131,19 @@ export default function LinkedInSection() {
           filters: connectionFilter !== "all" ? { connection_degree: connectionFilter } : {},
         }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: `bad_response_${res.status}` } as { error?: string; message?: string; leads?: LinkedInLead[] }));
 
-      if (data.error === "linkedin_not_logged_in") {
+      if (data?.error === "linkedin_not_logged_in") {
         setSessionStatus("not_logged_in");
         toast.error("LinkedIn session expired — please log in again");
-      } else if (data.error) {
-        toast.error(data.message || data.error);
+      } else if (!res.ok || data?.error) {
+        toast.error(data?.message || data?.error || `Scrape failed (${res.status})`);
       } else {
-        setLeads(data.leads || []);
-        toast.success(`Found ${(data.leads || []).length} leads`);
+        setLeads(data?.leads || []);
+        toast.success(`Found ${(data?.leads || []).length} leads`);
       }
-    } catch {
-      toast.error("Backend not running");
+    } catch (e) {
+      toast.error(e instanceof Error ? `Scrape failed: ${e.message}` : "Backend not running");
     } finally {
       setScraping(false);
     }
@@ -153,11 +158,17 @@ export default function LinkedInSection() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ leads }),
       });
-      const data = await res.json();
-      setSavedCount(data.saved || 0);
-      toast.success(`Saved ${data.saved} new leads (${data.skipped} duplicates skipped)`);
-    } catch {
-      toast.error("Failed to save leads");
+      if (!res.ok) {
+        toast.error(`Failed to save leads (${res.status})`);
+        return;
+      }
+      const data = await res.json().catch(() => ({}));
+      const saved = Number(data?.saved) || 0;
+      const skipped = Number(data?.skipped) || 0;
+      setSavedCount(saved);
+      toast.success(`Saved ${saved} new leads (${skipped} duplicates skipped)`);
+    } catch (e) {
+      toast.error(e instanceof Error ? `Save failed: ${e.message}` : "Failed to save leads");
     } finally {
       setSavingToDb(false);
     }
