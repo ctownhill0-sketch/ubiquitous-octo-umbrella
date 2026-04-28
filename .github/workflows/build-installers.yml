@@ -8,7 +8,6 @@ on:
 jobs:
   build-mac:
     runs-on: macos-latest
-    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -17,45 +16,22 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - run: npm ci
 
-      - name: Install root npm deps
-        run: npm ci
-
-      - name: Install frontend npm deps
-        working-directory: frontend
-        run: npm ci
-
-      - name: Install backend Python deps (so the bundled Python can resolve them post-install on the user's machine)
-        working-directory: backend
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Build Mac installer
+      - name: Build Mac DMG
         run: npm run build:mac
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          # Skip code signing — we ship unsigned for v1. Set CSC_LINK +
-          # CSC_KEY_PASSWORD + APPLE_ID + APPLE_APP_SPECIFIC_PASSWORD +
-          # APPLE_TEAM_ID to switch on Developer ID signing + notarization.
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List build output
-        run: ls -la dist/
-
-      - uses: softprops/action-gh-release@v2
+      - name: Upload Mac DMG to Release
+        uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.pkg
-          generate_release_notes: true
+          files: dist/*.dmg
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-windows:
     runs-on: windows-latest
-    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -64,34 +40,16 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - run: npm ci
 
-      - name: Install root npm deps
-        run: npm ci
-
-      - name: Install frontend npm deps
-        working-directory: frontend
-        run: npm ci
-
-      - name: Install backend Python deps
-        working-directory: backend
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Build Windows installer
+      - name: Build Windows EXE
         run: npm run build:win
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List build output
-        run: dir dist
-
-      - uses: softprops/action-gh-release@v2
+      - name: Upload Windows EXE to Release
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/*.exe
-          generate_release_notes: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

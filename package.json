@@ -8,6 +8,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "concurrently \"cd frontend && npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "postinstall": "cd frontend && npm ci",
     "build": "cd frontend && npm run build",
     "build:mac": "npm run build && electron-builder --mac --publish never",
     "build:win": "npm run build && electron-builder --win --publish never",
@@ -64,14 +65,16 @@
       "icon": "assets/icon.png",
       "darkModeSupport": true,
       "target": [
-        { "target": "pkg", "arch": ["arm64", "x64"] }
+        { "target": "dmg", "arch": ["arm64", "x64"] }
       ]
     },
-    "pkg": {
-      "allowAnywhere": true,
-      "allowCurrentUserHome": true,
-      "isRelocatable": true,
-      "license": "assets/license.txt"
+    "dmg": {
+      "title": "Install LeadStack",
+      "window": { "width": 540, "height": 380 },
+      "contents": [
+        { "x": 140, "y": 180, "type": "file" },
+        { "x": 400, "y": 180, "type": "link", "path": "/Applications" }
+      ]
     },
     "win": {
       "icon": "assets/icon.png",
