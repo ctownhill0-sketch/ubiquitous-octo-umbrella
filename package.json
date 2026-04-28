@@ -70,6 +70,7 @@
     },
     "dmg": {
       "title": "Install LeadStack",
+      "icon": false,
       "window": { "width": 540, "height": 380 },
       "contents": [
         { "x": 140, "y": 180, "type": "file" },
