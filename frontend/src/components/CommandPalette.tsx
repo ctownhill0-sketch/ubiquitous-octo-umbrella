@@ -7,6 +7,7 @@ import {
   Linkedin, Flame, Shield, Zap, FileSearch, X,
 } from "lucide-react";
 import type { SectionId } from "@/components/Sidebar";
+import { API_BASE } from "@/const";
 
 interface CommandPaletteProps {
   open: boolean;
@@ -56,7 +57,7 @@ export default function CommandPalette({ open, onClose, onNavigate, onAction }: 
     debounceRef.current = setTimeout(async () => {
       try {
         const res = await fetch(
-          `http://localhost:7432/api/search?q=${encodeURIComponent(query)}&limit=6`
+          `${API_BASE}/api/search?q=${encodeURIComponent(query)}&limit=6`
         );
         if (!res.ok) return;
         const data = await res.json();

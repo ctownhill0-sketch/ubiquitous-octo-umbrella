@@ -4,6 +4,7 @@ import {
   X, Sparkles, RefreshCw, TrendingUp, Mail, Calendar,
   DollarSign, Target, ChevronRight, Sun, Moon, Coffee
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import { toast } from "sonner";
 
 type BriefingStats = {
@@ -22,7 +23,7 @@ type Briefing = {
   stats: BriefingStats;
 };
 
-const API = "http://localhost:7432";
+const API = API_BASE;
 
 const DEMO_BRIEFING = `Good morning — here's your Monday snapshot.
 

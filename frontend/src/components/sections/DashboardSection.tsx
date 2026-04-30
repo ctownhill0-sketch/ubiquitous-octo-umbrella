@@ -7,6 +7,7 @@ import {
 import {
   ArrowDownRight, ArrowUpRight, Sparkles, X, ChevronRight,
 } from "lucide-react";
+import { API_BASE } from "@/const";
 
 type DailyPoint = { date: string; emails_sent: number; replies: number; leads_scraped: number };
 type SourceRow  = { source: string; count: number; pct: number };
@@ -96,8 +97,8 @@ export default function DashboardSection() {
     const load = async () => {
       try {
         const [statsRes, anaRes] = await Promise.all([
-          fetch("http://localhost:7432/api/stats"),
-          fetch("http://localhost:7432/api/analytics"),
+          fetch(`${API_BASE}/api/stats`),
+          fetch(`${API_BASE}/api/analytics`),
         ]);
         if (!cancelled && statsRes.ok) setStats(await statsRes.json());
         if (!cancelled && anaRes.ok)   setAnalytics(await anaRes.json());

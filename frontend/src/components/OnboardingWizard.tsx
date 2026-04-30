@@ -9,9 +9,10 @@ import {
   ExternalLink, Copy, Eye, EyeOff, Loader2, Zap,
   Shield, Target, TrendingUp, ChevronRight
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import { toast } from "sonner";
 
-const BASE = "http://localhost:7432/api";
+const BASE = `${API_BASE}/api`;
 
 const STEPS = [
   { id: 0, label: "Welcome",    icon: Sparkles },

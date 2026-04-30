@@ -4,6 +4,7 @@ import {
   Shield, CheckCircle2, AlertCircle, XCircle, Zap,
   Mail, Globe, Search, RefreshCw, ChevronRight, Info
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import { toast } from "sonner";
 
 type ContentCheck = {
@@ -37,7 +38,7 @@ type FullCheck = {
   summary: string;
 };
 
-const API = "http://localhost:7432";
+const API = API_BASE;
 
 function GradeCircle({ grade, score }: { grade: string; score: number }) {
   const colors: Record<string, string> = {

@@ -6,6 +6,7 @@ import {
   CheckCircle2, Clock, AlertCircle, Calendar, Ban, Link
 } from "lucide-react";
 import { toast } from "sonner";
+import { API_BASE } from "@/const";
 
 type Intent = "interested" | "not_now" | "unsubscribe" | "meeting_booked" | "question" | "unknown";
 
@@ -96,7 +97,7 @@ export default function ReplyMonitorSection() {
   useEffect(() => {
     const loadReplies = async () => {
       try {
-        const res = await fetch("http://localhost:7432/api/replies");
+        const res = await fetch(`${API_BASE}/api/replies`);
         if (!res.ok) return;
         const data: Array<Record<string, unknown>> = await res.json();
         if (!Array.isArray(data) || data.length === 0) return;
@@ -132,7 +133,7 @@ export default function ReplyMonitorSection() {
   const syncGmail = async () => {
     setSyncing(true);
     try {
-      const res = await fetch("http://localhost:7432/api/replies/sync");
+      const res = await fetch(`${API_BASE}/api/replies/sync`);
       if (res.ok) {
         const data = await res.json();
         toast.success(`Synced — ${data.new_replies || 0} new replies`);
@@ -150,7 +151,7 @@ export default function ReplyMonitorSection() {
     if (!selected) return;
     setAiGenerating(true);
     try {
-      const res = await fetch("http://localhost:7432/api/replies/generate", {
+      const res = await fetch(`${API_BASE}/api/replies/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ thread_id: selected.id, body: selected.fullBody, intent: selected.intent }),
@@ -182,7 +183,7 @@ export default function ReplyMonitorSection() {
   const injectBookingLink = async () => {
     if (!selected) return;
     try {
-      const res = await fetch("http://localhost:7432/api/email/inject-booking", {
+      const res = await fetch(`${API_BASE}/api/email/inject-booking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body: replyText, intent: selected.intent }),

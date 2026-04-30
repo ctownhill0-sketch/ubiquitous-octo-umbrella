@@ -1,125 +1,113 @@
-# LeadStack™ Desktop App
+# LeadStack
 
-Premium lead generation platform — scrape Google Maps, write AI-personalized emails, track replies, and manage your pipeline.
+Web-based lead-generation platform — scrape Google Maps, write AI-personalised
+emails, track replies, manage your pipeline. Pure web app: no Electron, no
+desktop installer, no native packaging.
 
 ## Architecture
 
 ```
-leadstack_desktop/
-├── electron/          # Electron main process (Node.js)
-│   ├── main.js        # App lifecycle, window, IPC, backend spawn
-│   └── preload.js     # Secure bridge between renderer and main
-├── frontend/          # React + Vite + Tailwind UI
+leadstack/
+├── frontend/             # React 19 + Vite 7 + Tailwind 4
 │   ├── src/
-│   │   ├── pages/     # Dashboard page
-│   │   ├── components/
-│   │   │   ├── sections/   # 6 main sections
-│   │   │   ├── Sidebar.tsx
-│   │   │   └── Header.tsx
-│   │   └── lib/api.ts      # API client → localhost:7432
-│   └── dist/          # Built frontend (run npm run build)
-└── backend/           # Python Flask API
-    ├── server.py      # Flask routes (port 7432)
-    ├── database.py    # SQLite persistence
-    ├── scraper.py     # Google Maps Playwright scraper
-    ├── email_writer.py # Claude AI email generation
-    ├── gmail_engine.py # Gmail OAuth send/receive
-    └── automation.py  # Scheduled automation engine
+│   │   ├── pages/        # Dashboard shell
+│   │   ├── components/   # Sidebar, Header, StatusBar, CommandPalette,
+│   │   │   ├── sections/ # one per feature (Leads, Pipeline, …)
+│   │   │   └── ui/       # shadcn primitives
+│   │   ├── lib/api.ts    # typed fetch client → backend
+│   │   └── const.ts      # API_BASE (env-driven)
+│   └── dist/             # vite build output
+└── backend/              # Python 3.11 + Flask
+    ├── server.py         # routes (port 7432, CORS-enabled)
+    ├── database.py       # SQLite
+    ├── scraper.py        # Google Maps via Playwright
+    ├── email_writer.py   # Anthropic Claude
+    └── gmail_engine.py   # Gmail API
 ```
 
-## Quick Start (Development)
-
-### 1. Install dependencies
+## Quick start
 
 ```bash
-# Node.js dependencies
-npm install
-
-# Python dependencies
+# 1. Install
+npm install                     # auto-installs frontend/ deps too
 cd backend && pip3 install -r requirements.txt
-playwright install chromium
-cd ..
+playwright install chromium     # only if you need scraping locally
 
-# Frontend dependencies
-cd frontend && npm install && cd ..
+# 2. Configure (optional for first boot — set later in Settings)
+cp frontend/.env.example frontend/.env.local
+# edit frontend/.env.local if your backend isn't on localhost:7432
+
+# 3. Run — two terminals
+cd backend && python3 server.py        # → http://localhost:7432
+npm run dev                            # → http://localhost:5173
 ```
 
-### 2. Configure
+Open <http://localhost:5173>. The Vite dev server proxies `/api/*` to Flask;
+direct `fetch(${API_BASE}/api/...)` calls also work because Flask CORS is
+enabled.
 
-- Place your Google Cloud OAuth `credentials.json` in `backend/`
-- Set your Anthropic API key in the app Settings tab
+## Configuration
 
-### 3. Run
+| Variable | Where | Default | Purpose |
+|---|---|---|---|
+| `VITE_API_URL` | `frontend/.env.local` | `http://localhost:7432` | Backend URL the React app fetches against. Set at build time. |
+| `LEADSTACK_PORT` | backend env | `7432` | Port the Flask server binds. |
+| `LEADSTACK_CORS` | backend env | `*` | Comma-separated origin allow-list. Set in production. |
+
+### Anthropic + Gmail
+
+- Place `credentials.json` (Google Cloud OAuth client) in `backend/`.
+- Set your Anthropic API key in the app's Settings tab.
+
+## Build for production
 
 ```bash
-# Terminal 1: Start backend
+npm run build                  # frontend → frontend/dist/
+# Flask serves frontend/dist/ as static at /, so:
 cd backend && python3 server.py
-
-# Terminal 2: Start Electron + React
-npm run dev
+# → both API and the React bundle on http://localhost:7432
 ```
 
-Or use the convenience script:
-```bash
-./start_backend.sh  # macOS/Linux
-start_backend.bat   # Windows
-```
+## Deploy
 
-## Building for Distribution
-
-### macOS DMG
-
-A `.dmg` can only be produced on a macOS host (electron-builder relies on
-`hdiutil` and the CoreFoundation framework, which exist only on macOS). There
-are two supported paths:
-
-**1. Build locally on a Mac**
+**Frontend on Vercel + backend wherever:**
 
 ```bash
-./build_dmg.sh
-# DMG lands in ./dist/
+cd frontend
+vercel --prod
+# Then in Vercel project → Settings → Environment Variables:
+#   VITE_API_URL = https://your-backend-host
 ```
 
-**2. Build via GitHub Actions on a hosted macOS runner**
+**Full stack on Railway:** point Railway at this repo. It detects the Flask
+backend automatically. Add a second service for the frontend (or set
+`VITE_API_URL` and let Vercel handle the static build).
 
-Push a tag of the form `vX.Y.Z` (or run the workflow manually from the Actions
-tab); `.github/workflows/build-dmg.yml` builds both arm64 and x64 DMGs, uploads
-them as workflow artifacts, and attaches them to a GitHub Release on tagged
-builds.
-
-```bash
-git tag v1.0.0 && git push origin v1.0.0
-```
-
-### Selling the app
-
-The DMGs produced by the steps above are **unsigned**, so Gatekeeper will warn
-end users that the app is "from an unidentified developer." For paid
-distribution you should:
-
-1. Enroll in the [Apple Developer Program](https://developer.apple.com/programs/) ($99/yr).
-2. Add `CSC_LINK` (Developer ID `.p12`), `CSC_KEY_PASSWORD`, `APPLE_ID`,
-   `APPLE_APP_SPECIFIC_PASSWORD`, and `APPLE_TEAM_ID` as repo secrets, and
-   remove the `CSC_IDENTITY_AUTO_DISCOVERY: "false"` line from the workflow.
-3. electron-builder will then sign and notarize automatically.
+**Self-hosted single box:** `npm run build` → backend serves `frontend/dist`
+at `/` plus `/api/*` on port 7432. Put it behind nginx/Caddy.
 
 ## Sections
 
 | Section | Description |
-|---------|-------------|
-| Dashboard | KPI overview, pipeline value, activity feed |
-| Scraper | Google Maps lead scraping with city targeting |
-| Email | AI-personalized cold email campaigns |
-| Follow-Up | Automated 3-step follow-up sequences |
-| Replies | Gmail inbox monitor with AI sentiment |
-| Daily Report | Performance analytics with charts |
-| Settings | API keys, email config, automation params |
+|---|---|
+| Dashboard | KPI strip, AI insight bar, lead-volume chart, funnel, team table |
+| Leads (Pipeline) | Kanban board with drag-and-drop + lead detail split panel |
+| Sequences | Visual outreach builder (email → wait → branch → linkedin) |
+| Campaigns (Email) | Spintax composer, A/B test, send-window scheduler |
+| Inbox (Replies) | AI intent detection, one-click reply |
+| Prospector | Filter-driven B2B contact discovery |
+| Scraper | Google Maps + LinkedIn lead scraping |
+| Warmup | Sender reputation + inbox rotation |
+| Deliverability | Spam-checker pre-send |
+| Analytics | Pipeline-stage breakdown, top cities, daily trend |
+| Settings | API keys, sender email, schedule, signature |
 
-## Tech Stack
+## Keyboard
 
-- **Frontend**: React 19, Vite, Tailwind CSS 4, Framer Motion, Recharts
-- **Desktop**: Electron 28
-- **Backend**: Python 3.11, Flask 3, SQLite
-- **Scraping**: Playwright (stealth mode)
-- **AI**: Anthropic Claude (email writing)
-- **Email**: Gmail API (OAuth 2.0)
+- `⌘K` (Ctrl-K on Windows) — command palette, fuzzy search across sections + leads
+- `⌘1`–`⌘5` — jump to Dashboard / Leads / Pipeline / Campaigns / Inbox
+
+## Tech
+
+React 19 · Vite 7 · Tailwind 4 · Framer Motion · Recharts · Sonner ·
+Python 3.11 · Flask 3 · SQLite · Playwright · Anthropic SDK · Gmail API

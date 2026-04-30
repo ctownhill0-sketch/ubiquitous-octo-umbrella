@@ -8,9 +8,10 @@ import {
   Loader2, Download, Plus, RefreshCw, Shield, Zap,
   ChevronRight, Filter, Star
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import { toast } from "sonner";
 
-const BASE = "http://localhost:7432/api";
+const BASE = `${API_BASE}/api`;
 
 interface LinkedInLead {
   name: string;

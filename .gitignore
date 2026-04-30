@@ -35,5 +35,7 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Electron-builder
-out/
+# Frontend env
+frontend/.env.local
+frontend/.env.*.local
+.env.local

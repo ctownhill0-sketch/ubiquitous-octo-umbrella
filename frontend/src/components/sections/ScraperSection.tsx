@@ -8,6 +8,7 @@ import {
   SlidersHorizontal, Zap
 } from "lucide-react";
 import { toast } from "sonner";
+import { API_BASE } from "@/const";
 
 type Lead = {
   id: string;
@@ -74,7 +75,7 @@ export default function ScraperSection() {
   useEffect(() => {
     mountedRef.current = true;
     const controller = new AbortController();
-    fetch("http://localhost:7432/api/leads?limit=500", { signal: controller.signal })
+    fetch(`${API_BASE}/api/leads?limit=500`, { signal: controller.signal })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (!mountedRef.current) return;
@@ -120,7 +121,7 @@ export default function ScraperSection() {
     setProgressLabel("Connecting to Google Maps...");
     // Don't clear leads — keep showing existing leads while new ones load in
     try {
-      const startRes = await fetch("http://localhost:7432/api/scrape/start", {
+      const startRes = await fetch(`${API_BASE}/api/scrape/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -141,7 +142,7 @@ export default function ScraperSection() {
         if (cancelScrapeRef.current || !mountedRef.current) break;
         attempts++;
         try {
-          const statusRes = await fetch("http://localhost:7432/api/scrape/status");
+          const statusRes = await fetch(`${API_BASE}/api/scrape/status`);
           if (statusRes.ok) {
             const status = await statusRes.json();
             const found = status.leadsFound || 0;
@@ -156,7 +157,7 @@ export default function ScraperSection() {
         // Refresh leads table every 5 seconds to show live results as they arrive
         if (attempts % 4 === 0) {
           try {
-            const liveRes = await fetch("http://localhost:7432/api/leads?limit=500");
+            const liveRes = await fetch(`${API_BASE}/api/leads?limit=500`);
             if (liveRes.ok) {
               const liveData = await liveRes.json();
               const liveLeads = (liveData.leads || []).map((l: any, i: number) => ({
@@ -172,7 +173,7 @@ export default function ScraperSection() {
       if (cancelScrapeRef.current || !mountedRef.current) return;
       setProgress(100);
       setProgressLabel("Loading results...");
-      const leadsRes = await fetch("http://localhost:7432/api/leads?limit=500");
+      const leadsRes = await fetch(`${API_BASE}/api/leads?limit=500`);
       if (leadsRes.ok) {
         const data = await leadsRes.json();
         const newLeads = (data.leads || []).map((l: any, i: number) => ({

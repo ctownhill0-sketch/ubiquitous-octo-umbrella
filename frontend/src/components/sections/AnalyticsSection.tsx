@@ -5,12 +5,13 @@ import {
   Mail, MessageSquare, DollarSign,
   ArrowUpRight, ArrowDownRight, Target, Users, RefreshCw
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import {
   AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 
-const BASE = "http://localhost:7432/api";
+const BASE = `${API_BASE}/api`;
 
 const STATUS_COLORS: Record<string, string> = {
   "New": "#60a5fa",

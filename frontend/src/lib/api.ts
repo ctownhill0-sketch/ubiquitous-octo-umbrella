@@ -1,7 +1,9 @@
-// LeadStack™ — API Client
-// All calls go to the local Python Flask backend at localhost:7432
+// LeadStack — API Client
+// All calls go to the Python Flask backend (localhost in dev, VITE_API_URL in prod).
 
-const BASE = "http://localhost:7432/api";
+import { API_BASE } from "@/const";
+
+const BASE = `${API_BASE}/api`;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {

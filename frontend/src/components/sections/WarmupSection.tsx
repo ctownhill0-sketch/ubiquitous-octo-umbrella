@@ -5,6 +5,7 @@ import {
   Mail, Shield, TrendingUp, Zap, RotateCcw, ChevronRight,
   Activity, Clock, Send
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import { toast } from "sonner";
 
 type Account = {
@@ -38,7 +39,7 @@ type ReputationSummary = {
   recommendation: string;
 };
 
-const API = "http://localhost:7432";
+const API = API_BASE;
 
 function ScoreRing({ score }: { score: number }) {
   const color = score >= 70 ? "#4ade80" : score >= 50 ? "#f59e0b" : "#f87171";

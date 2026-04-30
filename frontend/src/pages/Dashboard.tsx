@@ -6,6 +6,7 @@ import StatusBar from "@/components/StatusBar";
 import CommandPalette from "@/components/CommandPalette";
 import DailyBriefingModal from "@/components/DailyBriefingModal";
 import OnboardingWizard from "@/components/OnboardingWizard";
+import { API_BASE } from "@/const";
 
 const DashboardSection      = lazy(() => import("@/components/sections/DashboardSection"));
 const ScraperSection        = lazy(() => import("@/components/sections/ScraperSection"));
@@ -85,7 +86,7 @@ export default function Dashboard() {
       abortRef.current = ctrl;
 
       try {
-        const res = await fetch("http://localhost:7432/api/stats", { signal: ctrl.signal });
+        const res = await fetch(`${API_BASE}/api/stats`, { signal: ctrl.signal });
         if (!res.ok) throw new Error(`status ${res.status}`);
         // Defensive parse — a misbehaving backend could return null, an empty
         // body, or non-JSON. Treat any of those as "no data" instead of

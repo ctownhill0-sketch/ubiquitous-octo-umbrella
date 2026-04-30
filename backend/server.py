@@ -32,7 +32,13 @@ FRONTEND_DIST = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__
 # Do NOT use static_folder here — it intercepts /api/* routes.
 # Static files are served explicitly via the serve_react catch-all below.
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# CORS — accepts a comma-separated list of allowed origins via LEADSTACK_CORS.
+# Defaults to "*" so `npm run dev` (origin http://localhost:5173) just works.
+# In production set, e.g.:
+#   LEADSTACK_CORS=https://leadstack.example.com,https://app.leadstack.example.com
+_cors_origins = os.environ.get("LEADSTACK_CORS", "*")
+_cors_list = [o.strip() for o in _cors_origins.split(",") if o.strip()] if _cors_origins != "*" else "*"
+CORS(app, resources={r"/api/*": {"origins": _cors_list}})
 
 db = Database()
 

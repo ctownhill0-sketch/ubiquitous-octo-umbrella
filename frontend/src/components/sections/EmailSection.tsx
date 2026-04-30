@@ -6,6 +6,7 @@ import {
   CheckCircle2, Loader2, BarChart3, Plus, Edit3,
   Clock, FlaskConical, Shuffle, Calendar, ChevronDown
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import { toast } from "sonner";
 
 type Campaign = {
@@ -92,7 +93,7 @@ const SAMPLE_DATA = {
   website: "whitfieldcapital.com",
 };
 
-const BASE = "http://localhost:7432/api";
+const BASE = `${API_BASE}/api`;
 
 export default function EmailSection() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(DEMO_CAMPAIGNS);

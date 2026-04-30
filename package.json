@@ -1,97 +1,12 @@
 {
   "name": "leadstack",
   "version": "1.0.0",
-  "description": "LeadStack - Premium Lead Generation Desktop App",
-  "main": "electron/main.js",
-  "author": "LeadStack",
-  "copyright": "Copyright © 2026 LeadStack",
+  "description": "LeadStack — web-based lead generation platform",
+  "private": true,
   "scripts": {
-    "start": "electron .",
-    "dev": "concurrently \"cd frontend && npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
-    "postinstall": "cd frontend && npm ci",
+    "dev": "cd frontend && npm run dev",
     "build": "cd frontend && npm run build",
-    "build:mac": "npm run build && electron-builder --mac --publish never",
-    "build:win": "npm run build && electron-builder --win --publish never",
-    "build:all": "npm run build && electron-builder --mac --win --publish never",
-    "release": "npm run build && electron-builder --mac --win --publish always"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2",
-    "electron": "^28.3.3",
-    "electron-builder": "^24.13.3",
-    "wait-on": "^7.2.0"
-  },
-  "build": {
-    "appId": "com.leadstack.app",
-    "productName": "LeadStack",
-    "copyright": "Copyright © 2026 LeadStack",
-    "icon": "assets/icon.png",
-    "publish": {
-      "provider": "github",
-      "owner": "ctownhill0-sketch",
-      "repo": "ubiquitous-octo-umbrella"
-    },
-    "directories": {
-      "output": "dist",
-      "buildResources": "assets"
-    },
-    "files": [
-      "electron/**/*",
-      "frontend/dist/**/*",
-      "assets/**/*"
-    ],
-    "extraResources": [
-      {
-        "from": "backend",
-        "to": "backend",
-        "filter": [
-          "**/*",
-          "!__pycache__",
-          "!*.pyc",
-          "!leads.db",
-          "!money_machine.db",
-          "!warmup.db",
-          "!deals.db",
-          "!server_v1.py",
-          "!debug_*.py",
-          "!app.py",
-          "!run.sh",
-          "!run.bat"
-        ]
-      }
-    ],
-    "mac": {
-      "category": "public.app-category.business",
-      "icon": "assets/icon.png",
-      "darkModeSupport": true,
-      "target": [
-        { "target": "dmg", "arch": ["arm64", "x64"] }
-      ]
-    },
-    "dmg": {
-      "title": "Install LeadStack",
-      "icon": false,
-      "window": { "width": 540, "height": 380 },
-      "contents": [
-        { "x": 140, "y": 180, "type": "file" },
-        { "x": 400, "y": 180, "type": "link", "path": "/Applications" }
-      ]
-    },
-    "win": {
-      "icon": "assets/icon.png",
-      "target": [
-        { "target": "nsis", "arch": ["x64"] }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "LeadStack",
-      "installerHeaderIcon": "assets/icon.png",
-      "uninstallerIcon": "assets/icon.png",
-      "license": "assets/license.txt"
-    }
+    "preview": "cd frontend && npm run preview",
+    "postinstall": "cd frontend && npm install"
   }
 }

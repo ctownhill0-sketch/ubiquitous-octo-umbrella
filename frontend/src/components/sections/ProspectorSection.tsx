@@ -9,6 +9,7 @@ import {
   CheckCircle2, X, Compass,
 } from "lucide-react";
 import { toast } from "sonner";
+import { API_BASE } from "@/const";
 
 // ---------- Types ----------
 type Match = {
@@ -151,7 +152,7 @@ export default function ProspectorSection() {
   // empty backend still feels populated.
   useEffect(() => {
     let cancelled = false;
-    fetch("http://localhost:7432/api/leads?limit=80")
+    fetch(`${API_BASE}/api/leads?limit=80`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (cancelled || !data?.leads?.length) return;
@@ -177,7 +178,7 @@ export default function ProspectorSection() {
   const addToLeadStack = async (m: Match) => {
     setAdding((prev) => new Set(prev).add(m.id));
     try {
-      const res = await fetch("http://localhost:7432/api/leads", {
+      const res = await fetch(`${API_BASE}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

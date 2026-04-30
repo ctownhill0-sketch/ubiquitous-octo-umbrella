@@ -4,6 +4,7 @@ import {
   Mail, Phone, Globe, Linkedin, X, Send, Trash2, Plus, MoreHorizontal,
   ChevronRight, Search, Flame, CheckCircle2, Clock,
 } from "lucide-react";
+import { API_BASE } from "@/const";
 import { toast } from "sonner";
 
 type Stage = "prospect" | "contacted" | "qualified" | "proposal" | "negotiation" | "closed";
@@ -51,7 +52,7 @@ const DEMO_LEADS: Lead[] = [
   { id: "11", name: "Lin Park",       company: "Ironclad Cyber",  title: "Co-founder",         email: "lin@ironclad.io",       phone: "(415) 555-0992", website: "ironclad.io",     linkedin: "linkedin.com/in/linpark",    location: "San Diego, CA",     stage: "closed",     score: 99, daysInStage: 12, dealValue: 38500, emailsSent: 6, notes: "Closed Apr 15. Implementation kicks off May 2.",  source: "Referral",    lastActivity: "Apr 15" },
 ];
 
-const BASE = "http://localhost:7432/api";
+const BASE = `${API_BASE}/api`;
 
 // Namespaced HTML5 DnD payload so kanban drags can never drop into
 // foreign drop zones (sequences, file inputs, etc.).

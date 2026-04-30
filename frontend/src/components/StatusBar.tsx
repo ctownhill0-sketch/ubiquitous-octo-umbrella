@@ -1,6 +1,7 @@
 // LeadStack — StatusBar (Block 1)
 // 28px persistent footer with workspace stats + keyboard hints.
 import { useEffect, useState } from "react";
+import { API_BASE } from "@/const";
 
 interface StatusBarProps {
   totalLeads?: number;
@@ -24,7 +25,7 @@ export default function StatusBar({
       return;
     }
     let cancelled = false;
-    fetch("http://localhost:7432/api/stats")
+    fetch(`${API_BASE}/api/stats`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (!cancelled && data && typeof data.totalLeads === "number") {
